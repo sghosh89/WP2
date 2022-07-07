@@ -2,7 +2,7 @@
 # world, we extracted for the unique lon-lat we needed and 
 # those tas, tasmax, tasmin, pr data 
 # are saved in the DATA/wrangled_env_data/ folder
-# Now, we will wrangle those file to get avr data across 12 months 
+# Now, we will wrangle those file to get avg data across 12 months 
 # so to get annual data
 #============================================
 rm(list=ls())

@@ -75,13 +75,13 @@ model_psem<-piecewiseSEM::psem(
          R:t_median+ A:t_median+ VR:t_median+
          (1|STUDY_ID), data=dat))
 
-#model_psem<-piecewiseSEM::psem(
-#  lmer(VR ~ R+t_median+(1|STUDY_ID),data=dat),
-#  lmer(A ~ R+t_median+(1|STUDY_ID),data=dat),
-#  lmer(R~t_median+(1|STUDY_ID),data=dat),
-#  lmer(stability ~ (R + VR +A)+t_median+
-#         R:t_median+ A:t_median+ VR:t_median+
-#         (1|STUDY_ID), data=dat))
+model_psem<-piecewiseSEM::psem(
+  lmer(VR ~ R+tmax_median+(1|STUDY_ID),data=dat),
+  lmer(A ~ R+tmax_median+(1|STUDY_ID),data=dat),
+  lmer(R~tmax_median+(1|STUDY_ID),data=dat),
+  lmer(stability ~ (R + VR +A)+tmax_median+
+         R:tmax_median+ A:tmax_median+ VR:tmax_median+
+         (1|STUDY_ID), data=dat))
 
 #model_psem<-piecewiseSEM::psem(
 #  lmer(VR ~ R+t_skw+(1|STUDY_ID),data=dat),

@@ -1,8 +1,8 @@
 rm(list=ls())
 library(tidyverse)
 ##########################
-# first read all the data/metadata collected for proj BioDyn
-s<-read.csv("../Results/data_summary.csv")
+# first read all the metadata collected for proj BioDyn
+s<-read.csv("../Results/metadata_summary_from_BioDyn.csv")
 
 # get first unique set of long+lat combination
 s_lonlat<-s%>%select(CENT_LONG,CENT_LAT)
