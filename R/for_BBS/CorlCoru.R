@@ -2,7 +2,7 @@
 # THIS CODE CONTAINS STATISTICS FOR LOOKING AT TAIL DEPENDENCE
 #-----------------------------------------------------------------------------------------------------------------------
 
-source("Corbds.R")
+source("./for_BBS/Corbds.R")
 
 #--------------------------- correlation based Stat ---------------------------------------------------------
 

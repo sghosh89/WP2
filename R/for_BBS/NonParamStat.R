@@ -2,8 +2,8 @@
 # THIS CODE IS WRITTEN TO TEST NON-PARAMETRIC STATS based on partial Spearmn correlation (Cor stat) 
 #              FOR ANY TWO POSITIVELY CORRELATED SPECIES PAIR
 #--------------------------------------------------------------------------------------------------
-source("CorlCoru.R")
-source("vivj_matrix.R")
+source("./for_BBS/CorlCoru.R")
+source("./for_BBS/vivj_matrix.R")
 #---------------------------------------------------------------
 #Processing function for a copula approach to synchrony
 #

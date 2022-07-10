@@ -5,7 +5,7 @@
 #   tot_target_sp: number of targetted sp (generally common sp)
 #     tl.cex,cl.cex,line : numeric values for size of text in the labels and colorbar, line of mtext
 #---------------------------
-source("mycorrplot.R")
+source("./for_BBS/mycorrplot.R")
 #---------------------------
 
 NonParamStat_matrixplot<-function(data,resloc,tot_target_sp,tl.cex,cl.cex,line){

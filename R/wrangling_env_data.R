@@ -58,7 +58,6 @@ tb2<-dl2%>%group_by(CENT_LONG,CENT_LAT,yr)%>%
 write.csv(tb2,"../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv",row.names = F)
 
 ######################
-#   pr (1979-2018)
 ######################
 d<-read.csv("../DATA/wrangled_env_data/pr_monthlyvalues_extracted_lonlat.csv")
 nd<-ncol(d)

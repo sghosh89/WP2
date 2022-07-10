@@ -2,7 +2,7 @@ rm(list=ls())
 library(tidyverse)
 ##########################
 # first read all the metadata collected for proj BioDyn
-md<-read.csv("../Results/metadata_summary_from_BioDyn.csv")
+md<-read.csv("../DATA/metadata_summary.csv")
 #========== get first unique set of long+lat combination for all metadata ===========
 md_lonlat<-md%>%select(CENT_LONG,CENT_LAT)
 md_lonlat <- md_lonlat[!duplicated(md_lonlat[ , c("CENT_LONG", "CENT_LAT")]), ] 

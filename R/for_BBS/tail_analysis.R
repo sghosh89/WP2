@@ -1,19 +1,20 @@
 # This script will do the copula analysis, will generate necessary plots
 # for a given community and also with a given environmental variable
 
-source("NonParamStat.R")
-source("NonParamStat_matrixplot.R")
+source("./for_BBS/NonParamStat.R")
+source("./for_BBS/NonParamStat_matrixplot.R")
 
 # Input:
 # mat: a matrix or dataframe where each target species time series along each column, 
 #         and also env timeseries as columns, rows have name for sampling years
+# tot_target_sp: number of living species in the "mat" matrix (i.e., without env variable)
 #resloc: path to save results
 #nbin: 2 (default) to measure tail-dep.
 
 # Output:
 # a list and several plots to be saved in resloc path
 
-tail_analysis<-function(mat, resloc, nbin=2){
+tail_analysis<-function(mat, tot_target_sp, resloc, nbin=2){
   
   id<-which(colnames(mat)=="raresp")
   if(length(id)>0){
@@ -27,12 +28,6 @@ tail_analysis<-function(mat, resloc, nbin=2){
   }
   
   z<-multcall(d_allsp = splist, resloc = resloc, nbin=nbin)
-  
-  
-  spnm<-colnames(mat)
-  spnm<-setdiff(spnm,"t")
-  tot_target_sp<-length(spnm)
-  nyr<-nrow(mat)# total number of years
   
   saveRDS(z,paste(resloc,"NonParamStat.RDS",sep=""))
   
