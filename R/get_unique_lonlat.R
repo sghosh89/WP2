@@ -1,4 +1,3 @@
-rm(list=ls())
 library(tidyverse)
 ##########################
 # first read all the metadata collected for proj BioDyn
