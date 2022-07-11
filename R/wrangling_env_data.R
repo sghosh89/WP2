@@ -5,7 +5,6 @@
 # Now, we will wrangle those file to get avg data across 12 months 
 # so to get annual data
 #============================================
-rm(list=ls())
 library(dplyr)
 library(tidyverse)
 ######################
@@ -75,7 +74,6 @@ write.csv(tb,"../DATA/wrangled_env_data/pr_annualval_extracted_lonlat.csv",row.n
 
 ###################################################
 ###################################################
-rm(list=ls())
 library(dplyr)
 library(tidyverse)
 library(e1071)
@@ -188,7 +186,7 @@ write.csv(s2_env,"../Results/data_summary_with_env_yrspan_1979_2018.csv",row.nam
 
 #============= repeat the analysis for temp data 1979 to 2019 ================
 
-rm(list=ls())
+
 library(dplyr)
 library(tidyverse)
 library(e1071)
