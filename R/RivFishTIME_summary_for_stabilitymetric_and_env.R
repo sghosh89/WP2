@@ -3,7 +3,7 @@
 # a community timeseries with env data for the same time-span
 ########################################################################################
 
-source("./for_RivFishTIME/get_stability_metric.R")
+source("./get_stability_metric.R")
 library(tidyverse)
 
 # read summary results 
