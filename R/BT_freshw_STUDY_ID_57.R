@@ -2,10 +2,11 @@ source("./tail_analysis.R")
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 
-# don't overwrite this three variables
+# don't overwrite these four variables
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_freshw<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/bt_freshw_min20yr_rawdata.RDS")
 #freshw_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/table_for_map.RDS")
+#env_BT<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv")
 
 df<-freshw_tbl_for_map%>%filter(STUDY_ID==57)
 df$newsite<-df$STUDY_ID # this is the same as there is single site
@@ -69,7 +70,6 @@ input_tailanal<-input_tailanal%>%filter(yr%in%c(1979:2019))
 rownames(input_tailanal)<-input_tailanal$yr
 
 #-----------------------adding environmental variable in the matrix-----------------------------
-env_BT<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv")
 tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%select(yr,t,tmax,tmin)
 tempdat$tmax_n<- -tempdat$tmax
 
