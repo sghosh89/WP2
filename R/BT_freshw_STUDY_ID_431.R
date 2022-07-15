@@ -2,7 +2,7 @@ source("./tail_analysis.R")
 source("./monthly_rarefy_BT.R")
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
-
+sp_threshold=2
 # don't overwrite these four variables
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_freshw<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/bt_freshw_min20yr_rawdata.RDS")
@@ -146,7 +146,7 @@ for(k in 1:length(newsite)){
   presentyr<-apply(X=m$spmat,MARGIN=2,FUN=function(x){sum(x>0)})
   presentyr<-unname(presentyr)
   commonspid<-which(presentyr>=0.7*nrow(m$spmat)) # common sp = present minimum 70% of sampled year
-  if(length(commonspid)>0){
+  if(length(commonspid)>=sp_threshold){ # atleast 2 species should present for the analysis
     m1<-m$spmat[,commonspid]
     m1<-as.data.frame(m1)
     input_tailanal<-m1
@@ -155,40 +155,44 @@ for(k in 1:length(newsite)){
     cat("no common species are found \n")
   }
   saveRDS(input_tailanal,paste(resloc,"commonspecies_timeseries.RDS",sep=""))
-  tot_target_sp<-ncol(input_tailanal)
-  saveRDS(tot_target_sp,paste(resloc,"tot_target_sp.RDS",sep="")) # nsp
-  #----------------- consider the matrix data only in between 1979 to 2019 period to match with env data------------------
-  input_tailanal$yr<-as.integer(rownames(input_tailanal))
-  input_tailanal<-input_tailanal%>%filter(yr%in%c(1979:2019))
-  rownames(input_tailanal)<-input_tailanal$yr
   
-  #-----------------------adding environmental variable in the matrix-----------------------------
-  tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
-  tempdat$tmax_n<- -tempdat$tmax
-  
-  # check if all TRUE
-  all(rownames(input_tailanal)==tempdat$yr)==T
-  
-  input_tailanal$t<-tempdat$t
-  input_tailanal$tmax<-tempdat$tmax
-  input_tailanal$tmin<-tempdat$tmin
-  input_tailanal$tmax_n<-tempdat$tmax_n
-  input_tailanal<-input_tailanal%>%dplyr::select(-yr)
-  
-  saveRDS(input_tailanal,paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep="")) # dataframe with species timeseries along column
-  
-  #----------------- now do tail analysis ----------------------
-  resloc2<-paste("../Results/for_BioTIME/Freshwater_plotlevel/",site,"/",sep="")
-  if(!dir.exists(resloc2)){
-    dir.create(resloc2)
+  if(!is.na(input_tailanal)){
+    tot_target_sp<-ncol(input_tailanal)
+    saveRDS(tot_target_sp,paste(resloc,"tot_target_sp.RDS",sep="")) # nsp
+    #----------------- consider the matrix data only in between 1979 to 2019 period to match with env data------------------
+    input_tailanal$yr<-as.integer(rownames(input_tailanal))
+    input_tailanal<-input_tailanal%>%filter(yr%in%c(1979:2019))
+    rownames(input_tailanal)<-input_tailanal$yr
+    
+    #-----------------------adding environmental variable in the matrix-----------------------------
+    tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
+    tempdat$tmax_n<- -tempdat$tmax
+    
+    # check if all TRUE
+    all(rownames(input_tailanal)==tempdat$yr)==T
+    
+    input_tailanal$t<-tempdat$t
+    input_tailanal$tmax<-tempdat$tmax
+    input_tailanal$tmin<-tempdat$tmin
+    input_tailanal$tmax_n<-tempdat$tmax_n
+    input_tailanal<-input_tailanal%>%dplyr::select(-yr)
+    
+    saveRDS(input_tailanal,paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep="")) # dataframe with species timeseries along column
+    
+    #----------------- now do tail analysis ----------------------
+    resloc2<-paste("../Results/for_BioTIME/Freshwater_plotlevel/",site,"/",sep="")
+    if(!dir.exists(resloc2)){
+      dir.create(resloc2)
+    }
+    
+    
+    resloc<-paste(resloc2,newsite[k],"/",sep="")
+    if(!dir.exists(resloc)){
+      dir.create(resloc)
+    }
+    res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp,resloc = resloc, nbin = 2)
   }
-  
-  
-  resloc<-paste(resloc2,newsite[k],"/",sep="")
-  if(!dir.exists(resloc)){
-    dir.create(resloc)
-  }
-  res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp,resloc = resloc, nbin = 2)
+
 }
 
 #--------------------------------------------------------
