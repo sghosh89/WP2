@@ -70,6 +70,8 @@ grid <- bt %>%
                 LATITUDE, LONGITUDE, CENT_LAT, CENT_LONG, NUMBER_LAT_LONG, SUMMARY_METHODS)
 colnames(grid)[6:8] <- c('Species', 'Abundance', 'Biomass')
 
+grid$Biomass<-as.numeric(grid$Biomass)
+
 tbl<-grid%>%group_by(STUDY_ID,REALM)%>%summarise(n_distinct(YEAR))%>% ungroup()
 tbl<-tbl%>%filter(`n_distinct(YEAR)`>=data_pt_thrs) # so, these are the 40 study_IDs we will start with
 
