@@ -1,6 +1,7 @@
 source("./tail_analysis.R")
 source("./monthly_rarefy_BT.R")
 library(tidyverse)
+library(dplyr)
 `%notin%` <- Negate(`%in%`)
 
 # don't overwrite these four variables
@@ -77,10 +78,10 @@ for(k in 1:length(newsite)){
   id<-which(colnames(x)==field)
   
   if(need_rarefy==T){
-    study<-x%>%select(MONTH,YEAR,Species,Value=id)
+    study<-x%>%dplyr::select(MONTH,YEAR,Species,Value=id)
     x_c<-monthly_rarefy(study = study,resamples = 100,field = field)
   }else{
-    x<-x%>%select(YEAR,Species,Value=id)
+    x<-x%>%dplyr::select(YEAR,Species,Value=id)
     x<-x%>%group_by(Species,YEAR)%>%
       dplyr::summarise(Value=mean(Value))%>%ungroup()
     c1<-x%>%group_by(Species)%>%summarise(n_distinct(YEAR))%>%ungroup() 
@@ -126,7 +127,7 @@ for(k in 1:length(newsite)){
   rownames(input_tailanal)<-input_tailanal$yr
   
   #-----------------------adding environmental variable in the matrix-----------------------------
-  tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%select(yr,t,tmax,tmin)
+  tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
   tempdat$tmax_n<- -tempdat$tmax
   
   # check if all TRUE
@@ -136,7 +137,7 @@ for(k in 1:length(newsite)){
   input_tailanal$tmax<-tempdat$tmax
   input_tailanal$tmin<-tempdat$tmin
   input_tailanal$tmax_n<-tempdat$tmax_n
-  input_tailanal<-input_tailanal%>%select(-yr)
+  input_tailanal<-input_tailanal%>%dplyr::select(-yr)
   
   saveRDS(input_tailanal,paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep="")) # dataframe with species timeseries along column
   
@@ -162,7 +163,7 @@ library(htmltools)
 library(htmlwidgets)
 library(leaflet) 
 
-dat<-x_allsite%>%select(newsite,LATITUDE,LONGITUDE)%>%distinct()
+dat<-x_allsite%>%dplyr::select(newsite,LATITUDE,LONGITUDE)%>%distinct()
 sitemap<-leaflet(dat) %>% addTiles() %>%
   addMarkers(~LONGITUDE, ~LATITUDE, label = ~htmlEscape(newsite))
 f<-paste("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/samplingsite_247_selected.html",sep="")

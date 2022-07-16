@@ -1,4 +1,5 @@
 source("./tail_analysis.R")
+library(dplyr)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 
@@ -27,7 +28,7 @@ sort(unique(x$Species))
 # do not consider these unknown sp into analysis
 x<-x%>%filter(Species%notin%c("unspecifiable ","Unknown","Unknown rotifer", "Unknown rotifer2", "unknown ","Unknown "))
 
-x<-x%>%select(YEAR,Species,Value=Abundance)
+x<-x%>%dplyr::select(YEAR,Species,Value=Abundance)
 x<-x%>%group_by(Species,YEAR)%>%
   dplyr::summarise(Value=median(Value))%>%ungroup()
 
@@ -70,7 +71,7 @@ input_tailanal<-input_tailanal%>%filter(yr%in%c(1979:2019))
 rownames(input_tailanal)<-input_tailanal$yr
 
 #-----------------------adding environmental variable in the matrix-----------------------------
-tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%select(yr,t,tmax,tmin)
+tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
 tempdat$tmax_n<- -tempdat$tmax
 
 # check if all TRUE
@@ -80,7 +81,7 @@ input_tailanal$t<-tempdat$t
 input_tailanal$tmax<-tempdat$tmax
 input_tailanal$tmin<-tempdat$tmin
 input_tailanal$tmax_n<-tempdat$tmax_n
-input_tailanal<-input_tailanal%>%select(-yr)
+input_tailanal<-input_tailanal%>%dplyr::select(-yr)
 
 saveRDS(input_tailanal,paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep="")) # dataframe with species timeseries along column
 

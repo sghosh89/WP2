@@ -1,5 +1,6 @@
 source("./tail_analysis.R")
 library(tidyverse)
+library(dplyr)
 `%notin%` <- Negate(`%in%`)
 
 # don't overwrite these four variables
