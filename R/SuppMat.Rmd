@@ -992,6 +992,11 @@ set.seed(seed)
 source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
 ```
 
+```{r gather_all_summary_res,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./gather_all_summary_res.R"),mtime("../Results/for_BioTIME/Freshwater_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIME/Terrestrial_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIMEx/stability_metric_and_env.RDS"),mtime("../Results/for_BBS/stability_metric_and_env.RDS"),mtime("../Results/for_RivFishTIME/stability_metric_and_env.RDS"),mtime("../Results/for_insectRoel/stability_metric_and_env.RDS"),mtime("../Results/for_swisslake/zooplankton/stability_metric_and_env.RDS"),mtime("../Results/for_zoop_2014/stability_metric_and_env.RDS"))}
+
+set.seed(seed) 
+source("./gather_all_summary_res.R")
+```
 
 
 
