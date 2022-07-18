@@ -1,0 +1,1013 @@
+---
+title: "WP2 code: model to infer environmental effects on community stability"
+author: "Shyamolina"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+  pdf_document:
+    number_sections: no
+    keep_tex: yes
+    fig_caption: yes
+header-includes:
+- \usepackage{setspace}\doublespacing
+- \usepackage{lettrine}
+- \usepackage{hyperref}
+- \usepackage{lineno}\linenumbers
+- \hypersetup{linkcolor=red}
+- \usepackage{caption}\captionsetup[figure]{width=16cm}\captionsetup[figure]{font={stretch=1.5}}\captionsetup[table]{width=16cm}\captionsetup[table]{font={stretch=1.5}}
+- \usepackage[nomarkers,nolists]{endfloat}
+mainfont: Times New Roman
+tables: yes
+link-citations: yes
+urlcolor: blue
+indent: yes
+---
+
+```{r setup, include=F, echo=F, message=F, results="hide"}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 1, digits = 4)
+seed<-101
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(rmarkdown)
+source("mtime.R") #A function needed for caching
+```
+
+<!-- extract lonlat and decide which data you need-->
+```{r know_ur_data,cache=T, echo=T,message=F, cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("get_unique_lonlat.R"))}
+set.seed(seed)
+source("get_unique_lonlat.R") # extract community lon-lat
+
+#source("data_we_need.R",print.eval=T) # we will consider 4 taxa (bird, fish, ter and fresh invertebrates)
+
+md<-read.csv("../DATA/metadata_summary.csv")
+md<-md%>%filter(startyr>=1979 & endyr<=2019) # 2575 obs.
+## This is not a good idea to filter data from metadata of BioDyn based on startyr as sometimes the timeseries starts e.g. on 1966, then after years gap it again have data from 1980 onwards,
+# so sample each raw data from the databases and filter community if it has data for the range [1979 to 2019].
+
+as.data.frame(table(md$TAXA)) 
+# we decided to extract data only for 4 taxa:
+# birds, fish
+# terrestrial invertebrates, freshwater invertebrates
+md<-md%>%filter(TAXA%in%c("birds","fish","terrestrial invertebrates","freshwater invertebrates")) #1985 obs
+
+# so, we will only run our analysis for those communities
+# all BioDyn data is saved in data folder (BioDyn data will be made public in Dryad later)
+md%>%group_by(TAXA,source)%>%summarise(n=n())%>%ungroup()
+
+```
+
+<!-- extract annual env timeseries (tas, tasmin, tasmax from monthly values for the unique lonlat, 1979-2019, and pr 1979-2018)-->
+```{r wrangle_env_data,cache=T, echo=F,message=F, cache.extra=list(seed,mtime("wrangling_env_data.R"),mtime("../Results/data_summary.csv"),mtime("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/pr_monthlyvalues_extracted_lonlat.csv"))}
+
+set.seed(seed)
+source("wrangling_env_data.R")
+```
+
+<!-- BBS: birds data analysis within this time period 1979-2019, bird data used 1997 afterwards-->
+```{r wrangling_data_bbs,cache=T, echo=F,message=F, cache.extra=list(seed,mtime("./BBS_data_wrangling.R"))}
+
+set.seed(seed)
+source("./BBS_data_wrangling.R") # extract community lon-lat for BBS
+```
+
+```{r tailanal_bbs,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("./BBS_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed)
+source("./BBS_ta.R") # BBS data tail analysis
+```
+
+```{r summary_tailanal_BBS,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/for_BBS/wrangled_data/unique_routes_all_metadata.RDS"),mtime("./BBS_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed)
+library(tidyverse)
+
+uroutes_meta<-readRDS("../DATA/for_BBS/wrangled_data/unique_routes_all_metadata.RDS")
+
+# Do a summary stats for all good sites 
+resloc<-"../Results/for_BBS/"
+summary_table<-c()
+for (i in c(1:length(uroutes_meta$Country_State_Route))){
+  siteid<-uroutes_meta$Country_State_Route[i]
+  resloc_input<-paste(resloc,siteid,"/",sep="")
+  x<-readRDS(paste(resloc_input,"summary_df.RDS",sep=""))
+  
+  resloc_input2<-paste("../DATA/for_BBS/wrangled_data/",siteid,"/",sep="")
+  
+  # to get number of years used for the study which also includes env variables
+  m<-readRDS(paste(resloc_input2,"input_mat_for_tailanal_with_env.RDS",sep=""))
+  x$nyr_used<-nrow(m)
+  x$startyr<-as.integer(rownames(m)[1])
+  x$endyr<-as.integer(tail(rownames(m),1))
+  
+  # to get number of species considered for the study
+  #x$nsp<-readRDS(paste(resloc_input2,"tot_target_sp.RDS",sep="")) # already there
+  
+  # to get initial richness
+  bigM<-readRDS(paste(resloc_input2,"sourcefile.RDS",sep=""))
+  x$initR<-length(unique(bigM$AOU))
+  
+  summary_table<-rbind(summary_table,x)
+}
+summary_table<-cbind(siteid=uroutes_meta$Country_State_Route,summary_table)
+
+# reorganize
+summary_table<-summary_table%>%dplyr::select(siteid,initR,nsp,nyr_used, startyr, endyr, nint,nind,npos,nL,nU,nneg,L,U)
+
+saveRDS(summary_table,"../Results/for_BBS/summary_table.RDS")
+
+summary_table<-summary_table%>%mutate(f_nind=nind/nint,
+                                      f_npos=npos/nint,
+                                      f_nL=nL/nint,
+                                      f_nU=nU/nint,
+                                      f_nneg=nneg/nint)
+
+summary_table<-inner_join(summary_table,uroutes_meta,by=c("siteid"="Country_State_Route"))
+saveRDS(summary_table,"../Results/for_BBS/summary_table_detail_version.RDS")
+any(summary_table$nyr_used<20)
+```
+
+```{r summary_stab_env_BBS,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BBS/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./BBS_summary_for_stabilitymetric_and_env.R"))}
+
+set.seed(seed)
+source("./BBS_summary_for_stabilitymetric_and_env.R")
+```
+
+<!-- RivFishTIME: fish data analysis within 1979-2019 timeperiod -->
+```{r wrangling_data_RF,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("./RivFishTIME_wrangling_data.R"))}
+
+set.seed(seed)
+source("./RivFishTIME_wrangling_data.R") # extracting communities for RF
+```
+
+```{r tailanal_RF,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("./RivFishTIME_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed)
+source("./RivFishTIME_ta.R") # RivFishTIME data tail analysis
+```
+
+```{r summary_tailanal_RF,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/for_RivFishTIME/wrangled_data/good_TimeSeriesID_q3q4.RDS"),mtime("../DATA/for_RivFishTIME/wrangled_data/metadata_RF_good_TimeSeriesID_q3q4.csv"),mtime("./RivFishTIME_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed)
+library(tidyverse)
+
+good_TimeSeriesID_q3q4<-readRDS("../DATA/for_RivFishTIME/wrangled_data/good_TimeSeriesID_q3q4.RDS")
+
+# Do a summary stats for all good sites 
+resloc<-"../Results/for_RivFishTIME/"
+summary_table<-c()
+for (i in c(1:length(good_TimeSeriesID_q3q4))){
+  siteid<-good_TimeSeriesID_q3q4[i]
+  resloc_input<-paste(resloc,siteid,"/",sep="")
+  x<-readRDS(paste(resloc_input,"summary_df.RDS",sep=""))
+  
+  resloc_input2<-paste("../DATA/for_RivFishTIME/wrangled_data/",siteid,"/",sep="")
+  
+  # to get number of years used for the study which also includes env variables
+  m<-readRDS(paste(resloc_input2,"input_mat_for_tailanal_with_env.RDS",sep=""))
+  x$nyr_used<-nrow(m)
+  x$startyr<-as.integer(rownames(m)[1])
+  x$endyr<-as.integer(tail(rownames(m),1))
+  
+  # to get number of species considered for the study
+  x$nsp<-readRDS(paste(resloc_input2,"tot_target_sp.RDS",sep=""))
+  
+  # to get initial richness
+  bigM<-readRDS(paste(resloc_input2,"allspecies_timeseries.RDS",sep=""))
+  x$initR<-ncol(bigM)
+  
+  summary_table<-rbind(summary_table,x)
+}
+summary_table<-cbind(siteid=good_TimeSeriesID_q3q4,summary_table)
+
+# reorganize
+summary_table<-summary_table%>%dplyr::select(siteid,initR,nsp,nyr_used, startyr, endyr, nint,nind,npos,nL,nU,nneg,L,U)
+
+saveRDS(summary_table,"../Results/for_RivFishTIME/summary_table.RDS")
+
+summary_table<-summary_table%>%mutate(f_nind=nind/nint,
+                                      f_npos=npos/nint,
+                                      f_nL=nL/nint,
+                                      f_nU=nU/nint,
+                                      f_nneg=nneg/nint)
+
+x_meta<-read.csv("../DATA/for_RivFishTIME/wrangled_data/metadata_RF_good_TimeSeriesID_q3q4.csv")
+summary_table<-inner_join(summary_table,x_meta,by=c("siteid"="TimeSeriesID"))
+saveRDS(summary_table,"../Results/for_RivFishTIME/summary_table_detail_version.RDS")
+
+# ---------------------------  NOTE ------------------------------------------------
+#few STUDY_ID has <20 data points used (=nyr_used), this is because even if we filter initially 20 years of data as from BioDyn community data, data are not sampled in consecutive years and also if the data is beyond 1979-2019 range to match env data, it could be less than 20 years.
+
+# so only you should consider the results from communities for min 20 years (= nyr_used)
+# we will filter at the end when we collate all the data from different source
+```
+
+```{r summary_stab_env_RF,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_RivFishTIME/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./RivFishTIME_summary_for_stabilitymetric_and_env.R"))}
+
+set.seed(seed)
+source("./RivFishTIME_summary_for_stabilitymetric_and_env.R")
+```
+
+<!-- BioTIME: data analysis within 1979-2019 timeperiod -->
+
+<!--NOTE: this r chunk cannot cache big object, it's not a problem in R, but in Rmd it is a problem, you can avoid it by setting cache.lazy=F, but then each time you will compile it will run this chunk and could take long time to compile, for details: see this thread: https://stackoverflow.com/questions/39417003/long-vectors-not-supported-yet-error-in-rmd-but-not-in-r-script -->
+
+<!--Alternative way, I am running the file get_BioTIME_data.R in simple R-script, it will save the necessary data in respective folder, and commenting out the following chunk-->
+```{r get_BioTIME_data,cache=T, cache.lazy = FALSE, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("./get_BioTIME_data.R"))}
+
+#--------------- see NOTES above this r-chunk -------------------
+set.seed(seed)
+#source("./get_BioTIME_data.R") # first get BT raw data with min 20 years of datapoints
+```
+
+```{r read_BioTIME_data,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("./get_BioTIME_data.R"))}
+
+#--------------- see NOTES above this r-chunk -------------------
+set.seed(seed)
+grid_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_data_metadata_minyr_20.RDS")
+metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
+resloc_BT<-"../Results/for_BioTIME/"
+if(!dir.exists(resloc_BT)){
+  dir.create(resloc_BT)
+}
+if(!dir.exists("../Results/for_BioTIME/Freshwater_plotlevel/")){
+  dir.create("../Results/for_BioTIME/Freshwater_plotlevel/")
+}
+if(!dir.exists("../Results/for_BioTIME/Terrestrial_plotlevel/")){
+  dir.create("../Results/for_BioTIME/Terrestrial_plotlevel/")
+}
+```
+
+```{r get_envdat_for_BioTIME,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,grid_BT,metadata_BT,mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"))}
+
+set.seed(seed)
+library(dplyr)
+library(tidyverse)
+metadata_BT$lonlat<-paste(metadata_BT$CENT_LONG,metadata_BT$CENT_LAT,sep="_")
+
+# extract the env data for the lonlat (from CHELSA)
+env_t<-read.csv("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv")
+env_tmax<-read.csv("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv")
+env_tmin<-read.csv("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv")
+env_t$lonlat<-paste(env_t$CENT_LONG,env_t$CENT_LAT,sep="_")
+env_t<-env_t%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(t=meanval)
+env_tmax$lonlat<-paste(env_tmax$CENT_LONG,env_tmax$CENT_LAT,sep="_")
+env_tmax<-env_tmax%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmax=meanval)
+env_tmin$lonlat<-paste(env_tmin$CENT_LONG,env_tmin$CENT_LAT,sep="_")
+env_tmin<-env_tmin%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmin=meanval)
+env_t<-left_join(env_t,env_tmax,by=c("lonlat","yr"))
+env_t<-left_join(env_t,env_tmin,by=c("lonlat","yr"))
+
+env_BT<-metadata_BT%>%dplyr::select(STUDY_ID,lonlat)
+env_BT<-left_join(env_BT,env_t,by="lonlat")
+
+write.csv(env_BT,"../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv",row.names = F)
+```
+
+```{r wrangling_BT_freshw,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,grid_BT,mtime("./BT_wrangling_data_freshwater.R"))}
+
+set.seed(seed)
+source("./BT_wrangling_data_freshwater.R")
+```
+
+```{r read_BT_freshw,echo=F,message=F, results="hide"}
+metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
+grid_freshw<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/bt_freshw_min20yr_rawdata.RDS")
+freshw_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/table_for_map.RDS")
+```
+
+```{r tailanal_BT_freshw57,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_57.R"))}
+
+set.seed(seed)  
+source("./BT_freshw_STUDY_ID_57.R")
+```
+
+```{r tailanal_BT_freshw229,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_229.R"))}
+
+set.seed(seed) 
+source("./BT_freshw_STUDY_ID_229.R")
+```
+
+```{r tailanal_BT_freshw238,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_238.R"))}
+
+set.seed(seed) 
+source("./BT_freshw_STUDY_ID_238.R")
+```
+
+```{r tailanal_BT_freshw247,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_247.R"))}
+
+set.seed(seed) 
+source("./BT_freshw_STUDY_ID_247.R")
+```
+
+```{r tailanal_BT_freshw253,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_253.R"))}
+
+set.seed(seed) 
+source("./BT_freshw_STUDY_ID_253.R")
+```
+
+```{r tailanal_BT_freshw430,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_430.R"))}
+
+set.seed(seed) 
+source("./BT_freshw_STUDY_ID_430.R")
+```
+
+```{r tailanal_BT_freshw431,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_431.R"))}
+
+set.seed(seed)
+source("./BT_freshw_STUDY_ID_431.R") #not considered for analysis as only 1 common species found
+```
+
+```{r tailanal_BT_freshw478,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_478.R"))}
+
+set.seed(seed)
+source("./BT_freshw_STUDY_ID_478.R")
+```
+
+```{r summary_tailanal_BT_freshw,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,freshw_tbl_for_map,mtime("./BT_freshw_STUDY_ID_57.R"),mtime("./BT_freshw_STUDY_ID_229.R"),mtime("./BT_freshw_STUDY_ID_238.R"),mtime("./BT_freshw_STUDY_ID_247.R"),mtime("./BT_freshw_STUDY_ID_253.R"),mtime("./BT_freshw_STUDY_ID_430.R"),mtime("./BT_freshw_STUDY_ID_478.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed) 
+
+df<-freshw_tbl_for_map%>%filter(STUDY_ID%notin%c(431))
+#--------------- Do a summary stats for freshwater sites ------------------
+summary_table<-c()
+for (i in c(1:length(df$STUDY_ID))){
+  resloc<-paste("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/",df$STUDY_ID[i],"/",sep="")
+  if(df$NUMBER_LAT_LONG[i]==1){
+    resloc2<-paste("../Results/for_BioTIME/Freshwater_plotlevel/",df$STUDY_ID[i],"/",sep="")
+  
+    st<-readRDS(paste(resloc2,"summary_df.RDS",sep=""))
+    st$STUDY_ID<-df$STUDY_ID[i]
+    st$newsite<-df$STUDY_ID[i]
+    bigM<-readRDS(paste(resloc,"allspecies_timeseries_and_metadata.RDS",sep=""))
+    st$initR<-ncol(bigM$spmat)
+    
+    # to get number of years used for the study which also includes env variables
+    m<-readRDS(paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep=""))
+    st$nyr_used<-nrow(m)
+    st$startyr<-as.integer(rownames(m)[1])
+    st$endyr<-as.integer(tail(rownames(m),1))
+    summary_table<-rbind(summary_table,st)
+  }else{
+    newsitelist<-readRDS(paste(resloc,"newsite.RDS",sep=""))
+    for(j in 1:length(newsitelist)){
+      readpath<-paste(resloc,newsitelist[j],"/",sep="")
+      resloc2<-paste("../Results/for_BioTIME/Freshwater_plotlevel/",df$STUDY_ID[i],"/",newsitelist[j],"/",sep="")
+      st<-readRDS(paste(resloc2,"summary_df.RDS",sep=""))
+      st$STUDY_ID<-df$STUDY_ID[i]
+      st$newsite<-newsitelist[j]
+      bigM<-readRDS(paste(resloc,newsitelist[j],"/","allspecies_timeseries_and_metadata.RDS",sep=""))
+      st$initR<-ncol(bigM$spmat)
+      
+      # to get number of years used for the study which also includes env variables
+      m<-readRDS(paste(resloc,newsitelist[j],"/","input_mat_for_tailanal_with_env.RDS",sep=""))
+      st$nyr_used<-nrow(m)
+      st$startyr<-as.integer(rownames(m)[1])
+      st$endyr<-as.integer(tail(rownames(m),1))
+      summary_table<-rbind(summary_table,st)
+    }
+  }
+}
+# reorganize
+summary_table<-summary_table%>%dplyr::select(STUDY_ID,newsite,initR,nsp,nyr_used, startyr, endyr, nint,nind,npos,nL,nU,nneg,L,U)
+
+summary_table<-summary_table%>%mutate(f_nind=nind/nint,
+                                      f_npos=npos/nint,
+                                      f_nL=nL/nint,
+                                      f_nU=nU/nint,
+                                      f_nneg=nneg/nint)
+saveRDS(summary_table,"../Results/for_BioTIME/Freshwater_plotlevel/summary_table.RDS")
+```
+
+```{r summary_stab_env_BT_freshw,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BioTIME/Freshwater_plotlevel/summary_table.RDS"),mtime("./get_stability_metric.R"),mtime("./BT_freshw_summary_for_stabilitymetric_and_env.R"))}
+
+set.seed(seed)
+source("./BT_freshw_summary_for_stabilitymetric_and_env.R")
+```
+
+```{r wrangling_BT_terres,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,grid_BT,mtime("./BT_wrangling_data_terrestrial.R"))}
+
+set.seed(seed) 
+source("./BT_wrangling_data_terrestrial.R")
+```
+
+```{r read_BT_terres,echo=F,message=F, results="hide"}
+grid_terres<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/bt_terres_min20yr_rawdata.RDS")
+terres_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS")
+```
+
+```{r tailanal_BT_terres39,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_39.R"))}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_39.R")
+```
+
+```{r tailanal_BT_terres46,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_46.R"))}
+
+set.seed(seed)  
+source("./BT_terres_STUDY_ID_46.R") 
+#----------- insufficient years consistent with env data 1979-2019, exclude STUDY_ID=46 ------------
+```
+
+```{r tailanal_BT_terres47,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_47.R"))}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_47.R")
+#----------- insufficient years consistent with env data 1979-2019, exclude STUDY_ID=47 ------------
+```
+
+```{r tailanal_BT_terres54,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_54.R"))}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_54.R")
+```
+
+```{r tailanal_BT_terres63,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_63.R"))}
+
+#------ insufficient years consistent with env data 1979-2019, exclude STUDY_ID=63 ------------
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_63.R")
+```
+
+```{r tailanal_BT_terres67,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_67.R"))}
+
+#------ insufficient years consistent with env data 1979-2019, exclude STUDY_ID=67 ------------
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_67.R")
+```
+
+```{r tailanal_BT_terres301,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_301.R"))}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_301.R")
+```
+
+```{r tailanal_BT_terres333, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_333.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_333.R")
+```
+
+```{r tailanal_BT_terres339, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_339.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_339.R")
+```
+
+```{r tailanal_BT_terres360, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_360.R")), results="hide"}
+
+set.seed(seed) 
+#source("./BT_terres_STUDY_ID_360.R") 
+#------ env data not found for this lonlat/ STUDY_ID, exclude STUDY_ID=360 -----
+```
+
+```{r tailanal_BT_terres361, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_361.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_361.R") 
+#----------- insufficient years consistent with env data 1979-2019, exclude STUDY_ID=361 ---------
+```
+
+```{r tailanal_BT_terres363, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_363.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_363.R") 
+```
+
+```{r tailanal_BT_terres420, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_420.R")), results="hide"}
+
+#----- No env data found for the yearspan, exclude terrestrial STUDY_ID 413,414,416, see metadata_BT -----
+set.seed(seed)  
+source("./BT_terres_STUDY_ID_420.R") 
+```
+
+```{r tailanal_BT_terres528, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_528.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_528.R") 
+```
+
+```{r tailanal_BT_terres529, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_529.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_529.R") 
+```
+
+```{r tailanal_BT_terres530, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_530.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_530.R") 
+```
+
+```{r tailanal_BT_terres531, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_531.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_531.R") 
+```
+
+```{r tailanal_BT_terres532, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_532.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_532.R") 
+```
+
+```{r tailanal_BT_terres533, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_533.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_533.R") 
+```
+
+```{r tailanal_BT_terres534, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_534.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_534.R") 
+```
+
+```{r tailanal_BT_terres536, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_536.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_536.R") 
+```
+
+```{r tailanal_BT_terres538, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_538.R")), results="hide"}
+
+set.seed(seed) 
+source("./BT_terres_STUDY_ID_538.R") 
+```
+
+```{r tailanal_BT_terres540, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_540.R")), results="hide"}
+
+set.seed(seed) 
+#source("./BT_terres_STUDY_ID_540.R") 
+#--------------- like STUDY_ID=360, env data not found for this lonlat/ STUDY_ID, exclude this ----------
+
+#------- also exclude STUDY_ID=42, insufficient env data ----------
+```
+
+```{r tailanal_BT_terres215, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_215.R")), results="hide"}
+
+set.seed(seed)  
+source("./BT_terres_STUDY_ID_215.R") 
+```
+
+```{r summary_tailanal_BT_terres,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,terres_tbl_for_map,mtime("./BT_terres_STUDY_ID_39.R"),mtime("./BT_terres_STUDY_ID_54.R"),mtime("./BT_terres_STUDY_ID_301.R"),mtime("./BT_terres_STUDY_ID_333.R"),mtime("./BT_terres_STUDY_ID_339.R"),mtime("./BT_terres_STUDY_ID_363.R"),mtime("./BT_terres_STUDY_ID_420.R"),mtime("./BT_terres_STUDY_ID_528.R"),mtime("./BT_terres_STUDY_ID_529.R"),mtime("./BT_terres_STUDY_ID_530.R"),mtime("./BT_terres_STUDY_ID_531.R"),mtime("./BT_terres_STUDY_ID_532.R"),mtime("./BT_terres_STUDY_ID_533.R"),mtime("./BT_terres_STUDY_ID_534.R"),mtime("./BT_terres_STUDY_ID_536.R"),mtime("./BT_terres_STUDY_ID_538.R"),mtime("./BT_terres_STUDY_ID_215.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed) 
+
+df<-terres_tbl_for_map%>%filter(STUDY_ID%notin%c(46,47,63,67,360,361,413,414,416,540,42))
+#--------------- Do a summary stats for freshwater sites ------------------
+summary_table<-c()
+for (i in c(1:length(df$STUDY_ID))){
+  resloc<-paste("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/",df$STUDY_ID[i],"/",sep="")
+  if(df$NUMBER_LAT_LONG[i]==1){
+    resloc2<-paste("../Results/for_BioTIME/Terrestrial_plotlevel/",df$STUDY_ID[i],"/",sep="")
+    
+    st<-readRDS(paste(resloc2,"summary_df.RDS",sep=""))
+    st$STUDY_ID<-df$STUDY_ID[i]
+    st$newsite<-df$STUDY_ID[i]
+    bigM<-readRDS(paste(resloc,"allspecies_timeseries_and_metadata.RDS",sep=""))
+    st$initR<-ncol(bigM$spmat)
+    
+    # to get number of years used for the study which also includes env variables
+    m<-readRDS(paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep=""))
+    st$nyr_used<-nrow(m)
+    st$startyr<-as.integer(rownames(m)[1])
+    st$endyr<-as.integer(tail(rownames(m),1))
+    summary_table<-rbind(summary_table,st)
+  }else{
+    newsitelist<-readRDS(paste(resloc,"newsite.RDS",sep=""))
+    for(j in 1:length(newsitelist)){
+      readpath<-paste(resloc,newsitelist[j],"/",sep="")
+      resloc2<-paste("../Results/for_BioTIME/Terrestrial_plotlevel/",df$STUDY_ID[i],"/",newsitelist[j],"/",sep="")
+      st<-readRDS(paste(resloc2,"summary_df.RDS",sep=""))
+      st$STUDY_ID<-df$STUDY_ID[i]
+      st$newsite<-newsitelist[j]
+      bigM<-readRDS(paste(resloc,newsitelist[j],"/","allspecies_timeseries_and_metadata.RDS",sep=""))
+      st$initR<-ncol(bigM$spmat)
+      
+      # to get number of years used for the study which also includes env variables
+      m<-readRDS(paste(resloc,newsitelist[j],"/","input_mat_for_tailanal_with_env.RDS",sep=""))
+      st$nyr_used<-nrow(m)
+      st$startyr<-as.integer(rownames(m)[1])
+      st$endyr<-as.integer(tail(rownames(m),1))
+      summary_table<-rbind(summary_table,st)
+    }
+  }
+ print(i)
+}
+# reorganize
+summary_table<-summary_table%>%dplyr::select(STUDY_ID,newsite,initR,nsp,nyr_used, startyr, endyr, nint,nind,npos,nL,nU,nneg,L,U)
+
+summary_table<-summary_table%>%mutate(f_nind=nind/nint,
+                                      f_npos=npos/nint,
+                                      f_nL=nL/nint,
+                                      f_nU=nU/nint,
+                                      f_nneg=nneg/nint)
+saveRDS(summary_table,"../Results/for_BioTIME/Terrestrial_plotlevel/summary_table.RDS")
+```
+
+```{r summary_stab_env_BT_terres,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BioTIME/Terrestrial_plotlevel/summary_table.RDS"),mtime("./get_stability_metric.R"),mtime("./BT_terres_summary_for_stabilitymetric_and_env.R"))}
+
+set.seed(seed)
+source("./BT_terres_summary_for_stabilitymetric_and_env.R")
+```
+
+<!--Roel's insect database-->
+```{r readRoel_rawdata, echo=F,message=F, results="hide"}
+meta_Roel<-read.csv("../DATA/for_insectRoel/20yrFreshwater_Metadata.csv")
+data_Roel<-readRDS("../DATA/for_insectRoel/20yrFreshwaterData 202106.rds")
+```
+
+```{r wrangling_data_Roel_insect,cache=T, echo=F,message=F,results='hide', cache.extra=list(seed,meta_Roel,data_Roel,mtime("./wrangling_data_Roel_insect.R"),mtime("./get_communitylevel_data_Roel_insect.R"))}
+
+set.seed(seed)
+source("./wrangling_data_Roel_insect.R") 
+```
+
+```{r tailanal_insect_Roel,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,meta_Roel,data_Roel,mtime("../DATA/for_insectRoel/wrangled_data/Datasource_ID.RDS"),mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"),mtime("./insect_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed) 
+source("./insect_ta.R") # insect data tail analysis
+```
+
+```{r summary_tailanal_insect,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,meta_Roel,data_Roel,mtime("../DATA/for_insectRoel/wrangled_data/Datasource_ID.RDS"),mtime("./get_operational_richness.R"),mtime("./insect_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed)
+library(tidyverse)
+library(dplyr) 
+
+Datasource_ID<-readRDS("../DATA/for_insectRoel/wrangled_data/Datasource_ID.RDS")
+
+summary_table<-c()
+didlist<-c()
+pidlist<-c()
+for(i in 1:length(Datasource_ID)){
+  did<-Datasource_ID[i]
+  goodpidlist<-readRDS(paste("../Results/for_insectRoel/",did,"/goodpidlist.RDS",sep=""))
+  for(j in 1:length(goodpidlist)){
+    pid<-goodpidlist[j]
+    didlist<-c(didlist,did)
+    pidlist<-c(pidlist,pid)
+    resloc_input<-paste("../Results/for_insectRoel/",did,"/",pid,"/",sep="")
+    st<-readRDS(paste(resloc_input,"summary_df.RDS",sep=""))
+    summary_table<-rbind(summary_table,st)
+  }
+}
+summary_table<-cbind(STUDY_ID=didlist,newsite=pidlist,summary_table)
+saveRDS(summary_table,"../Results/for_insectRoel/summary_table.RDS")
+
+
+source("get_operational_richness.R")
+
+summary_table$initR<-NA
+for(i in 1:nrow(summary_table)){
+  initR<-readRDS(paste("../DATA/for_insectRoel/wrangled_data/",
+                       summary_table$STUDY_ID[i],"/",summary_table$newsite[i],
+                       "/initial_richness.RDS",sep=""))
+  summary_table$initR[i]<-initR
+}
+
+summary_table<-summary_table%>%mutate(f_nind=nind/nint,
+                                      f_npos=npos/nint,
+                                      f_nL=nL/nint,
+                                      f_nU=nU/nint,
+                                      f_nneg=nneg/nint)
+metadata<-meta_Roel%>%dplyr::select(Plot_ID,REALM=Realm,TAXA=Taxonomic_scope,ORGANISMS=Taxonomic_scope,Latitude,Longitude)
+length(unique(metadata$Plot_ID))==nrow(metadata)
+summary_table<-inner_join(summary_table,metadata,by=c("newsite"="Plot_ID"))
+summary_table$TAXA<-"Freshwater invertebrates"
+#summary_table<-summary_table%>%filter(f_nind!=1)
+saveRDS(summary_table,"../Results/for_insectRoel/summary_table_detail_version.RDS")
+```
+
+```{r summary_stab_env_insectRoel,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_insectRoel/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./insectRoel_summary_for_stabilitymetric_and_env.R"))}
+
+set.seed(seed) 
+source("./insectRoel_summary_for_stabilitymetric_and_env.R")
+```
+
+```{r clean_swisszoo,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/for_swisslake/raw_data/SwissLakes_data_FP11dec2020/raw_data/zooplankton/zooplankton_MD.csv"),mtime("./zoo_ZH_cleaning.R"),mtime("./zoo_LU_cleaning.R"),mtime("./zoo_SEM_cleaning.R"),mtime("./zoo_HAL_cleaning.R"),mtime("./zoo_GRE_cleaning.R"),mtime("./zoo_BAL_cleaning.R"))}
+
+set.seed(seed)
+source("zoo_ZH_cleaning.R") # lake Zurich
+source("zoo_LU_cleaning.R") # lake vierwaldstättersee/ lake lucerne
+source("zoo_SEM_cleaning.R") # lake sempachersee
+source("zoo_HAL_cleaning.R") # lake  hallwilersee
+source("zoo_GRE_cleaning.R") # lake  greifensee
+source("zoo_BAL_cleaning.R") # lake  baldeggersee
+
+# lake walensee not considered because of only 17 years data
+```
+
+```{r get_envdat_for_swisszoo,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"))}
+
+set.seed(seed)
+library(dplyr)
+library(tidyverse)
+
+md<-read.csv("../DATA/metadata_summary.csv")
+md<-md%>%filter(source=="SwissLakeZoo")%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,CENT_LAT,CENT_LONG)
+md$lonlat<-paste(md$CENT_LONG,md$CENT_LAT,sep="_")
+
+# extract the env data for the lonlat (from CHELSA)
+env_t<-read.csv("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv")
+env_tmax<-read.csv("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv")
+env_tmin<-read.csv("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv")
+env_t$lonlat<-paste(env_t$CENT_LONG,env_t$CENT_LAT,sep="_")
+env_t<-env_t%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(t=meanval)
+env_tmax$lonlat<-paste(env_tmax$CENT_LONG,env_tmax$CENT_LAT,sep="_")
+env_tmax<-env_tmax%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmax=meanval)
+env_tmin$lonlat<-paste(env_tmin$CENT_LONG,env_tmin$CENT_LAT,sep="_")
+env_tmin<-env_tmin%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmin=meanval)
+env_t<-left_join(env_t,env_tmax,by=c("lonlat","yr"))
+env_t<-left_join(env_t,env_tmin,by=c("lonlat","yr"))
+
+env_swisszoo<-left_join(md,env_t,by="lonlat")
+
+write.csv(env_swisszoo,"../DATA/for_swisslake/wrangled_data/annual_tas_CHELSA_1979_2019_swisszoo_lonlat.csv",row.names = F)
+```
+
+```{r tailanal_swisszoo,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,env_swisszoo,mtime("./swisszoo_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed) 
+source("./swisszoo_ta.R") # Swiss lakes' zooplankton data tail analysis
+```
+
+```{r summary_tailanal_swisszoo,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./swisszoo_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed)
+library(dplyr)
+library(tidyverse)
+
+lakenamelist<-c("ZH","LU","SEM","HAL","GRE","BAL")
+
+# Do a summary stats for all good sites 
+resloc<-"../Results/for_swisslake/zooplankton/"
+summary_table<-c()
+for (i in c(1:length(lakenamelist))){
+  siteid<-lakenamelist[i]
+  resloc_input<-paste(resloc,"zoo_",siteid,"/",sep="")
+  x<-readRDS(paste(resloc_input,"summary_df.RDS",sep=""))
+  
+  resloc_input2<-"../DATA/for_swisslake/wrangled_data/zooplankton/"
+  
+  # to get number of years used for the study which also includes env variables
+  m<-readRDS(paste(resloc_input2,"input_mat_for_tailanal_with_env_zoo_",siteid,".RDS",sep=""))
+  x$nyr_used<-nrow(m)
+  x$startyr<-as.integer(rownames(m)[1])
+  x$endyr<-as.integer(tail(rownames(m),1))
+  
+  # to get number of species considered for the study
+  x$nsp<-readRDS(paste(resloc_input2,"tot_target_sp_",siteid,".RDS",sep=""))
+  
+  # to get initial richness
+  bigM<-readRDS(paste(resloc_input2,"allspmat_zoo_",siteid,".RDS",sep=""))
+  x$initR<-ncol(bigM)
+  
+  summary_table<-rbind(summary_table,x)
+}
+
+md<-read.csv("../DATA/metadata_summary.csv")
+md<-md%>%filter(source=="SwissLakeZoo")%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,CENT_LAT,CENT_LONG)
+md$lonlat<-paste(md$CENT_LONG,md$CENT_LAT,sep="_")
+
+summary_table<-cbind(newsite=lakenamelist,summary_table)
+summary_table<- left_join(md,summary_table,by="newsite")
+  
+  
+saveRDS(summary_table,"../Results/for_swisslake/zooplankton/summary_table.RDS")
+
+summary_table<-summary_table%>%mutate(f_nind=nind/nint,
+                                      f_npos=npos/nint,
+                                      f_nL=nL/nint,
+                                      f_nU=nU/nint,
+                                      f_nneg=nneg/nint)
+
+saveRDS(summary_table,"../Results/for_swisslake/zooplankton/summary_table_detail_version.RDS")
+```
+
+```{r summary_stab_env_swisszoo,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_swisslake/zooplankton/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./swisszoo_summary_for_stabilitymetric_and_env.R"))}
+
+set.seed(seed) 
+source("./swisszoo_summary_for_stabilitymetric_and_env.R")
+```
+
+```{r clean_zoop2014,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/for_zoop_2014/LakeNameMasterand coords.xlsx"),mtime("../DATA/for_zoop_2014/wrangled_data/key.xlsx"),mtime("../DATA/for_zoop_2014/ZooplanktonTaxa.xlsx"),mtime("../DATA/for_zoop_2014/wrangled_data/speciespool_BM.csv"),mtime("../DATA/metadata_summary.csv"),mtime("./cleaning_zoop_2014.R"))}
+
+set.seed(seed)
+source("./cleaning_zoop_2014.R")
+```
+
+```{r get_envdat_for_zoop2014,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/for_zoop_2014/wrangled_data/zoop2014_starting_table.csv"),mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"))}
+
+set.seed(seed)
+library(dplyr)
+library(tidyverse)
+
+tab_zoop2014<-read.csv("../DATA/for_zoop_2014/wrangled_data/zoop2014_starting_table.csv")
+
+# extract the env data for the lonlat (from CHELSA)
+env_t<-read.csv("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv")
+env_tmax<-read.csv("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv")
+env_tmin<-read.csv("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv")
+env_t$lonlat<-paste(env_t$CENT_LONG,env_t$CENT_LAT,sep="_")
+env_t<-env_t%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(t=meanval)
+env_tmax$lonlat<-paste(env_tmax$CENT_LONG,env_tmax$CENT_LAT,sep="_")
+env_tmax<-env_tmax%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmax=meanval)
+env_tmin$lonlat<-paste(env_tmin$CENT_LONG,env_tmin$CENT_LAT,sep="_")
+env_tmin<-env_tmin%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmin=meanval)
+env_t<-left_join(env_t,env_tmax,by=c("lonlat","yr"))
+env_t<-left_join(env_t,env_tmin,by=c("lonlat","yr"))
+
+env_zoop2014<-left_join(tab_zoop2014,env_t,by="lonlat")
+
+write.csv(env_zoop2014,"../DATA/for_zoop_2014/wrangled_data/annual_tas_CHELSA_1979_2019_zoop2014_lonlat.csv",row.names = F)
+```
+
+```{r tailanal_zoop2014,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,tab_zoop2014,env_zoop2014,mtime("./zoop_2014_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed) 
+source("./zoop_2014_ta.R") # zooplankton_2014 data tail analysis
+```
+
+```{r summary_tailanal_zoop_2014,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,tab_zoop2014,mtime("./zoop_2014_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed)
+library(dplyr)
+library(tidyverse)
+
+good_LakeID<-tab_zoop2014$STUDY_ID
+
+# Do a summary stats for all good sites 
+resloc<-"../Results/for_zoop_2014/"
+summary_table<-c()
+for (i in c(1:length(good_LakeID))){
+  siteid<-good_LakeID[i]
+  resloc_input<-paste(resloc,siteid,"/",sep="")
+  x<-readRDS(paste(resloc_input,"summary_df.RDS",sep=""))
+  
+  resloc_input2<-paste("../DATA/for_zoop_2014/wrangled_data/",siteid,"/",sep="")
+  
+  # to get number of years used for the study which also includes env variables
+  m<-readRDS(paste(resloc_input2,"input_mat_for_tailanal_with_env.RDS",sep=""))
+  x$nyr_used<-nrow(m)
+  x$startyr<-as.integer(rownames(m)[1])
+  x$endyr<-as.integer(tail(rownames(m),1))
+  
+  # to get number of species considered for the study
+  x$nsp<-readRDS(paste(resloc_input2,"tot_target_sp.RDS",sep=""))
+  
+  # to get initial richness
+  bigM<-readRDS(paste(resloc_input2,"allsp_timeseries.RDS",sep=""))
+  x$initR<-ncol(bigM)
+  
+  summary_table<-rbind(summary_table,x)
+}
+
+
+summary_table<-cbind(newsite=good_LakeID,summary_table)
+summary_table<- left_join(tab_zoop2014,summary_table,by="newsite")
+
+
+summary_table<-summary_table%>%mutate(f_nind=nind/nint,
+                                      f_npos=npos/nint,
+                                      f_nL=nL/nint,
+                                      f_nU=nU/nint,
+                                      f_nneg=nneg/nint)
+
+saveRDS(summary_table,"../Results/for_zoop_2014/summary_table_detail_version.RDS")
+```
+
+```{r summary_stab_env_zoop2014,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_zoop_2014/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./zoop2014_summary_for_stabilitymetric_and_env.R"))}
+
+set.seed(seed) 
+source("./zoop2014_summary_for_stabilitymetric_and_env.R")
+```
+
+<!--BioTIMEx data analysis-->
+```{r wrangling_data_BTx,cache=T, echo=F,message=F,results='hide', cache.extra=list(seed,mtime("./wrangling_data_BioTIMEx.R"),mtime("../DATA/metadata_summary.csv"),mtime("carpenter_2016.R"),mtime("cumbrian_zoo.R"),mtime("landis_2018.R"),mtime("lightfoot_2015.R"),mtime("oneida_fish_gillnets.R"),mtime("oneida_fish_trawl.R"))}
+
+set.seed(seed)
+source("./wrangling_data_BioTIMEx.R") 
+```
+
+```{r get_envdat_for_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"))}
+
+set.seed(seed)
+library(dplyr)
+library(tidyverse)
+
+# get env data also for BioTIMEx sites
+md<-read.csv("../DATA/metadata_summary.csv") # metadata from BioDyn project, >=20 datapoints
+md<-md%>%filter(source=="BioTIMEx")%>%filter(TAXA%in%c("birds","fish","freshwater invertebrates","terrestrial invertebrates"))
+md<-md%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,CENT_LAT,CENT_LONG,initR)
+md$lonlat<-paste(md$CENT_LONG,md$CENT_LAT,sep="_")
+# extract the env data for the lonlat (from CHELSA)
+env_t<-read.csv("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv")
+env_tmax<-read.csv("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv")
+env_tmin<-read.csv("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv")
+env_t$lonlat<-paste(env_t$CENT_LONG,env_t$CENT_LAT,sep="_")
+env_t<-env_t%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(t=meanval)
+env_tmax$lonlat<-paste(env_tmax$CENT_LONG,env_tmax$CENT_LAT,sep="_")
+env_tmax<-env_tmax%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmax=meanval)
+env_tmin$lonlat<-paste(env_tmin$CENT_LONG,env_tmin$CENT_LAT,sep="_")
+env_tmin<-env_tmin%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmin=meanval)
+env_t<-left_join(env_t,env_tmax,by=c("lonlat","yr"))
+env_t<-left_join(env_t,env_tmin,by=c("lonlat","yr"))
+
+env_BTx<-left_join(md,env_t,by="lonlat")
+
+write.csv(env_BTx,"../DATA/for_BioTIMEx/wrangled_data/annual_tas_CHELSA_1979_2019_BTx_lonlat.csv",row.names = F)
+```
+
+```{r tailanal_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,env_BTx,mtime("./BioTIMEx_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("../DATA/metadata_summary.csv"),mtime("carpenter_2016_ta.R"),mtime("cumbrian_zoo_ta.R"),mtime("landis_2018_ta.R"),mtime("lightfoot_2015_ta.R"),mtime("oneida_fish_gillnets_ta.R"),mtime("oneida_fish_trawl_ta.R"))}
+
+set.seed(seed) 
+source("./BioTIMEx_ta.R") # BioTIMEx data tail analysis
+```
+
+```{r summary_tailanal_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./BioTIMEx_ta.R"),mtime("carpenter_2016_ta.R"),mtime("cumbrian_zoo_ta.R"),mtime("landis_2018_ta.R"),mtime("lightfoot_2015_ta.R"),mtime("oneida_fish_gillnets_ta.R"),mtime("oneida_fish_trawl_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
+
+set.seed(seed) 
+
+library(tidyverse)
+`%notin%` <- Negate(`%in%`)
+
+md<-read.csv("../DATA/metadata_summary.csv")
+df<-md%>%filter(source=="BioTIMEx")%>%filter(TAXA%in%c("birds","fish","freshwater invertebrates","terrestrial invertebrates"))
+df<-df%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,CENT_LAT,CENT_LONG,nsp,initR)
+df$lonlat<-paste(df$CENT_LONG,df$CENT_LAT,sep="_")
+#--------------- Do a summary stats for freshwater sites ------------------
+summary_table<-c()
+for (i in c(1:length(df$STUDY_ID))){
+  
+  if(df$STUDY_ID[i]==df$newsite[i]){
+    resloc<-paste("../Results/for_BioTIMEx/",df$STUDY_ID[i],"/",sep="")
+  }else{
+    resloc<-paste("../Results/for_BioTIMEx/",df$STUDY_ID[i],"/",df$newsite[i],"/",sep="")
+  }
+  st<-readRDS(paste(resloc,"summary_df.RDS",sep=""))
+  st$STUDY_ID<-df$STUDY_ID[i]
+  st$newsite<-df$newsite[i]
+  
+  resloci<-paste("../DATA/for_BioTIMEx/wrangled_data/",df$STUDY_ID[i],"/",sep="")
+  
+  # to get number of years used for the study which also includes env variables
+  if(df$STUDY_ID[i]==df$newsite[i]){
+    m<-readRDS(paste(resloci,"input_mat_for_tailanal_with_env.RDS",sep=""))
+  }else{
+    m<-readRDS(paste(resloci,"input_mat_for_tailanal_with_env_",df$STUDY_ID[i],"_",df$newsite[i],".RDS",sep=""))
+  }
+  
+  st$nyr_used<-nrow(m)
+  st$startyr<-as.integer(rownames(m)[1])
+  st$endyr<-as.integer(tail(rownames(m),1))
+  summary_table<-rbind(summary_table,st)
+  
+}
+
+df<-df%>%dplyr::select(-STUDY_ID)
+summary_table<- left_join(df,summary_table,by="newsite")
+
+# reorganize
+summary_table<-summary_table%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,initR,nsp=nsp.x,nyr_used, startyr, endyr, nint,nind,npos,nL,nU,nneg,L,U,CENT_LAT,CENT_LONG,lonlat)
+
+summary_table<-summary_table%>%mutate(f_nind=nind/nint,
+                                      f_npos=npos/nint,
+                                      f_nL=nL/nint,
+                                      f_nU=nU/nint,
+                                      f_nneg=nneg/nint)
+
+
+saveRDS(summary_table,"../Results/for_BioTIMEx/summary_table_detail_version.RDS")
+```
+
+```{r summary_stab_env_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BioTIMEx/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./BioTIMEx_summary_for_stabilitymetric_and_env.R"))}
+
+set.seed(seed) 
+source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
+```
+
+
+
+
+
+
+
+
+# CODE AVAILABILITY
+Complete computer code written in R programming language for this project is at https://github.com/sghosh89/WP2.
+
+
+```{r, out.height = "500px", out.width='500px', echo=F}
+# example fig for html output
+#knitr::include_graphics("./conceptual_fig_cop_ai_af.pdf")
+```
+
+
+
+
