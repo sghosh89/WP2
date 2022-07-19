@@ -20,7 +20,8 @@ if(!dir.exists(resloc)){
 #--------------------------------------------------------------------------------
 site<-df$STUDY_ID
 x<-grid_freshw%>%filter(STUDY_ID==site)
-x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_LON",LONGITUDE,"_LAT",LATITUDE,sep=""))
+#x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_LON",LONGITUDE,"_LAT",LATITUDE,sep=""))
+x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_LAT",LATITUDE,"_LON",LONGITUDE,sep=""))
 newsite<-sort(unique(x$newsite))
 
 # check if each newsite visited for >20 years?

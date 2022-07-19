@@ -1,3 +1,10 @@
+###################################################################################
+# ATTENTION: STUDY_ID 0 215 has different lonlat available for each plot, so
+# use this lonlat to extract env variables, not env_BT datasets - which extracts 
+# env variables only for CENT_LONG, CENT_LAT given in the metadata from BioDyn project
+# or BioTIME metadata 
+###################################################################################
+
 source("./tail_analysis.R")
 source("./monthly_rarefy_BT.R")
 library(dplyr)
@@ -19,7 +26,8 @@ if(!dir.exists(resloc)){
 #--------------------------------------------------------------------------------
 site<-df$STUDY_ID
 x<-grid_terres%>%filter(STUDY_ID==site)
-x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_LON",LONGITUDE,"_LAT",LATITUDE,sep=""))
+#x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_LON",LONGITUDE,"_LAT",LATITUDE,sep=""))
+x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_LAT_",LATITUDE,"_LON_",LONGITUDE,sep=""))
 newsite<-sort(unique(x$newsite))
 
 # check if each newsite visited for >20 years?
