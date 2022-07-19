@@ -1636,41 +1636,12 @@ pre code {
 <h1 class="title toc-ignore">WP2 code: model to infer environmental
 effects on community stability</h1>
 <h4 class="author">Shyamolina</h4>
-<h4 class="date">18 July, 2022</h4>
+<h4 class="date">19 July, 2022</h4>
 
 </div>
 
 
 <!-- extract lonlat and decide which data you need-->
-<pre class="r"><code>set.seed(seed)
-source(&quot;get_unique_lonlat.R&quot;) # extract community lon-lat
-
-#source(&quot;data_we_need.R&quot;,print.eval=T) # we will consider 4 taxa (bird, fish, ter and fresh invertebrates)
-
-md&lt;-read.csv(&quot;../DATA/metadata_summary.csv&quot;)
-md&lt;-md%&gt;%filter(startyr&gt;=1979 &amp; endyr&lt;=2019) # 2575 obs.
-## This is not a good idea to filter data from metadata of BioDyn based on startyr as sometimes the timeseries starts e.g. on 1966, then after years gap it again have data from 1980 onwards,
-# so sample each raw data from the databases and filter community if it has data for the range [1979 to 2019].
-
-as.data.frame(table(md$TAXA)) </code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Var1"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Freq"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"birds","2":"1230"},{"1":"fish","2":"531"},{"1":"freshwater invertebrates","2":"66"},{"1":"freshwater plants","2":"5"},{"1":"mammals","2":"181"},{"1":"terrestrial invertebrates","2":"158"},{"1":"terrestrial plants","2":"404"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-<pre class="r"><code># we decided to extract data only for 4 taxa:
-# birds, fish
-# terrestrial invertebrates, freshwater invertebrates
-md&lt;-md%&gt;%filter(TAXA%in%c(&quot;birds&quot;,&quot;fish&quot;,&quot;terrestrial invertebrates&quot;,&quot;freshwater invertebrates&quot;)) #1985 obs
-
-# so, we will only run our analysis for those communities
-# all BioDyn data is saved in data folder (BioDyn data will be made public in Dryad later)
-md%&gt;%group_by(TAXA,source)%&gt;%summarise(n=n())%&gt;%ungroup()</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["TAXA"],"name":[1],"type":["chr"],"align":["left"]},{"label":["source"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"birds","2":"BBS","3":"1227"},{"1":"birds","2":"BioTIME","3":"3"},{"1":"fish","2":"BioTIME","3":"12"},{"1":"fish","2":"RivFishTIME","3":"519"},{"1":"freshwater invertebrates","2":"BioTIME","3":"9"},{"1":"freshwater invertebrates","2":"BioTIMEx","3":"1"},{"1":"freshwater invertebrates","2":"InsectRoel","3":"50"},{"1":"freshwater invertebrates","2":"SwissLakeZoo","3":"3"},{"1":"freshwater invertebrates","2":"Zooplankton2014","3":"3"},{"1":"terrestrial invertebrates","2":"BioTIME","3":"155"},{"1":"terrestrial invertebrates","2":"BioTIMEx","3":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
 <!-- extract annual env timeseries (tas, tasmin, tasmax from monthly values for the unique lonlat, 1979-2019, and pr 1979-2018)-->
 <!-- BBS: birds data analysis within this time period 1979-2019, bird data used 1997 afterwards-->
 <!-- RivFishTIME: fish data analysis within 1979-2019 timeperiod -->

@@ -38,31 +38,13 @@ source("mtime.R") #A function needed for caching
 ```
 
 <!-- extract lonlat and decide which data you need-->
-```{r know_ur_data,cache=T, echo=T,message=F, cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("get_unique_lonlat.R"))}
+```{r know_ur_data,cache=T, echo=F,message=F, cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("get_unique_lonlat.R"))}
 set.seed(seed)
-source("get_unique_lonlat.R") # extract community lon-lat
-
-#source("data_we_need.R",print.eval=T) # we will consider 4 taxa (bird, fish, ter and fresh invertebrates)
-
-md<-read.csv("../DATA/metadata_summary.csv")
-md<-md%>%filter(startyr>=1979 & endyr<=2019) # 2575 obs.
-## This is not a good idea to filter data from metadata of BioDyn based on startyr as sometimes the timeseries starts e.g. on 1966, then after years gap it again have data from 1980 onwards,
-# so sample each raw data from the databases and filter community if it has data for the range [1979 to 2019].
-
-as.data.frame(table(md$TAXA)) 
-# we decided to extract data only for 4 taxa:
-# birds, fish
-# terrestrial invertebrates, freshwater invertebrates
-md<-md%>%filter(TAXA%in%c("birds","fish","terrestrial invertebrates","freshwater invertebrates")) #1985 obs
-
-# so, we will only run our analysis for those communities
-# all BioDyn data is saved in data folder (BioDyn data will be made public in Dryad later)
-md%>%group_by(TAXA,source)%>%summarise(n=n())%>%ungroup()
-
+source("get_unique_lonlat.R") # extract community lon-lat from the BioDyn project metadata
 ```
 
 <!-- extract annual env timeseries (tas, tasmin, tasmax from monthly values for the unique lonlat, 1979-2019, and pr 1979-2018)-->
-```{r wrangle_env_data,cache=T, echo=F,message=F, cache.extra=list(seed,mtime("wrangling_env_data.R"),mtime("../Results/data_summary.csv"),mtime("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/pr_monthlyvalues_extracted_lonlat.csv"))}
+```{r wrangle_env_data,cache=T, echo=F,message=F, cache.extra=list(seed,mtime("wrangling_env_data.R"),mtime("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/pr_monthlyvalues_extracted_lonlat.csv"))}
 
 set.seed(seed)
 source("wrangling_env_data.R")
@@ -654,6 +636,11 @@ for(i in 1:length(Datasource_ID)){
     pidlist<-c(pidlist,pid)
     resloc_input<-paste("../Results/for_insectRoel/",did,"/",pid,"/",sep="")
     st<-readRDS(paste(resloc_input,"summary_df.RDS",sep=""))
+    resloc_input2<-paste("../DATA/for_insectRoel/wrangled_data/",did,"/",pid,"/",sep="")
+    m<-readRDS(paste(resloc_input2,"input_mat_for_tailanal_with_env.RDS",sep=""))
+    st$nyr_used<-nrow(m)
+    st$startyr<-as.integer(rownames(m)[1])
+    st$endyr<-as.integer(tail(rownames(m),1))
     summary_table<-rbind(summary_table,st)
   }
 }
@@ -995,7 +982,7 @@ source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
 ```{r gather_all_summary_res,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./gather_all_summary_res.R"),mtime("../Results/for_BioTIME/Freshwater_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIME/Terrestrial_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIMEx/stability_metric_and_env.RDS"),mtime("../Results/for_BBS/stability_metric_and_env.RDS"),mtime("../Results/for_RivFishTIME/stability_metric_and_env.RDS"),mtime("../Results/for_insectRoel/stability_metric_and_env.RDS"),mtime("../Results/for_swisslake/zooplankton/stability_metric_and_env.RDS"),mtime("../Results/for_zoop_2014/stability_metric_and_env.RDS"))}
 
 set.seed(seed) 
-source("./gather_all_summary_res.R")
+source("./gather_all_summary_res.R") # now does not include BioTIME results
 ```
 
 
