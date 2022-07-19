@@ -224,6 +224,23 @@ if(!dir.exists("../Results/for_BioTIME/Terrestrial_plotlevel/")){
 }
 ```
 
+```{r get_lonlat_for_BioTIME, cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,grid_BT,metadata_BT,mtime("../DATA/metadata_summary.csv"))}
+#----- Note: plot level BioTIME lonlat we need, not just the CENT_LON, CENT_LAT as we extracted from metadata of BioDyn project ----------
+set.seed(seed)
+library(dplyr)
+library(tidyverse)
+
+grid_BT2<-grid_BT
+grid_BT2$lonlat<-paste(grid_BT2$LONGITUDE,grid_BT2$LATITUDE,sep="_")
+grid_BT2<-grid_BT2%>%dplyr::select(STUDY_ID,LONGITUDE,LATITUDE,lonlat)%>%distinct(lonlat,.keep_all = T)
+
+md<-read.csv("../DATA/metadata_summary.csv")
+STUDY_ID_from_BioDyn<-md%>%filter(source=="BioTIME")%>%distinct(STUDY_ID)
+grid_BT2<-grid_BT2%>%filter(STUDY_ID%in%STUDY_ID_from_BioDyn$STUDY_ID)
+write.csv(grid_BT2,"./../Results/unique_lonlat_BioTIME.csv",row.names = F)
+```
+
+<!--need to update below chunk-->
 ```{r get_envdat_for_BioTIME,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,grid_BT,metadata_BT,mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"))}
 
 set.seed(seed)
