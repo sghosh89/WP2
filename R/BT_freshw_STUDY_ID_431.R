@@ -8,7 +8,7 @@ sp_threshold=2
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_freshw<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/bt_freshw_min20yr_rawdata.RDS")
 #freshw_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/table_for_map.RDS")
-#env_BT<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv")
+#env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
 
 df<-freshw_tbl_for_map%>%filter(STUDY_ID==431)# multiple sites
 site<-df$STUDY_ID
@@ -50,7 +50,10 @@ latlon_xx<-latlon_xx%>%dplyr::select(newsite,basin)
 
 x<-left_join(x,latlon_xx,by="newsite")
 length(unique(x$basin))
-
+#################################################################################################
+mylonlat<-x%>%distinct(basin,.keep_all = T)%>%dplyr::select(basin,LONGITUDE,LATITUDE)%>%
+  mutate(lonlat=paste(LONGITUDE,LATITUDE,sep="_"))
+#################################################################################################
 # now we are going to aggregate by basin
 x_agg<-x%>%group_by(basin,YEAR,MONTH,Species)%>%summarise(Abundance=mean(Abundance),
                                                           Biomass=mean(Biomass))%>%ungroup()
@@ -59,6 +62,8 @@ tt<-x%>%group_by(basin)%>%summarise(n=n_distinct(YEAR))%>%ungroup()
 
 # include sites which are sampled > 20 years
 tt<-tt%>%filter(n>=20)
+# update
+mylonlat<-mylonlat%>%filter(basin%in%tt$basin)
 
 # only one basin 80355 sampled for 27 years
 x_agg<-x_agg%>%filter(basin==80355)
@@ -136,6 +141,7 @@ for(k in 1:length(newsite)){
   rownames(xmat)<-year
   
   xmeta<-metadata_BT%>%filter(STUDY_ID==site)
+  xmeta$lonlat<-mylonlat$lonlat[k]
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   resloc<-paste("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/431/",newsite[k],"/",sep="")
@@ -166,7 +172,7 @@ for(k in 1:length(newsite)){
     rownames(input_tailanal)<-input_tailanal$yr
     
     #-----------------------adding environmental variable in the matrix-----------------------------
-    tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
+    tempdat<-env_BT_t%>%filter(lonlat%in%xmeta$lonlat)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
     tempdat$tmax_n<- -tempdat$tmax
     
     # check if all TRUE

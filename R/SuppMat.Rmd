@@ -240,31 +240,72 @@ grid_BT2<-grid_BT2%>%filter(STUDY_ID%in%STUDY_ID_from_BioDyn$STUDY_ID)
 write.csv(grid_BT2,"./../Results/unique_lonlat_BioTIME.csv",row.names = F)
 ```
 
-<!--need to update below chunk-->
-```{r get_envdat_for_BioTIME,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,grid_BT,metadata_BT,mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"))}
+```{r get_envdat_for_BioTIME,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("./../Results/unique_lonlat_BioTIME.csv"),mtime("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat_BioTIME.csv"),mtime("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat_BioTIME.csv"),mtime("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat_BioTIME.csv"))}
 
 set.seed(seed)
 library(dplyr)
 library(tidyverse)
-metadata_BT$lonlat<-paste(metadata_BT$CENT_LONG,metadata_BT$CENT_LAT,sep="_")
 
+######################
+#   tas (1979-2019)
+######################
+d<-read.csv("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat_BioTIME.csv")
+nd<-ncol(d)
+# convert to long format
+dl<-gather(d, month_yr, values, 5:nd, factor_key=F)
+class(dl$month_yr)
+dl$month_yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$month<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[1], collapse = "_"))
+dl<-dl%>%dplyr::select(-month_yr)
+#tb<-dl%>%filter(month%in%c("06","07","08"))
+env_BT_t<-dl%>%group_by(LONGITUDE,LATITUDE,yr)%>%
+  summarise(meanval=mean(values))%>%ungroup()
+write.csv(env_BT_t,"../DATA/wrangled_env_data/tas_annualval_extracted_lonlat_BioTIME.csv",row.names = F)
+######################
+#   tasmax (1979-2019)
+######################
+d<-read.csv("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat_BioTIME.csv")
+nd<-ncol(d)
+# convert to long format
+dl<-gather(d, month_yr, values, 5:nd, factor_key=F)
+class(dl$month_yr)
+dl$month_yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$month<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[1], collapse = "_"))
+dl<-dl%>%dplyr::select(-month_yr)
+env_BT_tmax<-dl%>%group_by(LONGITUDE,LATITUDE,yr)%>%
+  summarise(meanval=mean(values))%>%ungroup()
+write.csv(env_BT_tmax,"../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat_BioTIME.csv",row.names = F)
+
+######################
+#   tasmin (1979-2019)
+######################
+d2<-read.csv("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat_BioTIME.csv")
+nd<-ncol(d2)
+# convert to long format
+dl2<-gather(d2, month_yr, values, 5:nd, factor_key=F)
+class(dl2$month_yr)
+dl2$month_yr<-sapply(strsplit(dl2$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl2$yr<-sapply(strsplit(dl2$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl2$month<-sapply(strsplit(dl2$month_yr, "_"), function(x) paste(x[1], collapse = "_"))
+dl2<-dl2%>%dplyr::select(-month_yr)
+env_BT_tmin<-dl2%>%group_by(LONGITUDE,LATITUDE,yr)%>%
+  summarise(meanval=mean(values))%>%ungroup()
+write.csv(env_BT_tmin,"../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat_BioTIME.csv",row.names = F)
+
+###########################################################################################################
 # extract the env data for the lonlat (from CHELSA)
-env_t<-read.csv("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv")
-env_tmax<-read.csv("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv")
-env_tmin<-read.csv("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv")
-env_t$lonlat<-paste(env_t$CENT_LONG,env_t$CENT_LAT,sep="_")
-env_t<-env_t%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(t=meanval)
-env_tmax$lonlat<-paste(env_tmax$CENT_LONG,env_tmax$CENT_LAT,sep="_")
-env_tmax<-env_tmax%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmax=meanval)
-env_tmin$lonlat<-paste(env_tmin$CENT_LONG,env_tmin$CENT_LAT,sep="_")
-env_tmin<-env_tmin%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmin=meanval)
-env_t<-left_join(env_t,env_tmax,by=c("lonlat","yr"))
-env_t<-left_join(env_t,env_tmin,by=c("lonlat","yr"))
+env_BT_t$lonlat<-paste(env_BT_t$LONGITUDE,env_BT_t$LATITUDE,sep="_")
+env_BT_t<-env_BT_t%>%dplyr::select(-LONGITUDE, -LATITUDE)%>%rename(t=meanval)
+env_BT_tmax$lonlat<-paste(env_BT_tmax$LONGITUDE,env_BT_tmax$LATITUDE,sep="_")
+env_BT_tmax<-env_BT_tmax%>%dplyr::select(-LONGITUDE, -LATITUDE)%>%rename(tmax=meanval)
+env_BT_tmin$lonlat<-paste(env_BT_tmin$LONGITUDE,env_BT_tmin$LATITUDE,sep="_")
+env_BT_tmin<-env_BT_tmin%>%dplyr::select(-LONGITUDE, -LATITUDE)%>%rename(tmin=meanval)
+env_BT_t<-left_join(env_BT_t,env_BT_tmax,by=c("lonlat","yr"))
+env_BT_t<-left_join(env_BT_t,env_BT_tmin,by=c("lonlat","yr"))
 
-env_BT<-metadata_BT%>%dplyr::select(STUDY_ID,lonlat)
-env_BT<-left_join(env_BT,env_t,by="lonlat")
-
-write.csv(env_BT,"../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv",row.names = F)
+write.csv(env_BT_t,"../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv",row.names = F)
 ```
 
 ```{r wrangling_BT_freshw,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,grid_BT,mtime("./BT_wrangling_data_freshwater.R"))}
@@ -277,55 +318,58 @@ source("./BT_wrangling_data_freshwater.R")
 metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 grid_freshw<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/bt_freshw_min20yr_rawdata.RDS")
 freshw_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/table_for_map.RDS")
+env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
 ```
 
-```{r tailanal_BT_freshw57,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_57.R"))}
+```{r tailanal_BT_freshw57,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_57.R"))}
 
 set.seed(seed)  
 source("./BT_freshw_STUDY_ID_57.R")
 ```
 
-```{r tailanal_BT_freshw229,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_229.R"))}
+```{r tailanal_BT_freshw229,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_229.R"))}
 
 set.seed(seed) 
 source("./BT_freshw_STUDY_ID_229.R")
 ```
 
-```{r tailanal_BT_freshw238,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_238.R"))}
+```{r tailanal_BT_freshw238,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_238.R"))}
 
 set.seed(seed) 
 source("./BT_freshw_STUDY_ID_238.R")
 ```
 
-```{r tailanal_BT_freshw247,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_247.R"))}
+```{r tailanal_BT_freshw247,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_247.R"))}
 
 set.seed(seed) 
 source("./BT_freshw_STUDY_ID_247.R")
 ```
 
-```{r tailanal_BT_freshw253,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_253.R"))}
+```{r tailanal_BT_freshw253,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_freshw_STUDY_ID_253.R"))}
 
 set.seed(seed) 
 source("./BT_freshw_STUDY_ID_253.R")
 ```
 
-```{r tailanal_BT_freshw430,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_430.R"))}
+
+```{r tailanal_BT_freshw430,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_430.R"))}
 
 set.seed(seed) 
-source("./BT_freshw_STUDY_ID_430.R")
+source("./BT_freshw_STUDY_ID_430.R") # not included for now
 ```
 
-```{r tailanal_BT_freshw431,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_431.R"))}
+```{r tailanal_BT_freshw431,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_431.R"))}
 
 set.seed(seed)
 source("./BT_freshw_STUDY_ID_431.R") #not considered for analysis as only 1 common species found
 ```
 
-```{r tailanal_BT_freshw478,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_478.R"))}
+```{r tailanal_BT_freshw478,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,metadata_BT,grid_freshw,freshw_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./BT_freshw_STUDY_ID_478.R"))}
 
 set.seed(seed)
 source("./BT_freshw_STUDY_ID_478.R")
 ```
+
 
 ```{r summary_tailanal_BT_freshw,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,freshw_tbl_for_map,mtime("./BT_freshw_STUDY_ID_57.R"),mtime("./BT_freshw_STUDY_ID_229.R"),mtime("./BT_freshw_STUDY_ID_238.R"),mtime("./BT_freshw_STUDY_ID_247.R"),mtime("./BT_freshw_STUDY_ID_253.R"),mtime("./BT_freshw_STUDY_ID_430.R"),mtime("./BT_freshw_STUDY_ID_478.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
 
@@ -398,147 +442,147 @@ source("./BT_wrangling_data_terrestrial.R")
 grid_terres<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/bt_terres_min20yr_rawdata.RDS")
 terres_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS")
 ```
-
-```{r tailanal_BT_terres39,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_39.R"))}
+<!--
+```{r tailanal_BT_terres39,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_39.R"))}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_39.R")
+#source("./BT_terres_STUDY_ID_39.R")
 ```
 
-```{r tailanal_BT_terres46,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_46.R"))}
+```{r tailanal_BT_terres46,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_46.R"))}
 
 set.seed(seed)  
-source("./BT_terres_STUDY_ID_46.R") 
+#source("./BT_terres_STUDY_ID_46.R") 
 #----------- insufficient years consistent with env data 1979-2019, exclude STUDY_ID=46 ------------
 ```
 
-```{r tailanal_BT_terres47,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_47.R"))}
+```{r tailanal_BT_terres47,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_47.R"))}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_47.R")
+#source("./BT_terres_STUDY_ID_47.R")
 #----------- insufficient years consistent with env data 1979-2019, exclude STUDY_ID=47 ------------
 ```
 
-```{r tailanal_BT_terres54,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_54.R"))}
+```{r tailanal_BT_terres54,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_54.R"))}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_54.R")
+#source("./BT_terres_STUDY_ID_54.R")
 ```
 
-```{r tailanal_BT_terres63,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_63.R"))}
+```{r tailanal_BT_terres63,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_63.R"))}
 
 #------ insufficient years consistent with env data 1979-2019, exclude STUDY_ID=63 ------------
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_63.R")
+#source("./BT_terres_STUDY_ID_63.R")
 ```
 
-```{r tailanal_BT_terres67,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_67.R"))}
+```{r tailanal_BT_terres67,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_67.R"))}
 
 #------ insufficient years consistent with env data 1979-2019, exclude STUDY_ID=67 ------------
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_67.R")
+#source("./BT_terres_STUDY_ID_67.R")
 ```
 
-```{r tailanal_BT_terres301,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_301.R"))}
+```{r tailanal_BT_terres301,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_301.R"))}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_301.R")
+#source("./BT_terres_STUDY_ID_301.R")
 ```
 
-```{r tailanal_BT_terres333, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_333.R")), results="hide"}
+```{r tailanal_BT_terres333, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_333.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_333.R")
+#source("./BT_terres_STUDY_ID_333.R")
 ```
 
-```{r tailanal_BT_terres339, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_339.R")), results="hide"}
+```{r tailanal_BT_terres339, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_339.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_339.R")
+#source("./BT_terres_STUDY_ID_339.R")
 ```
 
-```{r tailanal_BT_terres360, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_360.R")), results="hide"}
+```{r tailanal_BT_terres360, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_360.R")), results="hide"}
 
 set.seed(seed) 
 #source("./BT_terres_STUDY_ID_360.R") 
 #------ env data not found for this lonlat/ STUDY_ID, exclude STUDY_ID=360 -----
 ```
 
-```{r tailanal_BT_terres361, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_361.R")), results="hide"}
+```{r tailanal_BT_terres361, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_361.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_361.R") 
+#source("./BT_terres_STUDY_ID_361.R") 
 #----------- insufficient years consistent with env data 1979-2019, exclude STUDY_ID=361 ---------
 ```
 
-```{r tailanal_BT_terres363, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_363.R")), results="hide"}
+```{r tailanal_BT_terres363, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_363.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_363.R") 
+#source("./BT_terres_STUDY_ID_363.R") 
 ```
 
-```{r tailanal_BT_terres420, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_420.R")), results="hide"}
+```{r tailanal_BT_terres420, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_420.R")), results="hide"}
 
 #----- No env data found for the yearspan, exclude terrestrial STUDY_ID 413,414,416, see metadata_BT -----
 set.seed(seed)  
-source("./BT_terres_STUDY_ID_420.R") 
+#source("./BT_terres_STUDY_ID_420.R") 
 ```
 
-```{r tailanal_BT_terres528, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_528.R")), results="hide"}
+```{r tailanal_BT_terres528, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_528.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_528.R") 
+#source("./BT_terres_STUDY_ID_528.R") 
 ```
 
-```{r tailanal_BT_terres529, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_529.R")), results="hide"}
+```{r tailanal_BT_terres529, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_529.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_529.R") 
+#source("./BT_terres_STUDY_ID_529.R") 
 ```
 
-```{r tailanal_BT_terres530, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_530.R")), results="hide"}
+```{r tailanal_BT_terres530, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_530.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_530.R") 
+#source("./BT_terres_STUDY_ID_530.R") 
 ```
 
-```{r tailanal_BT_terres531, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_531.R")), results="hide"}
+```{r tailanal_BT_terres531, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_531.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_531.R") 
+#source("./BT_terres_STUDY_ID_531.R") 
 ```
 
-```{r tailanal_BT_terres532, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_532.R")), results="hide"}
+```{r tailanal_BT_terres532, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_532.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_532.R") 
+#source("./BT_terres_STUDY_ID_532.R") 
 ```
 
-```{r tailanal_BT_terres533, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_533.R")), results="hide"}
+```{r tailanal_BT_terres533, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_533.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_533.R") 
+#source("./BT_terres_STUDY_ID_533.R") 
 ```
 
-```{r tailanal_BT_terres534, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_534.R")), results="hide"}
+```{r tailanal_BT_terres534, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_534.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_534.R") 
+#source("./BT_terres_STUDY_ID_534.R") 
 ```
 
-```{r tailanal_BT_terres536, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_536.R")), results="hide"}
+```{r tailanal_BT_terres536, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_536.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_536.R") 
+#source("./BT_terres_STUDY_ID_536.R") 
 ```
 
-```{r tailanal_BT_terres538, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_538.R")), results="hide"}
+```{r tailanal_BT_terres538, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_538.R")), results="hide"}
 
 set.seed(seed) 
-source("./BT_terres_STUDY_ID_538.R") 
+#source("./BT_terres_STUDY_ID_538.R") 
 ```
 
-```{r tailanal_BT_terres540, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_540.R")), results="hide"}
+```{r tailanal_BT_terres540, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_540.R")), results="hide"}
 
 set.seed(seed) 
 #source("./BT_terres_STUDY_ID_540.R") 
@@ -547,10 +591,10 @@ set.seed(seed)
 #------- also exclude STUDY_ID=42, insufficient env data ----------
 ```
 
-```{r tailanal_BT_terres215, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_215.R")), results="hide"}
+```{r tailanal_BT_terres215, echo=F, message=FALSE, warning=FALSE, cache=TRUE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_215.R")), results="hide"}
 
 set.seed(seed)  
-source("./BT_terres_STUDY_ID_215.R") 
+#source("./BT_terres_STUDY_ID_215.R") 
 ```
 
 ```{r summary_tailanal_BT_terres,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,terres_tbl_for_map,mtime("./BT_terres_STUDY_ID_39.R"),mtime("./BT_terres_STUDY_ID_54.R"),mtime("./BT_terres_STUDY_ID_301.R"),mtime("./BT_terres_STUDY_ID_333.R"),mtime("./BT_terres_STUDY_ID_339.R"),mtime("./BT_terres_STUDY_ID_363.R"),mtime("./BT_terres_STUDY_ID_420.R"),mtime("./BT_terres_STUDY_ID_528.R"),mtime("./BT_terres_STUDY_ID_529.R"),mtime("./BT_terres_STUDY_ID_530.R"),mtime("./BT_terres_STUDY_ID_531.R"),mtime("./BT_terres_STUDY_ID_532.R"),mtime("./BT_terres_STUDY_ID_533.R"),mtime("./BT_terres_STUDY_ID_534.R"),mtime("./BT_terres_STUDY_ID_536.R"),mtime("./BT_terres_STUDY_ID_538.R"),mtime("./BT_terres_STUDY_ID_215.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
@@ -614,6 +658,7 @@ saveRDS(summary_table,"../Results/for_BioTIME/Terrestrial_plotlevel/summary_tabl
 set.seed(seed)
 source("./BT_terres_summary_for_stabilitymetric_and_env.R")
 ```
+-->
 
 <!--Roel's insect database-->
 ```{r readRoel_rawdata, echo=F,message=F, results="hide"}
@@ -1001,11 +1046,6 @@ source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
 set.seed(seed) 
 source("./gather_all_summary_res.R") # now does not include BioTIME results
 ```
-
-
-
-
-
 
 
 # CODE AVAILABILITY
