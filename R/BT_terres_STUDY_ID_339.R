@@ -8,7 +8,7 @@ library(tidyverse)
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_terres<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/bt_terres_min20yr_rawdata.RDS")
 #terres_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS")
-#env_BT<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv")
+#env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
 
 df<-terres_tbl_for_map%>%filter(STUDY_ID==339)
 df$newsite<-df$STUDY_ID # this is the same as there is single site
@@ -20,6 +20,10 @@ if(!dir.exists(resloc)){
 #--------------------------------------------------------------------------------
 site<-df$STUDY_ID
 x<-grid_terres%>%filter(STUDY_ID==site)
+
+mylonlat<-data.frame(lonlat=paste(x$LONGITUDE,x$LATITUDE,sep="_"))
+mylonlat<-mylonlat%>%distinct(lonlat)
+
 newsite<-site
 unique(x$MONTH) # no monthly info
 
@@ -99,6 +103,7 @@ for(k in 1:length(newsite)){
   rownames(xmat)<-year
   
   xmeta<-metadata_BT%>%filter(STUDY_ID==site)
+  xmeta$lonlat<-mylonlat$lonlat
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   
@@ -139,7 +144,7 @@ for(k in 1:length(newsite)){
   suffyr<-(nrow(input_tailanal)>=20)
   if(suffyr==T){
     #-----------------------adding environmental variable in the matrix-----------------------------
-    tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
+    tempdat<-env_BT_t%>%filter(lonlat%in%xmeta$lonlat)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
     tempdat$tmax_n<- -tempdat$tmax
     
     # check if all TRUE

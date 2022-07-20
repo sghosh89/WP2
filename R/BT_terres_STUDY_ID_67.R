@@ -12,7 +12,7 @@ library(tidyverse)
 
 df<-terres_tbl_for_map%>%filter(STUDY_ID==67)
 #df$newsite<-df$STUDY_ID # this is the same as there is single site
-# there are many lonlat reported 417
+
 
 #----------- create result folder for wrangle ddata -------------------------
 resloc<-"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/67/"
@@ -42,12 +42,12 @@ mylonlat<-mylonlat%>%distinct(lonlat)
 # so, take the average
 x_allsite$Abundance<-as.numeric(x_allsite$Abundance)
 x_allsite$Biomass<-as.numeric(x_allsite$Biomass)
-#x_allsite<-x_allsite%>%group_by(newsite,YEAR,MONTH,Species)%>%
-#  summarise(Abundance=mean(Abundance,na.rm=T),
-#            Biomass=mean(Biomass,na.rm=T),
-#            ABUNDANCE_TYPE=unique(ABUNDANCE_TYPE),
-#            LATITUDE=LATITUDE,
-#            LONGITUDE=LONGITUDE)%>%ungroup()
+x_allsite<-x_allsite%>%group_by(newsite,YEAR,MONTH,Species)%>%
+  summarise(Abundance=mean(Abundance,na.rm=T),
+            Biomass=mean(Biomass,na.rm=T),
+            ABUNDANCE_TYPE=unique(ABUNDANCE_TYPE),
+            LATITUDE=LATITUDE,
+            LONGITUDE=LONGITUDE)%>%ungroup()
 # NOTE: ABUNDANCE TYPE should be kept as it is - if NA then keep NA
 # Now, create folder for all these newsite
 if(length(newsite)>1){
@@ -87,7 +87,7 @@ for(k in 1:length(newsite)){
   id<-which(colnames(x)==field)
   
   if(need_rarefy==T){
-    study<-x%>%dplyr::select(DAY,MONTH,YEAR,Species,Value=id)
+    study<-x%>%dplyr::select(MONTH,YEAR,Species,Value=id)
     x_c<-monthly_rarefy(study = study,resamples = 100,field = field)
   }else{
     x<-x%>%dplyr::select(YEAR,Species,Value=id)
@@ -172,6 +172,10 @@ for(k in 1:length(newsite)){
       resloc<-paste(resloc2,newsite[k],"/",sep="")
     }else{
       resloc<-resloc2
+    }
+    
+    if(!dir.exists(resloc)){
+      dir.create(resloc)
     }
     
     res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp, resloc = resloc, nbin = 2)

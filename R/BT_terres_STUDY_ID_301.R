@@ -8,10 +8,12 @@ library(tidyverse)
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_terres<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/bt_terres_min20yr_rawdata.RDS")
 #terres_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS")
-#env_BT<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv")
+#env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
 
 df<-terres_tbl_for_map%>%filter(STUDY_ID==301)
-df$newsite<-df$STUDY_ID # this is the same as there is single site
+#df$newsite<-df$STUDY_ID # this is the same as there is single site
+
+
 #----------- create result folder for wrangle ddata -------------------------
 resloc<-"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/301/"
 if(!dir.exists(resloc)){
@@ -20,9 +22,33 @@ if(!dir.exists(resloc)){
 #--------------------------------------------------------------------------------
 site<-df$STUDY_ID
 x<-grid_terres%>%filter(STUDY_ID==site)
-newsite<-site
-unique(x$MONTH) # no monthly info
+x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_LAT",LATITUDE,"_LON",LONGITUDE,sep=""))
+newsite<-sort(unique(x$newsite))
 
+# check if each newsite visited for >20 years?
+tt<-x%>%group_by(newsite)%>%summarise(n=n_distinct(YEAR))%>%ungroup()
+
+# include sites which are sampled > 20 years
+tt<-tt%>%filter(n>=20)
+
+#update
+x_allsite<- x %>% filter(newsite %in% tt$newsite)
+newsite<-tt$newsite #only 2 sites 
+
+mylonlat<-data.frame(lonlat=paste(x_allsite$LONGITUDE,x_allsite$LATITUDE,sep="_"))
+mylonlat<-mylonlat%>%distinct(lonlat)
+
+# sometimes months have different multiple sampling dates within a year
+# so, take the average
+x_allsite$Abundance<-as.numeric(x_allsite$Abundance)
+x_allsite$Biomass<-as.numeric(x_allsite$Biomass)
+x_allsite<-x_allsite%>%group_by(newsite,YEAR,MONTH,Species)%>%
+  summarise(Abundance=mean(Abundance,na.rm=T),
+            Biomass=mean(Biomass,na.rm=T),
+            ABUNDANCE_TYPE=unique(ABUNDANCE_TYPE),
+            LATITUDE=LATITUDE,
+            LONGITUDE=LONGITUDE)%>%ungroup()
+# NOTE: ABUNDANCE TYPE should be kept as it is - if NA then keep NA
 # Now, create folder for all these newsite
 if(length(newsite)>1){
   for(k in 1:length(newsite)){
@@ -35,23 +61,6 @@ if(length(newsite)>1){
 #------------------------------------------------------------
 newsite_bad<-c()
 
-
-if(length(newsite)>1){
-  x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_PLOT_",PLOT,sep=""))
-  newsite<-sort(unique(x$newsite))
-  
-  # check if each newsite visited for >20 years?
-  tt<-x%>%group_by(newsite)%>%summarise(n=n_distinct(YEAR))%>%ungroup()
-  
-  # include sites which are sampled > 20 years
-  tt<-tt%>%filter(n>=20)
-  x_allsite<- x %>% filter(newsite %in% tt$newsite)
-  newsite<-tt$newsite
-}else{
-  x<-grid_terres%>%filter(STUDY_ID==site)
-  newsite<-site
-  x_allsite<-x
-}
 #----------------------------
 for(k in 1:length(newsite)){
   
@@ -61,7 +70,7 @@ for(k in 1:length(newsite)){
   x<-x%>%filter(Species%notin%c("Unknown","Unknown "))
   
   t0<-x%>%group_by(YEAR)%>%summarise(nm=n_distinct(MONTH))%>%ungroup()
-  t1<-x%>%group_by(YEAR,MONTH)%>%summarise(nd=n_distinct(DAY))%>%ungroup()
+  #t1<-x%>%group_by(YEAR,MONTH)%>%summarise(nd=n_distinct(DAY))%>%ungroup()
   
   #---------- ok, after seeing t0, we need to rarefy --------------
   min_samp<-min(t0$nm) # min months sampled each year
@@ -78,7 +87,7 @@ for(k in 1:length(newsite)){
   id<-which(colnames(x)==field)
   
   if(need_rarefy==T){
-    study<-x%>%dplyr::select(DAY,MONTH,YEAR,Species,Value=id)
+    study<-x%>%dplyr::select(MONTH,YEAR,Species,Value=id)
     x_c<-monthly_rarefy(study = study,resamples = 100,field = field)
   }else{
     x<-x%>%dplyr::select(YEAR,Species,Value=id)
@@ -99,6 +108,7 @@ for(k in 1:length(newsite)){
   rownames(xmat)<-year
   
   xmeta<-metadata_BT%>%filter(STUDY_ID==site)
+  xmeta$lonlat<-mylonlat$lonlat[k]
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   
@@ -139,7 +149,7 @@ for(k in 1:length(newsite)){
   suffyr<-(nrow(input_tailanal)>=20)
   if(suffyr==T){
     #-----------------------adding environmental variable in the matrix-----------------------------
-    tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
+    tempdat<-env_BT_t%>%filter(lonlat%in%xmeta$lonlat)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
     tempdat$tmax_n<- -tempdat$tmax
     
     # check if all TRUE
@@ -162,6 +172,10 @@ for(k in 1:length(newsite)){
       resloc<-paste(resloc2,newsite[k],"/",sep="")
     }else{
       resloc<-resloc2
+    }
+    
+    if(!dir.exists(resloc)){
+      dir.create(resloc)
     }
     
     res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp, resloc = resloc, nbin = 2)
