@@ -7,10 +7,11 @@ library(tidyverse)
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_freshw<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/bt_freshw_min20yr_rawdata.RDS")
 #freshw_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/table_for_map.RDS")
-#env_BT<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv")
+#env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
 
 df<-freshw_tbl_for_map%>%filter(STUDY_ID==57)
 df$newsite<-df$STUDY_ID # this is the same as there is single site
+# so, CENT_LAT and Latitude would be the same in data
 #----------- create result folder for wrangle ddata -------------------------
 resloc<-"../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/57/"
 if(!dir.exists(resloc)){
@@ -20,6 +21,8 @@ saveRDS(df,"../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/57/wrangledta
 #================= filter data only for this site  =========================
 site<-df$STUDY_ID
 x<-grid_freshw%>%filter(STUDY_ID==site)
+mylonlat<-data.frame(lonlat=paste(x$LONGITUDE,x$LATITUDE,sep="_"))
+mylonlat<-mylonlat%>%distinct(lonlat)
 # df ensures there is only one single site with each month sampling once in a given year
 unique(x$MONTH) # No month info available
 #==================== saving input spmat  ====================
@@ -44,6 +47,7 @@ xmat<-as.matrix(xmat[,-1])
 rownames(xmat)<-year
 
 xmeta<-metadata_BT%>%filter(STUDY_ID==site)
+xmeta$lonlat<-mylonlat$lonlat
 
 input_sp<-list(spmat=xmat,meta=xmeta)
 saveRDS(input_sp,paste(resloc,"allspecies_timeseries_and_metadata.RDS",sep=""))
@@ -71,7 +75,7 @@ input_tailanal<-input_tailanal%>%filter(yr%in%c(1979:2019))
 rownames(input_tailanal)<-input_tailanal$yr
 
 #-----------------------adding environmental variable in the matrix-----------------------------
-tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
+tempdat<-env_BT_t%>%filter(lonlat%in%xmeta$lonlat)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
 tempdat$tmax_n<- -tempdat$tmax
 
 # check if all TRUE

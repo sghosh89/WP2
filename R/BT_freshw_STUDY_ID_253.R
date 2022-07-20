@@ -8,7 +8,7 @@ library(tidyverse)
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_freshw<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/bt_freshw_min20yr_rawdata.RDS")
 #freshw_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/table_for_map.RDS")
-#env_BT<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv")
+#env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
 
 df<-freshw_tbl_for_map%>%filter(STUDY_ID==253)# multiple sites
 #----------- create result folder for wrangle ddata -------------------------
@@ -32,6 +32,9 @@ tt<-tt%>%filter(n>=20)
 #update
 x_allsite<- x %>% filter(newsite %in% tt$newsite)
 newsite<-tt$newsite
+
+mylonlat<-data.frame(lonlat=paste(x_allsite$LONGITUDE,x_allsite$LATITUDE,sep="_"))
+mylonlat<-mylonlat%>%distinct(lonlat)
 
 #-------------------------------------------------------------------------------------------------------------
 # sometimes months have different multiple sampling dates within a year
@@ -100,6 +103,7 @@ for(k in 1:length(newsite)){
   rownames(xmat)<-year
   
   xmeta<-metadata_BT%>%filter(STUDY_ID==site)
+  xmeta$lonlat<-mylonlat$lonlat[k]
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   resloc<-paste("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/253/",newsite[k],"/",sep="")
@@ -128,7 +132,7 @@ for(k in 1:length(newsite)){
   rownames(input_tailanal)<-input_tailanal$yr
   
   #-----------------------adding environmental variable in the matrix-----------------------------
-  tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
+  tempdat<-env_BT_t%>%filter(lonlat%in%xmeta$lonlat)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
   tempdat$tmax_n<- -tempdat$tmax
   
   # check if all TRUE
