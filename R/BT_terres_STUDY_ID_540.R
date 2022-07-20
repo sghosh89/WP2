@@ -8,7 +8,7 @@ library(tidyverse)
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_terres<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/bt_terres_min20yr_rawdata.RDS")
 #terres_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS")
-#env_BT<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BT_lonlat.csv")
+#env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
 
 df<-terres_tbl_for_map%>%filter(STUDY_ID==540)
 df$newsite<-df$STUDY_ID # this is the same as there is single site
@@ -20,6 +20,10 @@ if(!dir.exists(resloc)){
 #--------------------------------------------------------------------------------
 site<-df$STUDY_ID
 x<-grid_terres%>%filter(STUDY_ID==site)
+
+mylonlat<-data.frame(lonlat=paste(x$LONGITUDE,x$LATITUDE,sep="_"))
+mylonlat<-mylonlat%>%distinct(lonlat)
+
 newsite<-site
 unique(x$MONTH) # no monthly info
 
@@ -79,12 +83,9 @@ for(k in 1:length(newsite)){
   
   if(need_rarefy==T){
     study<-x%>%dplyr::select(DAY,MONTH,YEAR,Species,Value=id)
-    study$Value<-as.numeric(study$Value)
     x_c<-monthly_rarefy(study = study,resamples = 100,field = field)
   }else{
     x<-x%>%dplyr::select(YEAR,Species,Value=id)
-    # ensure
-    x$Value<-as.numeric(x$Value)
     x<-x%>%group_by(Species,YEAR)%>%
       dplyr::summarise(Value=mean(Value))%>%ungroup()
     c1<-x%>%group_by(Species)%>%summarise(n_distinct(YEAR))%>%ungroup() 
@@ -102,6 +103,7 @@ for(k in 1:length(newsite)){
   rownames(xmat)<-year
   
   xmeta<-metadata_BT%>%filter(STUDY_ID==site)
+  xmeta$lonlat<-mylonlat$lonlat
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   
@@ -138,43 +140,35 @@ for(k in 1:length(newsite)){
   input_tailanal<-input_tailanal%>%filter(yr%in%c(1979:2019))
   rownames(input_tailanal)<-input_tailanal$yr
   
-  #check again
-  suffyr<-(nrow(input_tailanal)>=20)
-  if(suffyr==T){
-    #-----------------------adding environmental variable in the matrix-----------------------------
-    tempdat<-env_BT%>%filter(STUDY_ID%in%site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
-    tempdat$tmax_n<- -tempdat$tmax
-    
-    # check if all TRUE
-    all(rownames(input_tailanal)==tempdat$yr)==T
-    
-    input_tailanal$t<-tempdat$t
-    input_tailanal$tmax<-tempdat$tmax
-    input_tailanal$tmin<-tempdat$tmin
-    input_tailanal$tmax_n<-tempdat$tmax_n
-    input_tailanal<-input_tailanal%>%dplyr::select(-yr)
-    
-    saveRDS(input_tailanal,paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep="")) # dataframe with species timeseries along column
-    
-    #----------- tail analysis ----------------
-    resloc2<-paste("../Results/for_BioTIME/Terrestrial_plotlevel/",site,"/",sep="")
-    if(!dir.exists(resloc2)){
-      dir.create(resloc2)
-    }
-    if(length(newsite)>1){
-      resloc<-paste(resloc2,newsite[k],"/",sep="")
-    }else{
-      resloc<-resloc2
-    }
-    
-    res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp, resloc = resloc, nbin = 2)
-    
-    cat("---------- k = ",k,"-----------\n")
-  }else{
-    cat("---------- number of years consistent with env stats is not sufficient -----------\n")
-    newsite_bad<-c(newsite_bad,newsite)
+  #-----------------------adding environmental variable in the matrix-----------------------------
+  tempdat<-env_BT_t%>%filter(lonlat%in%xmeta$lonlat)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
+  tempdat$tmax_n<- -tempdat$tmax
+  
+  # check if all TRUE
+  all(rownames(input_tailanal)==tempdat$yr)==T
+  
+  input_tailanal$t<-tempdat$t
+  input_tailanal$tmax<-tempdat$tmax
+  input_tailanal$tmin<-tempdat$tmin
+  input_tailanal$tmax_n<-tempdat$tmax_n
+  input_tailanal<-input_tailanal%>%dplyr::select(-yr)
+  
+  saveRDS(input_tailanal,paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep="")) # dataframe with species timeseries along column
+  
+  #----------- tail analysis ----------------
+  resloc2<-paste("../Results/for_BioTIME/Terrestrial_plotlevel/",site,"/",sep="")
+  if(!dir.exists(resloc2)){
+    dir.create(resloc2)
   }
+  if(length(newsite)>1){
+    resloc<-paste(resloc2,newsite[k],"/",sep="")
+  }else{
+    resloc<-resloc2
+  }
+  
+  res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp, resloc = resloc, nbin = 2)
+  
+  cat("---------- k = ",k,"-----------\n")
 }
-
 newsite<-setdiff(newsite,newsite_bad)
 saveRDS(newsite,"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/540/newsite.RDS")
