@@ -442,38 +442,38 @@ source("./BT_wrangling_data_terrestrial.R")
 grid_terres<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/bt_terres_min20yr_rawdata.RDS")
 terres_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS")
 ```
-<!--
+
 ```{r tailanal_BT_terres39,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_39.R"))}
 
 set.seed(seed) 
-#source("./BT_terres_STUDY_ID_39.R")
+source("./BT_terres_STUDY_ID_39.R")
 ```
 
 ```{r tailanal_BT_terres46,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_46.R"))}
 
 set.seed(seed)  
-#source("./BT_terres_STUDY_ID_46.R") 
+source("./BT_terres_STUDY_ID_46.R") 
 #----------- insufficient years consistent with env data 1979-2019, exclude STUDY_ID=46 ------------
 ```
 
 ```{r tailanal_BT_terres47,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_47.R"))}
 
 set.seed(seed) 
-#source("./BT_terres_STUDY_ID_47.R")
+source("./BT_terres_STUDY_ID_47.R")
 #----------- insufficient years consistent with env data 1979-2019, exclude STUDY_ID=47 ------------
 ```
 
 ```{r tailanal_BT_terres54,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_54.R"))}
 
 set.seed(seed) 
-#source("./BT_terres_STUDY_ID_54.R")
+source("./BT_terres_STUDY_ID_54.R")
 ```
 
 ```{r tailanal_BT_terres63,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_63.R"))}
 
 #------ insufficient years consistent with env data 1979-2019, exclude STUDY_ID=63 ------------
 set.seed(seed) 
-#source("./BT_terres_STUDY_ID_63.R")
+source("./BT_terres_STUDY_ID_63.R")
 ```
 
 ```{r tailanal_BT_terres67,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_67.R"))}
@@ -482,7 +482,7 @@ set.seed(seed)
 set.seed(seed) 
 #source("./BT_terres_STUDY_ID_67.R")
 ```
-
+<!--
 ```{r tailanal_BT_terres301,cache=T, echo=F,message=F, results="hide",warning=FALSE, cache.extra=list(seed,metadata_BT,grid_terres,terres_tbl_for_map,env_BT_t,mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("./monthly_rarefy_BT.R"),mtime("./BT_terres_STUDY_ID_301.R"))}
 
 set.seed(seed) 

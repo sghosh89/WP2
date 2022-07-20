@@ -39,7 +39,7 @@ mylonlat<-mylonlat%>%distinct(lonlat)
 
 #-------------------------------------------------------------------------------------------------------------
 # sometimes months have different multiple sampling dates within a year
-# so, take the average
+# so, take the average 
 x_allsite$Abundance<-as.numeric(x_allsite$Abundance)
 x_allsite$Biomass<-as.numeric(x_allsite$Biomass)
 x_allsite<-x_allsite%>%group_by(newsite,YEAR,MONTH,Species)%>%
