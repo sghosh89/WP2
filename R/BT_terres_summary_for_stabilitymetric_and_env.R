@@ -29,9 +29,11 @@ r_BT_terres$tmin_skw<-NA
 
 
 for(i in 1:nrow(r_BT_terres)){
+ 
   siteid<-r_BT_terres$STUDY_ID[i]
   newsite<-r_BT_terres$newsite[i]
   nsp<-r_BT_terres$nsp[i]
+  
   if(siteid==newsite){
     m<-readRDS(paste("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/",siteid,"/input_mat_for_tailanal_with_env.RDS",sep=""))
   }else{
