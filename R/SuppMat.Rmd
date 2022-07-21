@@ -940,7 +940,7 @@ set.seed(seed)
 source("./wrangling_data_BioTIMEx.R") 
 ```
 
-```{r get_envdat_for_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"))}
+```{r get_envdat_for_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv"),mtime("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv"),mtime("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat_oneida_fishgillnets.csv"),mtime("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat_oneida_fishgillnets.csv"),mtime("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat_oneida_fishgillnets.csv"),mtime("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat_oneida_fishtrawls.csv"),mtime("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat_oneida_fishtrawls.csv"),mtime("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat_oneida_fishtrawls.csv"))}
 
 set.seed(seed)
 library(dplyr)
@@ -967,14 +967,124 @@ env_t<-left_join(env_t,env_tmin,by=c("lonlat","yr"))
 env_BTx<-left_join(md,env_t,by="lonlat")
 
 write.csv(env_BTx,"../DATA/for_BioTIMEx/wrangled_data/annual_tas_CHELSA_1979_2019_BTx_lonlat.csv",row.names = F)
+
+#---- NOTE: for oneida fish (gillnets/trawls) there are several sites with particular lonlat not just the CENT_LONG, CENT_LAT for a given STUDY_ID ------------
+
+# first get annual extracted values for oneida_fish data
+#
+#-- tas (1979-2019)---
+#
+d<-read.csv("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat_oneida_fishgillnets.csv")
+d$STUDY_ID<-"oneida_fish_gillnets"
+d2<-read.csv("../DATA/wrangled_env_data/tas_monthlyvalues_extracted_lonlat_oneida_fishtrawls.csv")
+d2$STUDY_ID<-"oneida_fish_trawl"
+
+all(colnames(d)==colnames(d2))==T
+dall<-rbind(d,d2)
+
+nd<-ncol(dall)
+dall<-dall[,c(1:4,nd,5:(nd-1))] #rearrange
+nd<-ncol(dall)
+# convert to long format
+dl<-gather(dall, month_yr, values, 6:nd, factor_key=F)
+class(dl$month_yr)
+dl$month_yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$month<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[1], collapse = "_"))
+dl<-dl%>%dplyr::select(-month_yr)
+#tb<-dl%>%filter(month%in%c("06","07","08"))
+env_BTx_oneida_fish<-dl%>%group_by(STUDY_ID,SITE,LONGITUDE,LATITUDE,yr)%>%
+  summarise(meanval=mean(values))%>%ungroup()
+write.csv(env_BTx_oneida_fish,"../DATA/wrangled_env_data/tas_annualval_extracted_lonlat_BioTIMEx_oneida_fish.csv",row.names = F)
+#
+#-- tasmax (1979-2019)---
+#
+d<-read.csv("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat_oneida_fishgillnets.csv")
+d$STUDY_ID<-"oneida_fish_gillnets"
+d2<-read.csv("../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat_oneida_fishtrawls.csv")
+d2$STUDY_ID<-"oneida_fish_trawl"
+
+all(colnames(d)==colnames(d2))==T
+dall<-rbind(d,d2)
+
+nd<-ncol(dall)
+dall<-dall[,c(1:4,nd,5:(nd-1))] #rearrange
+nd<-ncol(dall)
+# convert to long format
+dl<-gather(dall, month_yr, values, 6:nd, factor_key=F)
+class(dl$month_yr)
+dl$month_yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$month<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[1], collapse = "_"))
+dl<-dl%>%dplyr::select(-month_yr)
+#tb<-dl%>%filter(month%in%c("06","07","08"))
+env_BTx_oneida_fish<-dl%>%group_by(STUDY_ID,SITE,LONGITUDE,LATITUDE,yr)%>%
+  summarise(meanval=mean(values))%>%ungroup()
+write.csv(env_BTx_oneida_fish,"../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat_BioTIMEx_oneida_fish.csv",row.names = F)
+#
+#--tasmin (1979-2019)--
+#
+d<-read.csv("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat_oneida_fishgillnets.csv")
+d$STUDY_ID<-"oneida_fish_gillnets"
+d2<-read.csv("../DATA/wrangled_env_data/tasmin_monthlyvalues_extracted_lonlat_oneida_fishtrawls.csv")
+d2$STUDY_ID<-"oneida_fish_trawl"
+
+all(colnames(d)==colnames(d2))==T
+dall<-rbind(d,d2)
+
+nd<-ncol(dall)
+dall<-dall[,c(1:4,nd,5:(nd-1))] #rearrange
+nd<-ncol(dall)
+# convert to long format
+dl<-gather(dall, month_yr, values, 6:nd, factor_key=F)
+class(dl$month_yr)
+dl$month_yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$yr<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[-1], collapse = "_"))
+dl$month<-sapply(strsplit(dl$month_yr, "_"), function(x) paste(x[1], collapse = "_"))
+dl<-dl%>%dplyr::select(-month_yr)
+#tb<-dl%>%filter(month%in%c("06","07","08"))
+env_BTx_oneida_fish<-dl%>%group_by(STUDY_ID,SITE,LONGITUDE,LATITUDE,yr)%>%
+  summarise(meanval=mean(values))%>%ungroup()
+write.csv(env_BTx_oneida_fish,"../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat_BioTIMEx_oneida_fish.csv",row.names = F)
+
+#-- get env data also for BioTIMEx oneidafishsites
+#set.seed(seed)
+library(dplyr)
+library(tidyverse)
+
+md<-read.csv("../DATA/metadata_summary.csv") # metadata from BioDyn project, >=20 datapoints
+md<-md%>%filter(source=="BioTIMEx")%>%filter(STUDY_ID%in%c("oneida_fish_gillnets","oneida_fish_trawl"))
+md<-md%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,initR,CENT_LONG,CENT_LAT)
+
+# extract the env data for the lonlat (from CHELSA)
+env_BTx_oneida_fish_t<-read.csv("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat_BioTIMEx_oneida_fish.csv")
+env_BTx_oneida_fish_tmax<-read.csv("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat_BioTIMEx_oneida_fish.csv")
+env_BTx_oneida_fish_tmin<-read.csv("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat_BioTIMEx_oneida_fish.csv")
+
+env_BTx_oneida_fish_t$lonlat<-paste(env_BTx_oneida_fish_t$LONGITUDE,env_BTx_oneida_fish_t$LATITUDE,sep="_")
+env_BTx_oneida_fish_t<-env_BTx_oneida_fish_t%>%dplyr::select(-LONGITUDE, -LATITUDE)%>%rename(t=meanval)
+env_BTx_oneida_fish_tmax$lonlat<-paste(env_BTx_oneida_fish_tmax$LONGITUDE,env_BTx_oneida_fish_tmax$LATITUDE,sep="_")
+env_BTx_oneida_fish_tmax<-env_BTx_oneida_fish_tmax%>%dplyr::select(-LONGITUDE, -LATITUDE)%>%rename(tmax=meanval)
+env_BTx_oneida_fish_tmin$lonlat<-paste(env_BTx_oneida_fish_tmin$LONGITUDE,env_BTx_oneida_fish_tmin$LATITUDE,sep="_")
+env_BTx_oneida_fish_tmin<-env_BTx_oneida_fish_tmin%>%dplyr::select(-LONGITUDE, -LATITUDE)%>%rename(tmin=meanval)
+
+env_BTx_oneida_fish_t<-left_join(env_BTx_oneida_fish_t,env_BTx_oneida_fish_tmax,by=c("STUDY_ID","SITE","lonlat","yr"))
+env_BTx_oneida_fish_t<-left_join(env_BTx_oneida_fish_t,env_BTx_oneida_fish_tmin,by=c("STUDY_ID","SITE","lonlat","yr"))
+env_BTx_oneida_fish_t<-env_BTx_oneida_fish_t%>%separate(lonlat, c("LONGITUDE", "LATITUDE"),sep="_")%>%
+  dplyr::select(STUDY_ID,SITE,LONGITUDE,LATITUDE,yr,t,tmax,tmin)# rearrange
+
+
+env_BTx_oneida_fish_t<-left_join(md,env_BTx_oneida_fish_t,by=c("STUDY_ID"="STUDY_ID","newsite"="SITE"))
+
+write.csv(env_BTx_oneida_fish_t,"../DATA/for_BioTIMEx/wrangled_data/annual_tas_CHELSA_1979_2019_BTx_oneida_fish_lonlat.csv",row.names = F)
 ```
 
-```{r tailanal_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,env_BTx,mtime("./BioTIMEx_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("../DATA/metadata_summary.csv"),mtime("carpenter_2016_ta.R"),mtime("cumbrian_zoo_ta.R"),mtime("landis_2018_ta.R"),mtime("lightfoot_2015_ta.R"),mtime("oneida_fish_gillnets_ta.R"),mtime("oneida_fish_trawl_ta.R"))}
+```{r tailanal_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,env_BTx,mtime("./BioTIMEx_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"),mtime("../DATA/metadata_summary.csv"),mtime("../DATA/for_BioTIMEx/wrangled_data/annual_tas_CHELSA_1979_2019_BTx_oneida_fish_lonlat.csv"),mtime("carpenter_2016_ta.R"),mtime("cumbrian_zoo_ta.R"),mtime("landis_2018_ta.R"),mtime("lightfoot_2015_ta.R"),mtime("oneida_fish_gillnets_ta.R"),mtime("oneida_fish_trawl_ta.R"))}
 
 set.seed(seed) 
-source("./BioTIMEx_ta.R") # BioTIMEx data tail analysis
+source("./BioTIMEx_ta.R") # BioTIMEx data tail analysis  
 ```
-
+<!--
 ```{r summary_tailanal_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./BioTIMEx_ta.R"),mtime("carpenter_2016_ta.R"),mtime("cumbrian_zoo_ta.R"),mtime("landis_2018_ta.R"),mtime("lightfoot_2015_ta.R"),mtime("oneida_fish_gillnets_ta.R"),mtime("oneida_fish_trawl_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
 
 set.seed(seed) 
@@ -1034,9 +1144,9 @@ saveRDS(summary_table,"../Results/for_BioTIMEx/summary_table_detail_version.RDS"
 ```{r summary_stab_env_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BioTIMEx/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./BioTIMEx_summary_for_stabilitymetric_and_env.R"))}
 
 set.seed(seed) 
-source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
+#source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
 ```
-
+-->
 ```{r gather_all_summary_res,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./gather_all_summary_res.R"),mtime("../Results/for_BioTIME/Freshwater_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIME/Terrestrial_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIMEx/stability_metric_and_env.RDS"),mtime("../Results/for_BBS/stability_metric_and_env.RDS"),mtime("../Results/for_RivFishTIME/stability_metric_and_env.RDS"),mtime("../Results/for_insectRoel/stability_metric_and_env.RDS"),mtime("../Results/for_swisslake/zooplankton/stability_metric_and_env.RDS"),mtime("../Results/for_zoop_2014/stability_metric_and_env.RDS"))}
 
 set.seed(seed) 

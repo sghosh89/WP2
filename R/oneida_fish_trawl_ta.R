@@ -6,7 +6,7 @@ library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 
 dataset_id<-"oneida_fish_trawl"
-md<-read.csv("../DATA/metadata_summary.csv")
+md<-read.csv("../DATA/for_BioTIMEx/wrangled_data/annual_tas_CHELSA_1979_2019_BTx_oneida_fish_lonlat.csv")
 md_now<-md%>%filter(STUDY_ID==dataset_id)
 
 resloc<-'../Results/for_BioTIMEx/'
@@ -41,7 +41,7 @@ for(i in 1:nrow(md_now)){
   suffyr<-(nrow(input_tailanal)>=20)
   if(suffyr==T){
     #-----------------------adding environmental variable in the matrix-----------------------------
-    tempdat<-env_BTx%>%filter(STUDY_ID%in%dataset_id)%>%filter(newsite==site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
+    tempdat<-md_now%>%filter(STUDY_ID%in%dataset_id)%>%filter(newsite==site)%>%filter(yr%in%rownames(input_tailanal))%>%dplyr::select(yr,t,tmax,tmin)
     tempdat$tmax_n<- -tempdat$tmax
     
     # check if all TRUE

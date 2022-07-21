@@ -1,5 +1,6 @@
 # fish net data in cumbrian lake given by Alban (J. Chase group)
 library(tidyverse)
+library(dplyr)
 
 `%notin%` <- Negate(`%in%`)
 
@@ -62,3 +63,16 @@ for(i in 1:length(site)){
   cat("i = ", i, "\n")
 }
 saveRDS(site,paste("../DATA/for_BioTIMEx/wrangled_data/",dataset_id,"/sitelist.RDS",sep=""))
+
+##################################################################################################
+# Now get Latitude and Longitude for each site
+lonlat_site_oneida_fishgillnets<-allrawdata%>%distinct(SITE,.keep_all = T)%>%dplyr::select(SITE,LONGITUDE,LATITUDE)
+lonlat_site_oneida_fishgillnets$lonlat<-paste(lonlat_site_oneida_fishgillnets$LONGITUDE,lonlat_site_oneida_fishgillnets$LATITUDE,sep="_")
+write.csv(lonlat_site_oneida_fishgillnets,paste("../DATA/for_BioTIMEx/wrangled_data/",dataset_id,"/lonlat_site_oneida_fishgillnets.csv",sep=""),row.names = F)
+
+
+
+
+
+
+

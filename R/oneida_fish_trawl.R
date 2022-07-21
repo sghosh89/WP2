@@ -98,3 +98,11 @@ for(i in 1:length(goodsite)){
   cat("i = ", i, "\n")
 }
 saveRDS(goodsite,paste("../DATA/for_BioTIMEx/wrangled_data/",dataset_id,"/sitelist.RDS",sep=""))
+
+# Now get Latitude and Longitude for each site
+lonlat_site_oneida_fishtrawls<-allrawdata%>%distinct(SITE,.keep_all = T)%>%dplyr::select(SITE,LONGITUDE,LATITUDE)
+lonlat_site_oneida_fishtrawls$lonlat<-paste(lonlat_site_oneida_fishtrawls$LONGITUDE,lonlat_site_oneida_fishtrawls$LATITUDE,sep="_")
+write.csv(lonlat_site_oneida_fishtrawls,paste("../DATA/for_BioTIMEx/wrangled_data/",dataset_id,"/lonlat_site_oneida_fishtrawls.csv",sep=""),row.names = F)
+
+
+
