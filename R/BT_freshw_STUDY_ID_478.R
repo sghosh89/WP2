@@ -20,8 +20,11 @@ saveRDS(df,"../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/478/wrangledt
 #================= filter data only for this site  =========================
 site<-df$STUDY_ID
 x<-grid_freshw%>%filter(STUDY_ID==site)
-mylonlat<-data.frame(lonlat=paste(x$LONGITUDE,x$LATITUDE,sep="_"))
-mylonlat<-mylonlat%>%distinct(lonlat)
+mylonlat<-data.frame(LONGITUDE=x$LONGITUDE,
+                     LATITUDE=x$LATITUDE,
+                     lonlat=paste(x$LONGITUDE,x$LATITUDE,sep="_"))
+mylonlat<-mylonlat%>%distinct(lonlat,.keep_all = T)
+write.csv(mylonlat,"../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/478/mylonlat.csv",row.names = F)
 # df ensures there is only one single site with each month sampling once in a given year
 unique(x$MONTH) # No month info available
 #==================== saving input spmat  ====================

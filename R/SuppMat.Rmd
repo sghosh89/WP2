@@ -1084,18 +1084,23 @@ write.csv(env_BTx_oneida_fish_t,"../DATA/for_BioTIMEx/wrangled_data/annual_tas_C
 set.seed(seed) 
 source("./BioTIMEx_ta.R") # BioTIMEx data tail analysis  
 ```
-<!--
+
 ```{r summary_tailanal_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./BioTIMEx_ta.R"),mtime("carpenter_2016_ta.R"),mtime("cumbrian_zoo_ta.R"),mtime("landis_2018_ta.R"),mtime("lightfoot_2015_ta.R"),mtime("oneida_fish_gillnets_ta.R"),mtime("oneida_fish_trawl_ta.R"),mtime("./tail_analysis.R"),mtime("./NonParamStat.R"),mtime("./NonParamStat_matrixplot.R"),mtime("./CorlCoru.R"),mtime("./vivj_matrix.R"),mtime("./corbds.R"),mtime("./mycorrplot.R"))}
 
 set.seed(seed) 
-
 library(tidyverse)
+library(dplyr)
 `%notin%` <- Negate(`%in%`)
 
 md<-read.csv("../DATA/metadata_summary.csv")
 df<-md%>%filter(source=="BioTIMEx")%>%filter(TAXA%in%c("birds","fish","freshwater invertebrates","terrestrial invertebrates"))
-df<-df%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,CENT_LAT,CENT_LONG,nsp,initR)
-df$lonlat<-paste(df$CENT_LONG,df$CENT_LAT,sep="_")
+df<-rename(df,LONGITUDE=CENT_LONG,LATITUDE=CENT_LAT) #renaming column names
+df<-df%>%filter(STUDY_ID%notin%c("oneida_fish_gillnets","oneida_fish_trawl"))%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,LONGITUDE,LATITUDE,initR)
+
+mdf<-read.csv("../DATA/for_BioTIMEx/wrangled_data/annual_tas_CHELSA_1979_2019_BTx_oneida_fish_lonlat.csv")
+mdf<-mdf%>%distinct(newsite,.keep_all = T)%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,LONGITUDE,LATITUDE,initR)
+
+df<-rbind(df,mdf)
 #--------------- Do a summary stats for freshwater sites ------------------
 summary_table<-c()
 for (i in c(1:length(df$STUDY_ID))){
@@ -1125,11 +1130,10 @@ for (i in c(1:length(df$STUDY_ID))){
   
 }
 
-df<-df%>%dplyr::select(-STUDY_ID)
-summary_table<- left_join(df,summary_table,by="newsite")
+summary_table<- left_join(df,summary_table,by=c("newsite"="newsite","STUDY_ID"="STUDY_ID"))
 
 # reorganize
-summary_table<-summary_table%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,initR,nsp=nsp.x,nyr_used, startyr, endyr, nint,nind,npos,nL,nU,nneg,L,U,CENT_LAT,CENT_LONG,lonlat)
+summary_table<-summary_table%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,initR,nsp,nyr_used, startyr, endyr, nint,nind,npos,nL,nU,nneg,L,U,LONGITUDE,LATITUDE)
 
 summary_table<-summary_table%>%mutate(f_nind=nind/nint,
                                       f_npos=npos/nint,
@@ -1144,10 +1148,10 @@ saveRDS(summary_table,"../Results/for_BioTIMEx/summary_table_detail_version.RDS"
 ```{r summary_stab_env_BTx,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BioTIMEx/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./BioTIMEx_summary_for_stabilitymetric_and_env.R"))}
 
 set.seed(seed) 
-#source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
+source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
 ```
--->
-```{r gather_all_summary_res,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/metadata_summary.csv"),mtime("./gather_all_summary_res.R"),mtime("../Results/for_BioTIME/Freshwater_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIME/Terrestrial_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIMEx/stability_metric_and_env.RDS"),mtime("../Results/for_BBS/stability_metric_and_env.RDS"),mtime("../Results/for_RivFishTIME/stability_metric_and_env.RDS"),mtime("../Results/for_insectRoel/stability_metric_and_env.RDS"),mtime("../Results/for_swisslake/zooplankton/stability_metric_and_env.RDS"),mtime("../Results/for_zoop_2014/stability_metric_and_env.RDS"))}
+
+```{r gather_all_summary_res,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS"),mtime("../DATA/metadata_summary.csv"),mtime("./gather_all_summary_res.R"),mtime("../Results/for_BioTIME/Freshwater_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIME/Terrestrial_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIMEx/stability_metric_and_env.RDS"),mtime("../Results/for_BBS/stability_metric_and_env.RDS"),mtime("../Results/for_RivFishTIME/stability_metric_and_env.RDS"),mtime("../Results/for_insectRoel/stability_metric_and_env.RDS"),mtime("../Results/for_swisslake/zooplankton/stability_metric_and_env.RDS"),mtime("../Results/for_zoop_2014/stability_metric_and_env.RDS"))}
 
 set.seed(seed) 
 source("./gather_all_summary_res.R") # now does not include BioTIME results

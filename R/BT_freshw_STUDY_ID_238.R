@@ -34,9 +34,11 @@ tt<-tt%>%filter(n>=20)
 x_allsite<- x %>% filter(newsite %in% tt$newsite)
 newsite<-tt$newsite
 
-mylonlat<-data.frame(lonlat=paste(x_allsite$LONGITUDE,x_allsite$LATITUDE,sep="_"))
-mylonlat<-mylonlat%>%distinct(lonlat)
-
+mylonlat<-data.frame(LONGITUDE=x_allsite$LONGITUDE,
+                     LATITUDE=x_allsite$LATITUDE,
+                     lonlat=paste(x_allsite$LONGITUDE,x_allsite$LATITUDE,sep="_"))
+mylonlat<-mylonlat%>%distinct(lonlat,.keep_all = T)
+write.csv(mylonlat,"../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/238/mylonlat.csv",row.names = F)
 #-------------------------------------------------------------------------------------------------------------
 # sometimes months have different multiple sampling dates within a year
 # so, take the average

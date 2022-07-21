@@ -65,6 +65,7 @@ tt<-tt%>%filter(n>=20)
 
 # update
 mylonlat<-mylonlat%>%filter(basin%in%tt$basin)
+write.csv(mylonlat,"../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/430/mylonlat.csv",row.names = F)
 
 # only four basins sampled for 24 years minimum
 x_agg<-x_agg%>%filter(basin%in%tt$basin)
