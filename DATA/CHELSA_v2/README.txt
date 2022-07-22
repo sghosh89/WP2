@@ -1,0 +1,1 @@
+CHELSA data folder, see details path here https://envicloud.wsl.ch/#/?prefix=chelsa%2Fchelsa_V2%2FGLOBAL%2Fmonthly%2F
