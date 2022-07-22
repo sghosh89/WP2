@@ -6,6 +6,7 @@ library(utils)
 tb<-read.delim("../DATA/CHELSA_v2/monthly/pr/envidatS3paths.txt",header = F)
 for(i in 1:nrow(tb)){
   readpath<-tb[i,1]
+  readpath<-trimws(readpath)
   destfilename<-trimws(basename(readpath))
   download.file(url=readpath,
                 destfile= paste("../DATA/CHELSA_v2/monthly/pr/",destfilename,sep=""),mode="wb")
@@ -16,6 +17,7 @@ for(i in 1:nrow(tb)){
 tb<-read.delim("../DATA/CHELSA_v2/monthly/tas/envidatS3paths.txt",header = F)
 for(i in 1:nrow(tb)){
   readpath<-tb[i,1]
+  readpath<-trimws(readpath)
   destfilename<-trimws(basename(readpath))
   download.file(url=readpath,
                 destfile= paste("../DATA/CHELSA_v2/monthly/tas/",destfilename,sep=""),mode="wb")
@@ -26,6 +28,7 @@ for(i in 1:nrow(tb)){
 tb<-read.delim("../DATA/CHELSA_v2/monthly/tasmax/envidatS3paths.txt",header = F)
 for(i in 1:nrow(tb)){
   readpath<-tb[i,1]
+  readpath<-trimws(readpath)
   destfilename<-trimws(basename(readpath))
   download.file(url=readpath,
                 destfile= paste("../DATA/CHELSA_v2/monthly/tasmax/",destfilename,sep=""),mode="wb")
@@ -35,6 +38,7 @@ for(i in 1:nrow(tb)){
 tb<-read.delim("../DATA/CHELSA_v2/monthly/tasmin/envidatS3paths.txt",header = F)
 for(i in 1:nrow(tb)){
   readpath<-tb[i,1]
+  readpath<-trimws(readpath)
   destfilename<-trimws(basename(readpath))
   download.file(url=readpath,
                 destfile= paste("../DATA/CHELSA_v2/monthly/tasmin/",destfilename,sep=""),mode="wb")
