@@ -33,7 +33,7 @@ library(here)
 As the global climate is experiencing more heat, and less rainfall - it is reasonable to expect that the distributions of these variables (temperature and rainfall) are becoming more skewed and asymmetric towards the extreme values (see figure \@ref(fig:introduction-figure) below, which comes from the UZH UFO proposal, where it was figure 2). With the availability of more open access long-term databases, it is possible to address how different taxa respond at the community level.
 
 ```{r introduction-figure, echo=FALSE, fig.cap="Introduction figure", out.width = '50%', fig.align='center'}
-knitr::include_graphics("some_assets/Intro_figure.png")
+knitr::include_graphics("../Results/some_assets/Intro_figure.png")
 ```
 
 
