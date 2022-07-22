@@ -2,12 +2,13 @@
 # This file has to be in the same folder where you save the environmental data 
 # that you will extract
 ###############################################################################################################
-rm(list=ls())
+path<-dirname(rstudioapi::getSourceEditorContext()$path)
+setwd(path)
 library(raster)
 library(sp)
 rastlist <- list.files(path = "./", pattern='.tif$', all.files=TRUE, full.names=FALSE)
 allrasters <- raster::stack(rastlist)
-df_lonlat<-read.csv("../lonlat_site_oneida_fishtrawls.csv")
+df_lonlat<-read.csv("../../../../DATA/for_BioTIMEx/wrangled_data/oneida_fish_trawl/lonlat_site_oneida_fishtrawls.csv")
 #rownames(df_lonlat)<-paste("lon_",df_lonlat$CENT_LONG,"_lat_",df_lonlat$CENT_LAT,sep="")
 
 #df_lonlat<-df_lonlat[7,]
@@ -26,6 +27,6 @@ cnm<-colnames(df_env)
 cnm<-substr(cnm,8,21)
 colnames(df_env)<-cnm
 df_env <- cbind(df_lonlat_table,df_env)
-write.csv(df_env,"../tasmax_monthlyvalues_extracted_lonlat_oneida_fishtrawls.csv",row.names = F)
+write.csv(df_env,"../../../../DATA/wrangled_env_data/tasmax_monthlyvalues_extracted_lonlat_oneida_fishtrawls.csv",row.names = F)
 
 
