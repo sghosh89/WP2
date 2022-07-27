@@ -26,7 +26,7 @@ r_BT_freshw$tmin_med<-NA
 r_BT_freshw$t_skw<-NA
 r_BT_freshw$tmax_skw<-NA
 r_BT_freshw$tmin_skw<-NA
-
+r_BT_freshw$t_var<-NA # variability of annual temperature
 
 for(i in 1:nrow(r_BT_freshw)){
   siteid<-r_BT_freshw$STUDY_ID[i]
@@ -44,6 +44,7 @@ for(i in 1:nrow(r_BT_freshw)){
   r_BT_freshw$t_skw[i]<-myskns(m$t)
   r_BT_freshw$tmax_skw[i]<-myskns(m$tmax)
   r_BT_freshw$tmin_skw[i]<-myskns(m$tmin)
+  r_BT_freshw$t_var[i]<-median(m$t)/IQR(m$t,type=7)
   
   # now extract only species time-series (without env variable)
   m<-m[,1:nsp]

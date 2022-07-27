@@ -26,7 +26,7 @@ r_BT_terres$tmin_med<-NA
 r_BT_terres$t_skw<-NA
 r_BT_terres$tmax_skw<-NA
 r_BT_terres$tmin_skw<-NA
-
+r_BT_terres$t_var<-NA # variability of annual temperature
 
 for(i in 1:nrow(r_BT_terres)){
  
@@ -46,6 +46,7 @@ for(i in 1:nrow(r_BT_terres)){
   r_BT_terres$t_skw[i]<-myskns(m$t)
   r_BT_terres$tmax_skw[i]<-myskns(m$tmax)
   r_BT_terres$tmin_skw[i]<-myskns(m$tmin)
+  r_BT_terres$t_var[i]<-median(m$t)/IQR(m$t,type=7)
   
   # now extract only species time-series (without env variable)
   m<-m[,1:nsp]

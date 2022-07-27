@@ -47,4 +47,5 @@ tmin_med: median of CHELSA-extracted annual minimum temperature timeseries for t
 t_skw: skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community
 tmax_skw: skewness of CHELSA-extracted annual maximum temperature timeseries for the study years included in the analysis for each community
 tmin_skw: skewness of CHELSA-extracted annual minimum temperature timeseries for the study years included in the analysis for each community
+t_var: temperature variability for the community during the study period = median(annual temperature)/IQR(annual temperature distribution for the study period)
 

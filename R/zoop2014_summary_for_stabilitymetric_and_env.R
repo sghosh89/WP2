@@ -26,7 +26,7 @@ r_zoop2014$tmin_med<-NA
 r_zoop2014$t_skw<-NA
 r_zoop2014$tmax_skw<-NA
 r_zoop2014$tmin_skw<-NA
-
+r_zoop2014$t_var<-NA # variability of annual temperature
 
 for(i in 1:nrow(r_zoop2014)){
   siteid<-r_zoop2014$newsite[i]
@@ -39,6 +39,7 @@ for(i in 1:nrow(r_zoop2014)){
   r_zoop2014$t_skw[i]<-myskns(m$t)
   r_zoop2014$tmax_skw[i]<-myskns(m$tmax)
   r_zoop2014$tmin_skw[i]<-myskns(m$tmin)
+  r_zoop2014$t_var[i]<-median(m$t)/IQR(m$t,type=7)
   
   # now extract only species time-series (without env variable)
   m<-m[,1:nsp]

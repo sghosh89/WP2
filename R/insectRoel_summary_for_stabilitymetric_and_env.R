@@ -26,6 +26,7 @@ r_insect$tmin_med<-NA
 r_insect$t_skw<-NA
 r_insect$tmax_skw<-NA
 r_insect$tmin_skw<-NA
+r_insect$t_var<-NA # variability of annual temperature
 
 
 for(i in 1:nrow(r_insect)){
@@ -40,6 +41,7 @@ for(i in 1:nrow(r_insect)){
   r_insect$t_skw[i]<-myskns(m$t)
   r_insect$tmax_skw[i]<-myskns(m$tmax)
   r_insect$tmin_skw[i]<-myskns(m$tmin)
+  r_insect$t_var[i]<-median(m$t)/IQR(m$t,type=7)
   
   # now extract only species time-series (without env variable)
   m<-m[,1:nsp]
