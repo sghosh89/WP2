@@ -24,6 +24,7 @@ library(tidyverse)
 library(patchwork)
 library(here)
 #source(here("r", "various_useful_functions.r"))
+source("mtime.R")
 ```
 
 # Introduction
@@ -45,9 +46,152 @@ I will focus on community stability and will build a Bayesian model incorporatin
 
 I will gather annual climate data (mean, minimum, maximum for temperature, rainfall) and compute the variability, and the skewness of their distribution for the study period over which the community dynamics was studied. I will compute the richness (number of total species and dominant species that were present minimum 70% of the total years sampled), variance ratio, community level total tail association from pairwise synchrony as drivers. These drivers appeared as significant for explaining variation in community stability from my recent study (manuscript in preparation). I will compute the response variable community stability as the inverse of community-variability over the study period. Then, I will build a Bayesian model to see the effect of climate parameters, on the stability-driver relationships for different taxa.
 
+# Data
+
+## Data structure
+Total 1948 community timeseries we have collected for the timespan 1979-2019. 4 taxa are considered - birds, fish, freshwater invertebrates, terrestrial invertebrates. Below is the summary of the datatable. Description of each column is given in [README.txt](https://github.com/sghosh89/WP2/tree/main/Results)
+```{r read_data_str, echo=F}
+library(dplyr)
+library(tidyverse)
+
+sm_all<-read.csv("../Results/stability_metric_and_env_all.csv")
+str(sm_all) # total communities within 1979-2019 timespan, we selected only 4 taxa
+```
+
+But see the below table which shows the sample size for each taxa and the datasource, we have very few sample size for terrestrial invertebrates. I feel it's better to write a paper about north american birds vs european fish (atleast we have >500 datapoints for birds and fish). But I am open to other ideas. I don't know which kind of data requirement we need for response diversity, but if we can have the body size or biomass (as trait) data then I can test the H0: whether response diversity increases the stability or influenced by temperature?
+```{r read_data_str2, echo=F}
+sm_all%>%group_by(TAXA,source)%>%summarise(n=n())%>%ungroup()
+```
+
+## Sitemap for each taxa
+
+```{r sitemap_figure, echo=FALSE, out.width = '100%', fig.align='center'}
+library(htmltools) 
+library(htmlwidgets)
+library(leaflet) 
+
+taxalist<-c("birds","fish","freshwater invertebrates","terrestrial invertebrates")
+sitemaplist<-vector(mode = "list", length = length(taxalist))
+#op<-par(mfrow=c(2,2))
+for(i in 1:length(taxalist)){
+  taxa<-taxalist[i]
+  dat<-sm_all%>%filter(TAXA==taxa)%>%dplyr::select(STUDY_ID,newsite,LATITUDE,LONGITUDE)%>%distinct()
+  
+  sitemap<-leaflet(dat) %>% addTiles() %>%
+    addMarkers(~LONGITUDE, ~LATITUDE, label = ~htmlEscape(newsite))%>%
+    addControl(paste(taxa,", n = ",nrow(dat),sep=""), position = "bottomleft", className="map-title")
+  sitemaplist[[i]]<-sitemap
+  f<-paste("../Results/res_Prelim_Report/samplingsite_",taxa,
+           ".html",sep="")
+  htmlwidgets::saveWidget(sitemap, 
+                          file.path(normalizePath(dirname(f)),basename(f)))
+}
+#par(op)
+#htmltools::includeHTML("../Results/res_Prelim_Report/samplingsite_birds.html")
+sitemaplist[[1]]
+sitemaplist[[2]]
+sitemaplist[[3]]
+sitemaplist[[4]]
+```
+
+## Temperature trend for each taxa
+
+Here we will see temperature trend (summarized by skewness) for the sites: are the annual temperature shifting to hotter end or cooler end? red region for negative skewness means with years temperature is shifting to hotter end during the study period of a given site. So the plot is density distribution of such sites. Most of the freshwater sites experiencing hotter environment (mainly in EU), so I am expecting to see stronger change due to temperature for fish and freshwater invertebrates rather than terrestrial taxa.
+```{r temp_figure_alltaxa, echo=FALSE, fig.cap="Density distribution of skewness for annual temperature from all sites considered and also by taxa", out.width = '80%', fig.align='center'}
+
+br <- c(min(sm_all$t_skw),0,max(sm_all$t_skw))
+
+p1<-sm_all%>%
+  ggplot( aes(x=t_skw, stat(density))) +
+  ggtitle("all taxa")+
+  geom_text(
+    aes(label = round(stat(count) / sum((count)), 3)), 
+    stat = 'bin', vjust = -0.5, breaks = br
+  )+ ylim(c(0, 1))+geom_density()+
+  annotate("rect", xmin=min(sm_all$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="red")+
+  annotate("rect", xmin=0, xmax=max(sm_all$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  theme_classic()
+p1
+
+# Now repeat the above plot by taxa
+p2<-sm_all%>%
+  ggplot( aes(x=t_skw,y=..scaled..))+geom_density()+ylim(c(0, 1))+
+  annotate("rect", xmin=min(sm_all$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="red")+
+  annotate("rect", xmin=0, xmax=max(sm_all$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  theme_classic()+facet_wrap(~TAXA)
+p2 
+```
 
 # Methods
 
+```{r model_psem, echo=F, cache=T, message=F, cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("plot_psem.R"))}
+library(tidyverse)
+library(lme4)
+library(piecewiseSEM)
+source("plot_psem.R")
+
+sm_all<-read.csv("../Results/stability_metric_and_env_all.csv")
+sm_all$UID<-paste(sm_all$source,sm_all$STUDY_ID,sep="_")
+sm_all$A<-sm_all$L+abs(sm_all$U) # total asymmetry
+sm_all<-sm_all%>%dplyr::rename(
+  stability=iCValt,
+  VR=phi_LdM,
+  R=nsp)
+
+sm_all$TAXA<-as.factor(sm_all$TAXA)
+#sm_all%>%group_by(TAXA)%>%summarise(n=n())%>%ungroup()
+
+############ want rescaling? #################
+mydat_scaled<-sm_all
+mydat_scaled$stability<-as.numeric(scale(mydat_scaled$stability))
+mydat_scaled$R<-as.numeric(scale(mydat_scaled$R))
+mydat_scaled$VR<- as.numeric(scale(mydat_scaled$VR))
+mydat_scaled$A<- as.numeric(scale(mydat_scaled$A))
+
+mydat_scaled$t_med<-as.numeric(scale(mydat_scaled$t_med))
+mydat_scaled$tmax_med<-as.numeric(scale(mydat_scaled$tmax_med))
+mydat_scaled$tmin_med<-as.numeric(scale(mydat_scaled$tmin_med))
+
+mydat_scaled$t_skw<-as.numeric(scale(mydat_scaled$t_skw))
+mydat_scaled$tmax_skw<-as.numeric(scale(mydat_scaled$tmax_skw))
+mydat_scaled$tmin_skw<-as.numeric(scale(mydat_scaled$tmin_skw))
+
+#---  
+
+resloc<-"./../Results/res_Prelim_Report/"
+
+cat("=========================== taxa = birds =============================== \n")
+taxa<-"birds"
+dat<-mydat_scaled%>%filter(TAXA==taxa)
+n<-nrow(dat)
+model_psem<-piecewiseSEM::psem(
+  lmer(VR ~ t_med+t_skw+(1|UID),data=dat),
+  lmer(A ~ t_med+t_skw+(1|UID),data=dat),
+  lmer(R~t_med+t_skw+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t_med+t_skw+
+         R:t_med+ A:t_med+ VR:t_med+
+         R:t_skw+ A:t_skw+ VR:t_skw+(1|UID), data=dat))
+cc<-coefs(model_psem)
+plot_psem(n,taxa,cc,layout="circle")
+print(summary(model_psem))
+saveRDS(model_psem,paste(resloc,"model_psem_",taxa,".RDS",sep=""))
+
+cat("=========================== taxa = fish =============================== \n")
+taxa<-"fish"
+dat<-mydat_scaled%>%filter(TAXA==taxa)
+n<-nrow(dat)
+model_psem<-piecewiseSEM::psem(
+  lmer(VR ~ t_med+t_skw+(1|UID),data=dat),
+  lmer(A ~ t_med+t_skw+(1|UID),data=dat),
+  lmer(R~t_med+t_skw+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t_med+t_skw+
+         R:t_med+ A:t_med+ VR:t_med+
+         R:t_skw+ A:t_skw+ VR:t_skw+(1|UID), data=dat))
+cc<-coefs(model_psem)
+plot_psem(n,taxa,cc,layout="circle")
+print(summary(model_psem))
+saveRDS(model_psem,paste(resloc,"model_psem_",taxa,".RDS",sep=""))
+```
 
 
 # Results
