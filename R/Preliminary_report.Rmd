@@ -75,7 +75,7 @@ sitemaplist<-vector(mode = "list", length = length(taxalist))
 #op<-par(mfrow=c(2,2))
 for(i in 1:length(taxalist)){
   taxa<-taxalist[i]
-  dat<-sm_all%>%filter(TAXA==taxa)%>%dplyr::select(STUDY_ID,newsite,LATITUDE,LONGITUDE)%>%distinct()
+  dat<-sm_all%>%filter(TAXA==taxa)%>%dplyr::select(STUDY_ID,newsite,LATITUDE,LONGITUDE)
   
   sitemap<-leaflet(dat) %>% addTiles() %>%
     addMarkers(~LONGITUDE, ~LATITUDE, label = ~htmlEscape(newsite))%>%
@@ -124,6 +124,8 @@ p2
 
 # Methods
 
+# Results
+
 ```{r model_psem, echo=F, cache=T, message=F, cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("plot_psem.R"))}
 library(tidyverse)
 library(lme4)
@@ -155,12 +157,13 @@ mydat_scaled$tmin_med<-as.numeric(scale(mydat_scaled$tmin_med))
 mydat_scaled$t_skw<-as.numeric(scale(mydat_scaled$t_skw))
 mydat_scaled$tmax_skw<-as.numeric(scale(mydat_scaled$tmax_skw))
 mydat_scaled$tmin_skw<-as.numeric(scale(mydat_scaled$tmin_skw))
+mydat_scaled$t_var<-as.numeric(scale(mydat_scaled$t_var))
 
 #---  
 
 resloc<-"./../Results/res_Prelim_Report/"
 
-cat("=========================== taxa = birds =============================== \n")
+#cat("=========================== taxa = birds =============================== \n")
 taxa<-"birds"
 dat<-mydat_scaled%>%filter(TAXA==taxa)
 n<-nrow(dat)
@@ -173,10 +176,10 @@ model_psem<-piecewiseSEM::psem(
          R:t_skw+ A:t_skw+ VR:t_skw+(1|UID), data=dat))
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
-print(summary(model_psem))
+#print(summary(model_psem))
 saveRDS(model_psem,paste(resloc,"model_psem_",taxa,".RDS",sep=""))
 
-cat("=========================== taxa = fish =============================== \n")
+#cat("=========================== taxa = fish =============================== \n")
 taxa<-"fish"
 dat<-mydat_scaled%>%filter(TAXA==taxa)
 n<-nrow(dat)
@@ -189,12 +192,9 @@ model_psem<-piecewiseSEM::psem(
          R:t_skw+ A:t_skw+ VR:t_skw+(1|UID), data=dat))
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
-print(summary(model_psem))
+#print(summary(model_psem))
 saveRDS(model_psem,paste(resloc,"model_psem_",taxa,".RDS",sep=""))
 ```
-
-
-# Results
 
 
 
