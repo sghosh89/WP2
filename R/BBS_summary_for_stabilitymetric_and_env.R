@@ -5,6 +5,7 @@
 
 source("./get_stability_metric.R")
 library(tidyverse)
+library(trend)
 
 # read summary results 
 r_BBS<-readRDS("../Results/for_BBS/summary_table_detail_version.RDS")
@@ -27,6 +28,8 @@ r_BBS$t_skw<-NA
 r_BBS$tmax_skw<-NA
 r_BBS$tmin_skw<-NA
 r_BBS$t_var<-NA # variability of annual temperature
+r_BBS$trend_t_tau<-NA # tau of Mann-Kendall trend test, for shorter time series it is difficult to see a trend
+r_BBS$trend_t_tau_sig<-NA # is the trend significant?
 
 for(i in 1:nrow(r_BBS)){
   siteid<-r_BBS$siteid[i]
@@ -40,6 +43,9 @@ for(i in 1:nrow(r_BBS)){
   r_BBS$tmax_skw[i]<-myskns(m$tmax)
   r_BBS$tmin_skw[i]<-myskns(m$tmin)
   r_BBS$t_var[i]<-median(m$t)/IQR(m$t,type=7)
+  trend_mk<-mk.test(m$t)
+  r_BBS$trend_t_tau<-unname(trend_mk$estimates["tau"]) # tau of Mann-Kendall trend test, for shorter time series it is difficult to see a trend
+  r_BBS$trend_t_tau_sig<-ifelse(trend_mk$p.value<0.05,1,0) # 1 means significant trend
   
   # now extract only species time-series (without env variable)
   m<-m[,1:nsp]

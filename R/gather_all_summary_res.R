@@ -82,7 +82,8 @@ sm_BT_freshw<-sm_BT_freshw%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,
                                              skw_real,skw_indep,phi_skw,
                                              iCV,iCValt,LONGITUDE,LATITUDE,
                                              t_med,tmax_med,tmin_med,
-                                             t_skw,tmax_skw,tmin_skw,t_var))
+                                             t_skw,tmax_skw,tmin_skw,t_var,
+                                             trend_t_tau,trend_t_tau_sig))
 
 #----------------------------- for BioTIME: terrestrial -----------------------------------------------------
 df<-md%>%filter(source=="BioTIME" & REALM=="Terrestrial")%>%filter(TAXA%in%c("birds","terrestrial invertebrates"))
@@ -144,7 +145,8 @@ sm_BT_terres<-sm_BT_terres%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,
                                              skw_real,skw_indep,phi_skw,
                                              iCV,iCValt,LONGITUDE,LATITUDE,
                                              t_med,tmax_med,tmin_med,
-                                             t_skw,tmax_skw,tmin_skw,t_var))
+                                             t_skw,tmax_skw,tmin_skw,t_var,
+                                             trend_t_tau,trend_t_tau_sig))
 
 #----------------------------- for BioTIMEx -----------------------------------------------------
 sm_BTx<-readRDS("../Results/for_BioTIMEx/stability_metric_and_env.RDS")
@@ -156,7 +158,7 @@ sm_BTx<-sm_BTx%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
                                              skw_real,skw_indep,phi_skw,
                                              iCV,iCValt,LONGITUDE,LATITUDE,
                                              t_med,tmax_med,tmin_med,
-                                             t_skw,tmax_skw,tmin_skw,t_var))
+                                             t_skw,tmax_skw,tmin_skw,t_var,trend_t_tau,trend_t_tau_sig))
 
 #----------------------------- for BBS -----------------------------------------------------
 sm_BBS<-readRDS("../Results/for_BBS/stability_metric_and_env.RDS")
@@ -176,7 +178,8 @@ sm_BBS<-sm_BBS%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
                                  skw_real,skw_indep,phi_skw,
                                  iCV,iCValt,LONGITUDE,LATITUDE,
                                  t_med,tmax_med,tmin_med,
-                                 t_skw,tmax_skw,tmin_skw,t_var))
+                                 t_skw,tmax_skw,tmin_skw,t_var,
+                                 trend_t_tau,trend_t_tau_sig))
 
 #----------------------------- for RivFishTIME -----------------------------------------------------
 sm_RF<-readRDS("../Results/for_RivFishTIME/stability_metric_and_env.RDS")
@@ -196,7 +199,8 @@ sm_RF<-sm_RF%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
                                skw_real,skw_indep,phi_skw,
                                iCV,iCValt,LONGITUDE,LATITUDE,
                                t_med,tmax_med,tmin_med,
-                               t_skw,tmax_skw,tmin_skw,t_var))
+                               t_skw,tmax_skw,tmin_skw,t_var,
+                               trend_t_tau,trend_t_tau_sig))
 #----------------------------- for insectRoel -----------------------------------------------------
 sm_insect<-readRDS("../Results/for_insectRoel/stability_metric_and_env.RDS")
 sm_insect$source<-"InsectRoel"
@@ -211,7 +215,8 @@ sm_insect<-sm_insect%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANI
                                        skw_real,skw_indep,phi_skw,
                                        iCV,iCValt,LONGITUDE,LATITUDE,
                                        t_med,tmax_med,tmin_med,
-                                       t_skw,tmax_skw,tmin_skw,t_var))
+                                       t_skw,tmax_skw,tmin_skw,t_var,
+                                       trend_t_tau,trend_t_tau_sig))
 
 #--------------------------------------- for swisslake zoo -----------------------------------------------------
 sm_swisslake_zoo<-readRDS("../Results/for_swisslake/zooplankton/stability_metric_and_env.RDS")
@@ -225,7 +230,8 @@ sm_swisslake_zoo<-sm_swisslake_zoo%>%dplyr::select(c(source,STUDY_ID,newsite,REA
                                                      skw_real,skw_indep,phi_skw,
                                                      iCV,iCValt,LONGITUDE,LATITUDE,
                                                      t_med,tmax_med,tmin_med,
-                                                     t_skw,tmax_skw,tmin_skw,t_var))
+                                                     t_skw,tmax_skw,tmin_skw,t_var,
+                                                     trend_t_tau,trend_t_tau_sig))
 
 #------------------------------- for zoop2014 ----------------------------------------------
 sm_zoop<-readRDS("../Results/for_zoop_2014/stability_metric_and_env.RDS")
@@ -239,7 +245,8 @@ sm_zoop<-sm_zoop%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
                                    skw_real,skw_indep,phi_skw,
                                    iCV,iCValt,LONGITUDE,LATITUDE,
                                    t_med,tmax_med,tmin_med,
-                                   t_skw,tmax_skw,tmin_skw,t_var))
+                                   t_skw,tmax_skw,tmin_skw,t_var,
+                                   trend_t_tau,trend_t_tau_sig))
 #================================================================================================
 sm_all<-rbind(sm_BT_freshw,sm_BT_terres,sm_BTx,sm_BBS,sm_RF,sm_swisslake_zoo,sm_zoop,sm_insect)
 #sm_all<-rbind(sm_BTx,sm_BBS,sm_RF,sm_swisslake_zoo,sm_zoop,sm_insect)

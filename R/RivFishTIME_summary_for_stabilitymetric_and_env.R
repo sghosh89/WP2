@@ -27,6 +27,8 @@ r_fish$t_skw<-NA
 r_fish$tmax_skw<-NA
 r_fish$tmin_skw<-NA
 r_fish$t_var<-NA # variability of annual temperature
+r_fish$trend_t_tau<-NA # tau of Mann-Kendall trend test, for shorter time series it is difficult to see a trend
+r_fish$trend_t_tau_sig<-NA # is the trend significant?
 
 for(i in 1:nrow(r_fish)){
   siteid<-r_fish$siteid[i]
@@ -40,6 +42,9 @@ for(i in 1:nrow(r_fish)){
   r_fish$tmax_skw[i]<-myskns(m$tmax)
   r_fish$tmin_skw[i]<-myskns(m$tmin)
   r_fish$t_var[i]<-median(m$t)/IQR(m$t,type=7)
+  trend_mk<-mk.test(m$t)
+  r_fish$trend_t_tau<-unname(trend_mk$estimates["tau"]) # tau of Mann-Kendall trend test, for shorter time series it is difficult to see a trend
+  r_fish$trend_t_tau_sig<-ifelse(trend_mk$p.value<0.05,1,0) # 1 means significant trend
   
   # now extract only species time-series (without env variable)
   m<-m[,1:nsp]
