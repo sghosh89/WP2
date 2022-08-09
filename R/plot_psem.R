@@ -38,7 +38,7 @@ plot_psem<-function(n,taxa,cc,layout,red_edge=1,red_arr=2){
   qgraph(EL,edge.color=l$colo,lty=l$lty,layout=layout,
          border.color="white",label.cex=cex,label.scale=F,
          edge.label.cex = l$edgelabcex,edge.label.position=0.6,
-         vsize2=4,vsize=9,title=paste("Taxa= ",taxa,", n= ",n,sep=""),
+         vsize2=4,vsize=9,title=paste("Taxa= ",taxa,", n= ",n," communities",sep=""),
          title.cex=cex,shape="rectangle",edge.labels=T,fade=F,
          label.color = 'blue',
          esize=max(abs(l[,3]))/(red_edge*scale_arrow),asize=asi)
