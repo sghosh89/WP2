@@ -48,4 +48,5 @@ t_skw: skewness of CHELSA-extracted annual temperature timeseries for the study 
 tmax_skw: skewness of CHELSA-extracted annual maximum temperature timeseries for the study years included in the analysis for each community
 tmin_skw: skewness of CHELSA-extracted annual minimum temperature timeseries for the study years included in the analysis for each community
 t_var: temperature variability for the community during the study period = median(annual temperature)/IQR(annual temperature distribution for the study period)
-
+trend_t_tau: trend of annual temperature timeseries (computed by Mann-Kendall test)
+trend_t_tau_sig: 1 for significant, 0 non-significant trend, based on p-value 0.05
