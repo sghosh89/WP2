@@ -205,6 +205,35 @@ highT_taxa$label<-"high T"
 compare_T<-rbind(lowT_taxa,highT_taxa)
 ggplot(data = compare_T, aes(x=label, y=phi_LdM)) + 
   geom_boxplot(aes(fill=label))+ggtitle(taxa)+xlab("Temperature beyond 50% CI")+ylab("Synchrony")+theme_bw()
+
+# skewness plot across taxa, fish gets more extremes but as taildep synchrony is not important driver for freshwater systems stability is directly affected by skewness there
+sm_all_bf<-sm_all%>%filter(TAXA%in%c("birds","fish"))
+br <- c(min(sm_all_bf$t_skw),0,max(sm_all_bf$t_skw))
+sm_all_bf%>%
+  ggplot( aes(x=t_skw, stat(density))) +
+  ggtitle("birds and fish")+
+  geom_text(
+    aes(label = round(stat(count) / sum((count)), 3)), 
+    stat = 'bin', vjust = -0.5, breaks = br
+  )+ ylim(c(0, 1))+geom_density()+
+  annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="red")+
+  annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  theme_classic()
+
+sm_all_bf%>%
+  ggplot( aes(x=t_skw,y=..scaled..))+geom_density()+ylim(c(0, 1))+
+  annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="red")+
+  annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  theme_classic()+facet_wrap(~TAXA)
+
+# stability vs. temperature plot for varying richness as Owen suggested, 
+# though I'm not sure does he mean as I show here
+sm_all_bf$richness_level<-cut(sm_all_bf$nsp, breaks = c(1,10,20,30,40,50,60,70,80,90),labels=c("2-10","11-20","21-30","31-40","41-50","51-60",
+                                                                   "61-70","71-80","81-88"))
+
+ggplot()+
+  geom_boxplot(data=sm_all_bf,aes(x=t_med,y=iCValt,col=richness_level),alpha=0.2)+
+  facet_wrap(~TAXA)+ theme_bw()+xlab("t_med (K/10 unit)")+ylab("Stability")
 ```
 
 So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes negative. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities. The cue is: if fish species are not much consistent in their response to warming and vary across sites, that means you cannot make a conclusion that they would become similar with changing temperature. On another note, bird species should be more consistent towards warming if their is no change in their synchrony level across communities. we will test this below.
@@ -261,8 +290,8 @@ taxa<-"birds"
 dat<-mydat_scaled%>%filter(TAXA==taxa)
 n<-nrow(dat)
 model_psem<-piecewiseSEM::psem(
-  lmer(VR ~ t_med+trend_t_tau+(1|UID),data=dat),
-  lmer(A ~ t_skw+(1|UID),data=dat),
+  lmer(VR ~ R+t_med+trend_t_tau+(1|UID),data=dat),
+  lmer(A ~ R+t_skw+(1|UID),data=dat),
   lmer(R~t_med+trend_t_tau+(1|UID),data=dat),
   lmer(stability ~ (R + VR +A)+t_med+trend_t_tau+t_skw+
          (1|UID), data=dat))
@@ -276,8 +305,8 @@ taxa<-"fish"
 dat<-mydat_scaled%>%filter(TAXA==taxa)
 n<-nrow(dat)
 model_psem<-piecewiseSEM::psem(
-  lmer(VR ~ t_med+trend_t_tau+(1|UID),data=dat),
-  lmer(A ~ t_skw+(1|UID),data=dat),
+  lmer(VR ~ R+t_med+trend_t_tau+(1|UID),data=dat),
+  lmer(A ~ R+t_skw+(1|UID),data=dat),
   lmer(R~t_med+trend_t_tau+(1|UID),data=dat),
   lmer(stability ~ (R + VR +A)+t_med+trend_t_tau+t_skw+
          (1|UID), data=dat))
