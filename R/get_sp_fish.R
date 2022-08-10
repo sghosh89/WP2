@@ -3,6 +3,9 @@ library(tidyverse)
 library(dplyr)
 sm_all<-read.csv("./../Results/stability_metric_and_env_all.csv")
 sb<-sm_all%>%filter(TAXA=="fish")
+#-----------------------------------------------
+taxa<-"fish"
+#--------------------------------------------------
 table(sb$source) #544 RivFishTIME data, 11 BioTIME data, 25 BioTIMEx data
 #Make an all species list and the newsite name
 sb<-sb%>%dplyr::select(source,STUDY_ID, newsite)
@@ -91,15 +94,75 @@ cons_tab_all$diffcor<-cons_tab_all$percent_poscor - cons_tab_all$percent_negcor
 
 hist(cons_tab_all$diffcor,100,col="skyblue",border=F,
      xlab="sites(pos.cor - neg.cor)",
-     main=paste("fish, n =",nrow(cons_tab_all)," unique species", sep=""))
+     main=paste("fish, ",nrow(cons_tab_all)," unique species across ",length(unique(df$newsite))," sites",sep=""))
 abline(v=0,col="black",lty=2)
 sum(cons_tab_all$diffcor>0)/nrow(cons_tab_all)# 49.7% with positive correlation
 sum(cons_tab_all$diffcor<0)/nrow(cons_tab_all)# 42% sites with negative correlation
 sum(cons_tab_all$diffcor==0)/nrow(cons_tab_all)# 8.3% sites with no correlation
-text(x=20, y=15, round(100*sum(cons_tab_all$diffcor>0)/nrow(cons_tab_all),2),
+text(x=30, y=15, paste(round(100*sum(cons_tab_all$diffcor>0)/nrow(cons_tab_all),2),"%"),
      col = "red", srt = 0)
-text(x=-20, y=15, round(100*sum(cons_tab_all$diffcor<0)/nrow(cons_tab_all),2),
+text(x=-30, y=15, paste(round(100*sum(cons_tab_all$diffcor<0)/nrow(cons_tab_all),2),"%"),
      col = "blue", srt = 0)
+
+#------------------------------------------
+# now, make histogram for those species which occur in lowT_taxa
+q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.25,0.75)))
+
+lowT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med<=unname(q_T_taxa[1,1]))
+highT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med>=unname(q_T_taxa[2,1]))
+
+df_lowT_taxa<-df%>%filter(newsite%in%lowT_taxa$newsite)
+df_highT_taxa<-df%>%filter(newsite%in%highT_taxa$newsite)
+
+# first with lowT 
+cons_tab_lowT_taxa<-df_lowT_taxa%>%group_by(spname)%>%
+  summarise(poscor=sum(spearcor_with_t>0),
+            negcor=sum(spearcor_with_t<0),
+            zerocor=sum(spearcor_with_t==0))%>%ungroup()%>%
+  group_by(spname)%>%mutate(occur_sites=sum(poscor,negcor,zerocor))%>%
+  mutate(percent_poscor=(poscor/occur_sites)*100,
+         percent_negcor=(negcor/occur_sites)*100,
+         percent_zerocor=(zerocor/occur_sites)*100)%>%ungroup()
+
+cons_tab_lowT_taxa$diffcor<-cons_tab_lowT_taxa$percent_poscor - cons_tab_lowT_taxa$percent_negcor
+
+hist(cons_tab_lowT_taxa$diffcor,100,col="skyblue",border=F,
+     xlab="sites(pos.cor - neg.cor) with low T, <50% CI of t_med",
+     main=paste("fish, ",nrow(cons_tab_lowT_taxa)," unique species across ",length(unique(df_lowT_taxa$newsite))," sites",sep=""))
+text(x=30, y=2, paste(round(100*sum(cons_tab_lowT_taxa$diffcor>0)/nrow(cons_tab_lowT_taxa),2),"%"),
+     col = "red", srt = 0)
+
+#sum(cons_tab_lowT_taxa$diffcor==0)
+# 8 sp. show positive response to warming, 2 was independent
+
+# then with highT 
+cons_tab_highT_taxa<-df_highT_taxa%>%group_by(spname)%>%
+  summarise(poscor=sum(spearcor_with_t>0),
+            negcor=sum(spearcor_with_t<0),
+            zerocor=sum(spearcor_with_t==0))%>%ungroup()%>%
+  group_by(spname)%>%mutate(occur_sites=sum(poscor,negcor,zerocor))%>%
+  mutate(percent_poscor=(poscor/occur_sites)*100,
+         percent_negcor=(negcor/occur_sites)*100,
+         percent_zerocor=(zerocor/occur_sites)*100)%>%ungroup()
+
+cons_tab_highT_taxa$diffcor<-cons_tab_highT_taxa$percent_poscor - cons_tab_highT_taxa$percent_negcor
+
+hist(cons_tab_highT_taxa$diffcor,100,col="skyblue",border=F,
+     xlab="sites(pos.cor - neg.cor) with high T, >50% CI of t_med",
+     main=paste("fish, ",nrow(cons_tab_highT_taxa)," unique species across ",length(unique(df_highT_taxa$newsite))," sites",sep=""))
+abline(v=0,col="black",lty=2)
+text(x=30, y=15, paste(round(100*sum(cons_tab_highT_taxa$diffcor>0)/nrow(cons_tab_highT_taxa),2),"%"),
+     col = "red", srt = 0)
+text(x=-30, y=15, paste(round(100*sum(cons_tab_highT_taxa$diffcor<0)/nrow(cons_tab_highT_taxa),2),"%"),
+     col = "blue", srt = 0)
+
+#--------------------------------------------
+
+
+
+
+
+
 
 # which(cons_tab_all$diffcor==0) # 13 fish sp shows equal sites of pos and neg correlation
 #hist(cons_tab_all$percent_poscor,100,border=F,col=rgb(1,0,0,0.25),

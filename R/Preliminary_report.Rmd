@@ -132,9 +132,9 @@ ggplot()+
   geom_point(data=sb,aes(x=nsp,y=iCValt),alpha=0.2)+
   geom_point(data=lowT_taxa,aes(x=nsp,y=iCValt),alpha=0.3,color="blue")+
   geom_point(data=highT_taxa,aes(x=nsp,y=iCValt),alpha=0.3,color="red")+
-  geom_smooth(data=sb,aes(x=nsp,y=iCValt, colour="black"),method="lm", se=F) +
-  geom_smooth(data=lowT_taxa,aes(x=nsp,y=iCValt, colour="blue"),method="lm", se=F)+
-  geom_smooth(data=highT_taxa,aes(x=nsp,y=iCValt, colour="red"),method="lm", se=F)+
+  geom_smooth(data=sb,aes(x=nsp,y=iCValt, colour="black"),method="lm", se=T) +
+  geom_smooth(data=lowT_taxa,aes(x=nsp,y=iCValt, colour="blue"),method="lm", se=T)+
+  geom_smooth(data=highT_taxa,aes(x=nsp,y=iCValt, colour="red"),method="lm", se=T)+
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2')+
   ylab("Stability, log2 scale")+xlab("Richness, log2 scale")+
@@ -146,9 +146,9 @@ ggplot()+
   geom_point(data=sb,aes(x=phi_LdM,y=iCValt),alpha=0.2)+
   geom_point(data=lowT_taxa,aes(x=phi_LdM,y=iCValt),alpha=0.3,color="blue")+
   geom_point(data=highT_taxa,aes(x=phi_LdM,y=iCValt),alpha=0.3,color="red")+
-  geom_smooth(data=sb,aes(x=phi_LdM,y=iCValt, colour="black"),method="lm", se=F) +
-  geom_smooth(data=lowT_taxa,aes(x=phi_LdM,y=iCValt, colour="blue"),method="lm", se=F)+
-  geom_smooth(data=highT_taxa,aes(x=phi_LdM,y=iCValt, colour="red"),method="lm", se=F)+
+  geom_smooth(data=sb,aes(x=phi_LdM,y=iCValt, colour="black"),method="lm", se=T) +
+  geom_smooth(data=lowT_taxa,aes(x=phi_LdM,y=iCValt, colour="blue"),method="lm", se=T)+
+  geom_smooth(data=highT_taxa,aes(x=phi_LdM,y=iCValt, colour="red"),method="lm", se=T)+
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2')+
   ylab("Stability, log2 scale")+xlab("Synchrony, VR_LdM, log2 scale")+
@@ -175,9 +175,9 @@ ggplot()+
   geom_point(data=sb,aes(x=nsp,y=iCValt),alpha=0.2)+
   geom_point(data=lowT_taxa,aes(x=nsp,y=iCValt),alpha=0.3,color="blue")+
   geom_point(data=highT_taxa,aes(x=nsp,y=iCValt),alpha=0.3,color="red")+
-  geom_smooth(data=sb,aes(x=nsp,y=iCValt, colour="black"),method="lm", se=F) +
-  geom_smooth(data=lowT_taxa,aes(x=nsp,y=iCValt, colour="blue"),method="lm", se=F)+
-  geom_smooth(data=highT_taxa,aes(x=nsp,y=iCValt, colour="red"),method="lm", se=F)+
+  geom_smooth(data=sb,aes(x=nsp,y=iCValt, colour="black"),method="lm", se=T) +
+  geom_smooth(data=lowT_taxa,aes(x=nsp,y=iCValt, colour="blue"),method="lm", se=T)+
+  geom_smooth(data=highT_taxa,aes(x=nsp,y=iCValt, colour="red"),method="lm", se=T)+
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2')+
   ylab("Stability, log2 scale")+xlab("Richness, log2 scale")+
@@ -189,9 +189,9 @@ ggplot()+
   geom_point(data=sb,aes(x=phi_LdM,y=iCValt),alpha=0.2)+
   geom_point(data=lowT_taxa,aes(x=phi_LdM,y=iCValt),alpha=0.3,color="blue")+
   geom_point(data=highT_taxa,aes(x=phi_LdM,y=iCValt),alpha=0.3,color="red")+
-  geom_smooth(data=sb,aes(x=phi_LdM,y=iCValt, colour="black"),method="lm", se=F) +
-  geom_smooth(data=lowT_taxa,aes(x=phi_LdM,y=iCValt, colour="blue"),method="lm", se=F)+
-  geom_smooth(data=highT_taxa,aes(x=phi_LdM,y=iCValt, colour="red"),method="lm", se=F)+
+  geom_smooth(data=sb,aes(x=phi_LdM,y=iCValt, colour="black"),method="lm", se=T) +
+  geom_smooth(data=lowT_taxa,aes(x=phi_LdM,y=iCValt, colour="blue"),method="lm", se=T)+
+  geom_smooth(data=highT_taxa,aes(x=phi_LdM,y=iCValt, colour="red"),method="lm", se=T)+
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2')+
   ylab("Stability, log2 scale")+xlab("Synchrony, VR_LdM, log2 scale")+
@@ -244,7 +244,8 @@ source("get_sp_birds.R")
 source("get_sp_fish.R")
 ```
 
-From the above plot you can see that fish species are more or less equally divided showing positive or negative correlation across sites, whereas birds are more consistent in positive response towards warming across sites. So, imagine a scenario where warming kills some fish species across sites, then there would be qual chance of living fish that are varying in response. 
+From the above plots, we can see birds are consistently showing positive response-distribution towards temperature change, i.e., in either end of temperature spectrum (low or high end). That's why the synchrony level remains similar for birds. 
+But for fish, warming increases the richness (addition of new species), and as fish species are more variable in response to temperature sensitivity (trait-variation), they show more asynchrony compared to low temperature scenario where only few species exists and show similar traits (so more synchrony).
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa. 
 
