@@ -110,6 +110,7 @@ text(x=-20, y=8, paste(round(100*sum(cons_tab_all$allcorval<0)/nrow(cons_tab_all
 #------------------------------------------
 # now, make histogram for those species which occur in lowT_taxa
 q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.25,0.75)))
+#q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.35,0.65)))
 
 lowT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med<=unname(q_T_taxa[1,1]))
 highT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med>=unname(q_T_taxa[2,1]))

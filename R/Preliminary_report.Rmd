@@ -244,8 +244,51 @@ source("get_sp_birds.R")
 source("get_sp_fish.R")
 ```
 
-From the above plots, we can see birds are consistently showing positive response-distribution towards temperature change, i.e., in either end of temperature spectrum (low or high end). That's why the synchrony level remains similar for birds. 
-But for fish, warming increases the richness (addition of new species), and as fish species are more variable in response to temperature sensitivity (trait-variation), they show more asynchrony compared to low temperature scenario where only few species exists and show similar traits (so more synchrony).
+```{r tmed_on_map, echo=F}
+library(tidyverse)
+library(leaflet) 
+
+plot_temp_on_map<-function(sm_all,t,taxa,scaleup){
+  dat<-sm_all%>%filter(TAXA==taxa)%>%dplyr::select(STUDY_ID,newsite,nsp,LATITUDE,LONGITUDE,t_med,trend_t_tau,t_skw)
+  
+  # first cut the continuous variable into bins
+  # these bins are now factors
+  qt<-summary(dat[,t])
+  qt<-unname(qt)
+  qt<-qt[c(1,2,5,6)]
+  
+  dat$tmedLvl <- cut(dat[,t], 
+                     qt, include.lowest = T,
+                     labels = c("<50%CI","50%CI",">50%CI"))
+  
+  # then assign a palette to this using colorFactor
+  # in this case it goes from red for the smaller values to yellow and green
+  # standard stoplight for bad, good, and best
+  beatCol <- colorFactor(palette = c("blue","gray","red"), dat$tmedLvl)
+  m1 <- leaflet() %>%
+    addTiles() %>%
+    addProviderTiles(providers$OpenStreetMap, group = 'Open SM')  %>%
+    #setView(lng = -72, lat = 41, zoom = 8) %>%
+    addCircleMarkers(data = dat, lat = ~LATITUDE, lng = ~LONGITUDE,
+                     color = ~beatCol(tmedLvl), popup = dat$newsite,radius = ~sqrt(nsp*scaleup))%>%
+    addLegend('bottomleft', pal = beatCol, values = dat$tmedLvl,
+              title = paste(t,' for ',taxa),opacity = 0.5)
+  m1
+}
+
+taxa<-"birds"
+scaleup=1
+plot_temp_on_map(sm_all,t="t_med",taxa,scaleup)
+
+taxa<-"fish"
+scaleup=3
+plot_temp_on_map(sm_all,t="t_med",taxa,scaleup)
+#plot_temp_on_map(sm_all,t="t_skw",taxa,scaleup)
+```
+
+From the above plots, we can see birds are showing consistent response-distribution across all temperature change, i.e., in either end of temperature spectrum (low or high end). That's why the synchrony level remains similar for birds. 
+But for fish, warming increases the richness (addition of new species), and as fish species now become more variable in response to temperature sensitivity (trait-variation), they show more asynchrony compared to low temperature scenario where only few species exists (see smaller circle size on the map for lowT,<50%CI) and show similar traits (so more synchrony). 
+**Note:** when I show this to Frank, he commented on how much robust is the pattern for fish at low T as there are only few species existed across 145 sites - so it also depends on how we considered the lowT-highT communities. I set beyond 50% CI of temperature range as low/high. Even if I decrease that to 30% CI, still very few species found in low T sites (15 sp across 203 sites: 80% >0, 20% <0 line).  
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa. 
 
