@@ -129,6 +129,7 @@ cons_tab_lowT_taxa$diffcor<-cons_tab_lowT_taxa$percent_poscor - cons_tab_lowT_ta
 hist(cons_tab_lowT_taxa$diffcor,100,col="skyblue",border=F,
      xlab="sites(pos.cor - neg.cor) with low T, <50% CI of t_med",
      main=paste("fish, ",nrow(cons_tab_lowT_taxa)," unique species across ",length(unique(df_lowT_taxa$newsite))," sites",sep=""))
+abline(v=0,col="black",lty=2)
 text(x=30, y=2, paste(round(100*sum(cons_tab_lowT_taxa$diffcor>0)/nrow(cons_tab_lowT_taxa),2),"%"),
      col = "red", srt = 0)
 
