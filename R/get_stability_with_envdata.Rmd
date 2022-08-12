@@ -1,5 +1,5 @@
 ---
-title: "WP2 code: model to infer environmental effects on community stability"
+title: "WP2 code to get a summary table for community-stability and related environmental data"
 author: "Shyamolina"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
@@ -1160,6 +1160,7 @@ source("./gather_all_summary_res.R") # now does not include BioTIME results
 
 # CODE AVAILABILITY
 Complete computer code written in R programming language for this project is at https://github.com/sghosh89/WP2.
+This Rmd file genarates the summary table *stability_metric_and_env_all.csv* required for next step analysis and saves the csv file in `Results` folder.
 
 
 ```{r, out.height = "500px", out.width='500px', echo=F}

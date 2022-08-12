@@ -1,5 +1,6 @@
 # This code will prepare BBS data for tail analysis
 #------------------------------------------------------
+library(dplyr)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 sp_threshold<-2
@@ -8,18 +9,16 @@ sp_threshold<-2
 xroutes<-read.csv("../DATA/for_BBS/raw_data/BBSdata_accessed_03dec2020/routes.csv") # route meta data
 xweather<-read.csv("../DATA/for_BBS/raw_data/BBSdata_accessed_03dec2020/weather.csv") # weather data
 # BBS provides local weather data, but to keep consistency from different source we are using CHELSA
-
-
 # it's a problem to read this text file: not in good format
 xsplist<-read.delim2("../DATA/for_BBS/raw_data/BBSdata_accessed_03dec2020/SpeciesList_edited.txt",
-                     header=F,sep=" ")
+                     header=F,sep=" ",fileEncoding="latin1")
 # read species list files
 x<-read.fwf(file = "../DATA/for_BBS/raw_data/BBSdata_accessed_03dec2020/SpeciesList_edited.txt",
             widths = c(6, 
                        7, 
                        50, 51, 50, 
                        19,51,57,65), 
-            strip.white = T)
+            strip.white = T,fileEncoding="latin1")
 
 colnames(x)<-c("Seq",
                "AOU",
@@ -65,16 +64,16 @@ colnames(fshort)
 sum1to50<-apply(fshort[,8:57],MARGIN=1,FUN=sum)
 fshort<-fshort%>%
   mutate(Stop1to50=sum1to50)%>% # total count for all 50 stop on each route
-  select(RouteDataID,CountryNum,StateNum,Route,RPID,Year,AOU,Stop1to50) # selecting some columns
+  dplyr::select(RouteDataID,CountryNum,StateNum,Route,RPID,Year,AOU,Stop1to50) # selecting some columns
 
 # now, consider the RouteDataID which were consistently maintained BBS protocol
 xweather_good<-xweather%>%filter(Year%in%c(1997:2019))%>%
   filter(RunType==1)
-fshort<-fshort%>%filter(RouteDataID%in%xweather_good$RouteDataID)%>%select(-RPID)
+fshort<-fshort%>%filter(RouteDataID%in%xweather_good$RouteDataID)%>%dplyr::select(-RPID)
 
 # check some summary 
 # consistent sampling effort? no: because each route within a state of a country was not sampled for each year
-c<-fshort%>%group_by(CountryNum,StateNum,Route)%>%summarize(nyr=n_distinct(Year),
+c<-fshort%>%group_by(CountryNum,StateNum,Route)%>%summarise(nyr=n_distinct(Year),
                                                             nRID=n_distinct(RouteDataID),
                                                             uRID=unique(RouteDataID))%>%ungroup()
 
@@ -92,11 +91,11 @@ c0ym1<-as.data.frame(table(c0ym$um)) # months saampled 4<7<5<6 # caution: whethe
 # currently I am considering all months
 
 # number of rotes and years per country-state combo
-c1<-fshort%>%group_by(CountryNum,StateNum)%>%summarize(nr=n_distinct(Route),
+c1<-fshort%>%group_by(CountryNum,StateNum)%>%summarise(nr=n_distinct(Route),
                                                        nyr=n_distinct(Year))%>%ungroup()
 
 # but how many years per route in a state in a country?
-c2<-fshort%>%group_by(CountryNum,StateNum,Route)%>%summarize(nyr=n_distinct(Year))%>%ungroup()
+c2<-fshort%>%group_by(CountryNum,StateNum,Route)%>%summarise(nyr=n_distinct(Year))%>%ungroup()
 # so, the number of rows in table c2 is eqv. to the site number where we will consider the bird community
 
 fshort<-fshort%>%unite("Country_State_Route",CountryNum,StateNum,Route,sep="_")
@@ -122,7 +121,7 @@ for (i in 1:length(fshort_list)){
   x<-fshort_list[[i]]
   resloc2<-paste(resloc,names(fshort_list)[i],"/",sep="")
   saveRDS(x,paste(resloc2,"sourcefile.RDS",sep=""))
-  y<-x%>%select(Year,AOU,Stop1to50)
+  y<-x%>%dplyr::select(Year,AOU,Stop1to50)
   y<-y%>%spread(AOU,Stop1to50,fill=0)%>%as.data.frame()
   rownames(y)<-y$Year # and colnames are species code
   y<-y[,-1]
