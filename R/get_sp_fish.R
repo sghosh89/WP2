@@ -80,6 +80,7 @@ cons_tab_nonsig<-df_nonsig%>%group_by(spname)%>%
             negcor=sum(spearcor_with_t<0),
             zerocor=sum(spearcor_with_t==0))%>%ungroup()
 which(df$spearcor_with_t==0)
+
 # so, we will do for all data
 cons_tab_all<-df%>%group_by(spname)%>%
   summarise(poscorsite=sum(spearcor_with_t>0),
@@ -94,6 +95,8 @@ cons_tab_all<-df%>%group_by(spname)%>%
          percent_zerocorval=(zerocorval/occur_sites)*100)%>%ungroup()
 
 cons_tab_all$allcorval<-cons_tab_all$percent_poscorval + cons_tab_all$percent_negcorval
+write.csv(cons_tab_all,"../Results/res_Prelim_Report/fish_splist_consistency_table.csv",row.names = F)
+
 rg<-range(cons_tab_all$allcorval)
 rg1<-floor(rg[1])
 rg2<-ceiling(rg[2])

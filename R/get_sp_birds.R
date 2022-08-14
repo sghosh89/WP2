@@ -117,6 +117,8 @@ cons_tab_all<-df%>%group_by(spname)%>%
          percent_zerocorval=(zerocorval/occur_sites)*100)%>%ungroup()
 
 cons_tab_all$allcorval<-cons_tab_all$percent_poscorval + cons_tab_all$percent_negcorval
+write.csv(cons_tab_all,"../Results/res_Prelim_Report/birds_splist_consistency_table.csv",row.names = F)
+
 rg<-range(cons_tab_all$allcorval)
 rg1<-floor(rg[1])
 rg2<-ceiling(rg[2])
