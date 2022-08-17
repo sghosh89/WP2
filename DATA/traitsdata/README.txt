@@ -23,6 +23,7 @@ No records found for this unidentified hummingbird: Trochilid sp.
 Ref:
 "AVONET Supplementary dataset 1.xlsx" file was downloaded on 16th Aug, 2022 from 
 https://figshare.com/articles/dataset/AVONET_morphological_ecological_and_geographical_data_for_all_birds_Tobias_et_al_2021_Ecology_Letters_/16586228 (version 5)
+and saved in AVONET folder.
 
 See related original publication for details:
 https://onlinelibrary.wiley.com/doi/full/10.1111/ele.13898
