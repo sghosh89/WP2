@@ -1,5 +1,6 @@
 #========== traits data for fish are extracted from FishBase Database ==========
-I used "rfishbase" package (https://onlinelibrary.wiley.com/doi/10.1111/j.1095-8649.2012.03464.x), see corresponding code in R/get_fishtraits_from_FishBase.R
+I used "rfishbase" package (https://onlinelibrary.wiley.com/doi/10.1111/j.1095-8649.2012.03464.x), 
+see corresponding code in R/get_fishtraits_from_FishBase.R (https://github.com/sghosh89/WP2/blob/main/R/get_fishtraits_from_FishBase.R)
 For each species, we tried to collect the TL (total length in cm), sometimes TL is not avilable, then we estimated it from
 other measures, if reported (SL=standard length, FL = fork length) and replaced in the corresponding columns. 
 So, in "fish_traits_from_FishBase.csv" file, the column named Length (this is the max length of male/unsexed fish) corresponds to
@@ -12,6 +13,7 @@ See https://cloud.r-project.org/web/packages/rfishbase/index.html for details
 
 #========== traits data for birds are extracted from AVONET ===============
 all data compiled for birds are in this file: bird_traits_from_AVONET.csv
+see corresponding code in R/get_birdtraits_from_AVONET.R (https://github.com/sghosh89/WP2/blob/main/R/get_birdtraits_from_AVONET.R)
 I have compiled all records found in AVONET for the bird species we used in the analysis, 
 537 bird species name are found in our data (column "spname" are the species name from bird community data), 
 we have found a total of 6428 records for 536 bird species (male/female) from AVONET
