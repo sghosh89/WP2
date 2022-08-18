@@ -103,7 +103,7 @@ My intuition is:
 
   - community stability would be affected by any of these temperature component either directly or indirectly via the drivers.
   - As $t_{med}$, $t_{trend}$ changes, diversity-stability relationship should be affected, so stability would change via portfolio effect. e.g. terrestrial plants, beetles, and vertebrates show declining richness with incresing temperature in the past studies.
-  - Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment. For example, as temperature increases $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species at that particular environment. But if $t_{trend}$ increases, the community is exposing to warmer environment with years, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony.
+  - Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment. For example, as temperature increases (or decreases) $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species-traits at that particular environment. But if $t_{trend}$ increases, the community is exposing to warmer environment with years, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony.
   - Changing $t_{skw}$, means frequent extreme events (like heatwaves, negative skewed annual temperature distribution), and it should be related to tail-dependent synchrony, where pairwise synchrony between species gets stronger beyond a certain threshold.
   
 ```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '50%', fig.align='center'}
@@ -114,12 +114,14 @@ But before go into modeling I just want to visualize the raw data below for bird
 ```{r exploratory_plots, echo=F, out.width = '75%',fig.cap="richness-stability-synchrony-relationship"}
 library(dplyr)
 library(tidyverse)
-# get stability vs richness rawdata plot for each taxa first
+#------ get stability vs richness rawdata plot for each taxa first -----
 sm_all%>%filter(TAXA%in%c("birds","fish"))%>%ggplot(aes(x=nsp,y=iCValt))+geom_point(alpha=0.3)+geom_smooth(method="lm")+
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2')+xlab("Richness")+ylab("Community stability")+
   facet_wrap(~TAXA)+theme_bw()
 
+
+#----- plots for birds -----
 taxa<-"birds"
 q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.25,0.75)))
 
@@ -156,13 +158,14 @@ ggplot()+
                        labels = c("all data", "low T, <50%CI", "high T, >50%CI"))+
   ggtitle(taxa)+theme_bw()
 
-# do a boxplot for VR at low/high temp
+#----- do a boxplot for VR at low/high temp, birds -----
 lowT_taxa$label<-"low T"
 highT_taxa$label<-"high T"
 compare_T<-rbind(lowT_taxa,highT_taxa)
 ggplot(data = compare_T, aes(x=label, y=phi_LdM)) + 
   geom_boxplot(aes(fill=label))+ggtitle(taxa)+xlab("Temperature beyond 50% CI")+ylab("Synchrony")+theme_bw()
 
+#----- plots for fish -----
 taxa<-"fish"
 q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.25,0.75)))
 
@@ -199,14 +202,14 @@ ggplot()+
                        labels = c("all data", "low T, <50%CI", "high T, >50%CI"))+
   ggtitle(taxa)+theme_bw()
 
-# do a boxplot for VR at low/high temp
+#----- do a boxplot for VR at low/high temp, fish -----
 lowT_taxa$label<-"low T"
 highT_taxa$label<-"high T"
 compare_T<-rbind(lowT_taxa,highT_taxa)
 ggplot(data = compare_T, aes(x=label, y=phi_LdM)) + 
   geom_boxplot(aes(fill=label))+ggtitle(taxa)+xlab("Temperature beyond 50% CI")+ylab("Synchrony")+theme_bw()
 
-# skewness plot across taxa, fish gets more extremes but as taildep synchrony is not important driver for freshwater systems stability is directly affected by skewness there
+#----- skewness plot across taxa, fish gets more extremes but as taildep synchrony is not important driver for freshwater systems stability is directly affected by skewness there ----
 sm_all_bf<-sm_all%>%filter(TAXA%in%c("birds","fish"))
 br <- c(min(sm_all_bf$t_skw),0,max(sm_all_bf$t_skw))
 sm_all_bf%>%
@@ -226,8 +229,7 @@ sm_all_bf%>%
   annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
   theme_classic()+facet_wrap(~TAXA)
 
-# stability vs. temperature plot for varying richness as Owen suggested, 
-# though I'm not sure does he mean as I show here
+#----- stability vs. temperature plot for varying richness as Owen suggested, though I'm not sure does he mean as I show here ----
 sm_all_bf$richness_level<-cut(sm_all_bf$nsp, breaks = c(1,10,20,30,40,50,60,70,80,90),labels=c("2-10","11-20","21-30","31-40","41-50","51-60",
                                                                    "61-70","71-80","81-88"))
 
@@ -236,9 +238,13 @@ ggplot()+
   facet_wrap(~TAXA)+ theme_bw()+xlab("t_med (K/10 unit)")+ylab("Stability")
 ```
 
-So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes negative. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities. The cue is: if fish species are not much consistent in their response to warming and vary across sites, that means you cannot make a conclusion that they would become similar with changing temperature. On another note, bird species should be more consistent towards warming if their is no change in their synchrony level across communities. we will test this below.
+So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes week. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities. 
+
+
+**The cue is:** if fish species are not much consistent in their response to warming and vary across sites, that means you cannot make a conclusion that they would become similar with changing temperature. On another note, bird species should be more consistent towards warming if their is no change in their synchrony level across communities. Another possibility could be with changing temperature you might loose some species (its not just number of individuals, it will selectively prefer few species with better fitness), and then the communities will be dominated by few species with similar traits (so increasing synchrony). we will test this below.
 
 ```{r check_consistency, echo=F, cache=T, message=F, cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("get_sp_birds.R"),mtime("get_sp_fish.R"))}
+
 # I got the idea when discussing with Blake
 source("get_sp_birds.R")
 source("get_sp_fish.R")
@@ -289,6 +295,15 @@ plot_temp_on_map(sm_all,t="t_med",taxa,scaleup)
 From the above plots, we can see birds are showing consistent response-distribution across all temperature change, i.e., in either end of temperature spectrum (low or high end). That's why the synchrony level remains similar for birds. 
 But for fish, warming increases the richness (addition of new species), and as fish species now become more variable in response to temperature sensitivity (trait-variation), they show more asynchrony compared to low temperature scenario where only few species exists (see smaller circle size on the map for lowT,<50%CI) and show similar traits (so more synchrony). 
 **Note:** when I show this to Frank, he commented on how much robust is the pattern for fish at low T as there are only few species existed across 145 sites - so it also depends on how we considered the lowT-highT communities. I set beyond 50% CI of temperature range as low/high. Even if I decrease that to 30% CI, still very few species found in low T sites (15 sp across 203 sites: 80% >0, 20% <0 line).  
+
+To further explore this idea: we collected traits data for birds and fish species used in the analysis. For fish-traits, I will use body length measurements, for bird-traits I will use HWI (Hand-wing index). 
+From below figures: at high T, birds have slightly less dispersal ability (lower HWI), but richness is more or less uniformly spread at either temperature range. For fish, at lowT, few large species exists with similar traits (remember the previous histogram plot 90-10) showing higher synchrony, as temperature increases addition of new small fishes in the community (maybe better environment for them to exist in that temperature rather than too cold water) makes them asynchronous with more trait variation (histogram plot 66-34).    
+
+```{r plot_traits, echo=F}
+#---- plotting richness and traits for birds ----
+source("plot_birdtraits.R")
+source("plot_fishtraits.R")
+```
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa. 
 
