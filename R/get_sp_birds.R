@@ -112,24 +112,21 @@ cons_tab_all<-df%>%group_by(spname)%>%
             negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
             zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
   group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
-  mutate(percent_poscorval=(poscorval/occur_sites)*100,
-         percent_negcorval=(negcorval/occur_sites)*100,
-         percent_zerocorval=(zerocorval/occur_sites)*100)%>%ungroup()
+  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
 
-cons_tab_all$allcorval<-cons_tab_all$percent_poscorval + cons_tab_all$percent_negcorval
 write.csv(cons_tab_all,"../Results/res_Prelim_Report/birds_splist_consistency_table.csv",row.names = F)
 
-rg<-range(cons_tab_all$allcorval)
+rg<-range(cons_tab_all$avgcorval)
 rg1<-floor(rg[1])
 rg2<-ceiling(rg[2])
 
-hist(cons_tab_all$allcorval,100,col="green",border=F,
-     xlab="overall corval % across occurence sites",xlim=c(rg1,rg2),
+hist(cons_tab_all$avgcorval,50,col="green",border=F,
+     xlab="avg correlation across occurence sites",xlim=c(-1,1),
      main=paste("birds, ",nrow(cons_tab_all)," unique species across ",length(unique(df$newsite))," sites",sep=""))
 abline(v=0,col="black",lty=2)
-text(x=20, y=25, paste(round(100*sum(cons_tab_all$allcorval>0)/nrow(cons_tab_all),2),"%"),
+text(x=0.5, y=25, paste(round(100*sum(cons_tab_all$avgcorval>0)/nrow(cons_tab_all),2),"%"),
      col = "red", srt = 0)
-text(x=-20, y=25, paste(round(100*sum(cons_tab_all$allcorval<0)/nrow(cons_tab_all),2),"%"),
+text(x=-0.5, y=25, paste(round(100*sum(cons_tab_all$avgcorval<0)/nrow(cons_tab_all),2),"%"),
      col = "blue", srt = 0)
 
 #------------------------------------------
@@ -151,19 +148,15 @@ cons_tab_lowT_taxa<-df_lowT_taxa%>%group_by(spname)%>%
             negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
             zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
   group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
-  mutate(percent_poscorval=(poscorval/occur_sites)*100,
-         percent_negcorval=(negcorval/occur_sites)*100,
-         percent_zerocorval=(zerocorval/occur_sites)*100)%>%ungroup()
+  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
 
-cons_tab_lowT_taxa$allcorval<-cons_tab_lowT_taxa$percent_poscorval + cons_tab_lowT_taxa$percent_negcorval
-
-hist(cons_tab_lowT_taxa$allcorval,100,col="green",border=F,
-     xlab="overall corval % across occurence sites",xlim=c(rg1,rg2),
+hist(cons_tab_lowT_taxa$avgcorval,50,col="green",border=F,
+     xlab="overall correlation across occurence sites",xlim=c(-1,1),
      main=paste("birds, ",nrow(cons_tab_lowT_taxa)," unique species across ",length(unique(df_lowT_taxa$newsite))," sites",sep=""))
 abline(v=0,col="black",lty=2)
-text(x=20, y=20, paste(round(100*sum(cons_tab_lowT_taxa$allcorval>0)/nrow(cons_tab_lowT_taxa),2),"%"),
+text(x=0.5, y=25, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval>0)/nrow(cons_tab_lowT_taxa),2),"%"),
      col = "red", srt = 0)
-text(x=-20, y=20, paste(round(100*sum(cons_tab_lowT_taxa$allcorval<0)/nrow(cons_tab_lowT_taxa),2),"%"),
+text(x=-0.5, y=25, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval<0)/nrow(cons_tab_lowT_taxa),2),"%"),
      col = "blue", srt = 0)
 
 #sum(cons_tab_lowT_taxa$diffcor==0)
@@ -178,19 +171,15 @@ cons_tab_highT_taxa<-df_highT_taxa%>%group_by(spname)%>%
             negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
             zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
   group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
-  mutate(percent_poscorval=(poscorval/occur_sites)*100,
-         percent_negcorval=(negcorval/occur_sites)*100,
-         percent_zerocorval=(zerocorval/occur_sites)*100)%>%ungroup()
+  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
 
-cons_tab_highT_taxa$allcorval<-cons_tab_highT_taxa$percent_poscorval + cons_tab_highT_taxa$percent_negcorval
-
-hist(cons_tab_highT_taxa$allcorval,100,col="green",border=F,
-     xlab="overall corval % across occurence sites",xlim=c(rg1,rg2),
+hist(cons_tab_highT_taxa$avgcorval,50,col="green",border=F,
+     xlab="overall correlation across occurence sites",xlim=c(-1,1),
      main=paste("birds, ",nrow(cons_tab_highT_taxa)," unique species across ",length(unique(df_highT_taxa$newsite))," sites",sep=""))
 abline(v=0,col="black",lty=2)
-text(x=20, y=10, paste(round(100*sum(cons_tab_highT_taxa$allcorval>0)/nrow(cons_tab_highT_taxa),2),"%"),
+text(x=0.5, y=25, paste(round(100*sum(cons_tab_highT_taxa$avgcorval>0)/nrow(cons_tab_highT_taxa),2),"%"),
      col = "red", srt = 0)
-text(x=-20, y=10, paste(round(100*sum(cons_tab_highT_taxa$allcorval<0)/nrow(cons_tab_highT_taxa),2),"%"),
+text(x=-0.5, y=25, paste(round(100*sum(cons_tab_highT_taxa$avgcorval<0)/nrow(cons_tab_highT_taxa),2),"%"),
      col = "blue", srt = 0)
 
 #--------------------------------------------
