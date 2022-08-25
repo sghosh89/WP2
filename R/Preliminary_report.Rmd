@@ -19,11 +19,11 @@ knitr::opts_chunk$set(include = TRUE,
 ```
 
 ```{r echo = FALSE}
-rm(list = ls())
+#rm(list = ls())
 library(tidyverse)
 library(patchwork)
 library(here)
-source(here("r", "mtime.R"))
+source(here("R", "mtime.R"))
 ```
 
 # Introduction
@@ -33,7 +33,8 @@ source(here("r", "mtime.R"))
 As the global climate is experiencing more heat, and less rainfall - it is reasonable to expect that the distributions of these variables (temperature and rainfall) are becoming more skewed and asymmetric towards the extreme values (see figure \@ref(fig:introduction-figure) below, which comes from the UZH UFO proposal, where it was figure 2). With the availability of more open access long-term databases, it is possible to address how different taxa respond at the community level.
 
 ```{r introduction-figure, echo=FALSE, fig.cap="Introduction figure", out.width = '50%', fig.align='center'}
-knitr::include_graphics(here("Results/some_assets/Intro_figure.png"))
+#here("Results/some_assets/Intro_figure.png")
+knitr::include_graphics("../Results/some_assets/Intro_figure.png") ## CHECK LATER TO USE here()
 ```
 
 
@@ -107,7 +108,8 @@ My intuition is:
   - Changing $t_{skw}$, means frequent extreme events (like heatwaves, negative skewed annual temperature distribution), and it should be related to tail-dependent synchrony, where pairwise synchrony between species gets stronger beyond a certain threshold.
 
 ```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '50%', fig.align='center'}
-knitr::include_graphics(here("Results/some_assets/drawing.jpg"))
+knitr::include_graphics("../Results/some_assets/drawing.jpg")
+#knitr::include_graphics(here("Results/some_assets/drawing.jpg"))# CHEK LATER TO HOW USE HERE
 ```
 
 But before go into modeling I just want to visualize the raw data below for birds and fish (top two largest taxa):
@@ -230,25 +232,23 @@ sm_all_bf%>%
   theme_classic()+facet_wrap(~TAXA)
 
 #----- stability vs. temperature plot for varying richness as Owen suggested, though I'm not sure does he mean as I show here ----
-sm_all_bf$richness_level<-cut(sm_all_bf$nsp,
+sm_all_bf$richness_level2<-cut(sm_all_bf$nsp,
                               breaks = c(1,10,20,30,40,50,60,70,80,90),
                               labels=c("2-10","11-20","21-30","31-40","41-50",
                                        "51-60", "61-70","71-80","81-88"))
-sm_all_bf$richness_level2<-cut(sm_all_bf$nsp,
+sm_all_bf$richness_level<-cut(sm_all_bf$nsp,
                               breaks = c(1,20,40,60,80,100),
                               labels=c("1-20","21-40","41-60",
                                        "61-80","81-100"))
 
 ggplot(data=sm_all_bf,
-               aes(x=t_med, y=iCValt, col=richness_level2))+
+               aes(x=t_med, y=iCValt, col=richness_level))+
   geom_point(alpha=0.2) +
   geom_smooth(method = "lm") +
   facet_wrap(~TAXA)+
   theme_bw()+
   xlab("t_med (K/10 unit)")+
   ylab("Stability")
-
-
 ```
 
 So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes week. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities.
@@ -256,12 +256,146 @@ So, from the exploratory plots we can see: at higher temperature positive stabil
 
 **The cue is:** if fish species are not much consistent in their response to warming and vary across sites, that means you cannot make a conclusion that they would become similar with changing temperature. On another note, bird species should be more consistent towards warming if their is no change in their synchrony level across communities. Another possibility could be with changing temperature you might loose some species (its not just number of individuals, it will selectively prefer few species with better fitness), and then the communities will be dominated by few species with similar traits (so increasing synchrony). we will test this below.
 
-```{r check_consistency, echo=F, cache=T, message=F, cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("get_sp_birds.R"),mtime("get_sp_fish.R"))}
+```{r check_consistency, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("Results/birds_splist_consistency_table.csv")),mtime(here("Results/fish_splist_consistency_table.csv")),mtime(here("Results/birds_splist_with_temp_sensitivity.csv")),mtime(here("Results/fish_splist_with_temp_sensitivity.csv")))}
 
-# I got the idea when discussing with Blake
-## Please add required data file(s) to repo
-#source(here("r/get_sp_birds.R"))
-#source(here("r/get_sp_fish.R"))
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+
+#-------- plot for birds ----------------------------------------
+taxa<-"birds"
+cons_tab_all<-read.csv(here("Results/birds_splist_consistency_table.csv"))
+df<-read.csv(here("Results/birds_splist_with_temp_sensitivity.csv"))
+
+rg<-range(cons_tab_all$avgcorval)
+rg1<-floor(rg[1])
+rg2<-ceiling(rg[2])
+
+hist(cons_tab_all$avgcorval,50,col="green",border=F,
+     xlab="avg correlation across occurence sites",xlim=c(-1,1),
+     main=paste("birds, ",nrow(cons_tab_all)," unique species across ",length(unique(df$newsite))," sites",sep=""))
+abline(v=0,col="black",lty=2)
+text(x=0.5, y=25, paste(round(100*sum(cons_tab_all$avgcorval>0)/nrow(cons_tab_all),2),"%"),
+     col = "red", srt = 0)
+text(x=-0.5, y=25, paste(round(100*sum(cons_tab_all$avgcorval<0)/nrow(cons_tab_all),2),"%"),
+     col = "blue", srt = 0)
+
+# now, make histogram for those species which occur in lowT_taxa
+q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.25,0.75)))
+
+lowT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med<=unname(q_T_taxa[1,1]))
+highT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med>=unname(q_T_taxa[2,1]))
+
+df_lowT_taxa<-df%>%filter(newsite%in%lowT_taxa$newsite)
+df_highT_taxa<-df%>%filter(newsite%in%highT_taxa$newsite)
+
+# first with lowT 
+cons_tab_lowT_taxa<-df_lowT_taxa%>%group_by(spname)%>%
+  summarise(poscorsite=sum(spearcor_with_t>0),
+            negcorsite=sum(spearcor_with_t<0),
+            zerocorsite=sum(spearcor_with_t==0),
+            poscorval=sum(spearcor_with_t[which(spearcor_with_t>0)]),
+            negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
+            zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
+  group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
+  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
+
+hist(cons_tab_lowT_taxa$avgcorval,50,col="green",border=F,
+     xlab="overall correlation across cold occurence sites",xlim=c(-1,1),
+     main=paste("birds, ",nrow(cons_tab_lowT_taxa)," unique species across ",length(unique(df_lowT_taxa$newsite))," sites",sep=""))
+abline(v=0,col="black",lty=2)
+text(x=0.5, y=25, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval>0)/nrow(cons_tab_lowT_taxa),2),"%"),
+     col = "red", srt = 0)
+text(x=-0.5, y=25, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval<0)/nrow(cons_tab_lowT_taxa),2),"%"),
+     col = "blue", srt = 0)
+
+#sum(cons_tab_lowT_taxa$diffcor==0)
+# 8 sp. show positive response to warming, 2 was independent
+
+# then with highT 
+cons_tab_highT_taxa<-df_highT_taxa%>%group_by(spname)%>%
+  summarise(poscorsite=sum(spearcor_with_t>0),
+            negcorsite=sum(spearcor_with_t<0),
+            zerocorsite=sum(spearcor_with_t==0),
+            poscorval=sum(spearcor_with_t[which(spearcor_with_t>0)]),
+            negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
+            zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
+  group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
+  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
+
+hist(cons_tab_highT_taxa$avgcorval,50,col="green",border=F,
+     xlab="overall correlation across hot occurence sites",xlim=c(-1,1),
+     main=paste("birds, ",nrow(cons_tab_highT_taxa)," unique species across ",length(unique(df_highT_taxa$newsite))," sites",sep=""))
+abline(v=0,col="black",lty=2)
+text(x=0.5, y=25, paste(round(100*sum(cons_tab_highT_taxa$avgcorval>0)/nrow(cons_tab_highT_taxa),2),"%"),
+     col = "red", srt = 0)
+text(x=-0.5, y=25, paste(round(100*sum(cons_tab_highT_taxa$avgcorval<0)/nrow(cons_tab_highT_taxa),2),"%"),
+     col = "blue", srt = 0)
+
+#-------- plot for fish ------------------------------------
+taxa="fish"
+cons_tab_all<-read.csv(here("Results/birds_splist_consistency_table.csv"))
+df<-read.csv(here("Results/fish_splist_with_temp_sensitivity.csv"))
+
+hist(cons_tab_all$avgcorval,50,col="skyblue",border=F,
+     xlab="overall correlation across occurence sites",xlim=c(-1,1),
+     main=paste("fish, ",nrow(cons_tab_all)," unique species across ",length(unique(df$newsite))," sites",sep=""))
+abline(v=0,col="black",lty=2)
+text(x=0.5, y=8, paste(round(100*sum(cons_tab_all$avgcorval>0)/nrow(cons_tab_all),2),"%"),
+     col = "red", srt = 0)
+text(x=-0.5, y=8, paste(round(100*sum(cons_tab_all$avgcorval<0)/nrow(cons_tab_all),2),"%"),
+     col = "blue", srt = 0)
+
+# now, make histogram for those species which occur in lowT_taxa
+q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.25,0.75)))
+#q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.35,0.65)))
+
+lowT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med<=unname(q_T_taxa[1,1]))
+highT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med>=unname(q_T_taxa[2,1]))
+
+df_lowT_taxa<-df%>%filter(newsite%in%lowT_taxa$newsite)
+df_highT_taxa<-df%>%filter(newsite%in%highT_taxa$newsite)
+
+# first with lowT 
+cons_tab_lowT_taxa<-df_lowT_taxa%>%group_by(spname)%>%
+  summarise(poscorsite=sum(spearcor_with_t>0),
+            negcorsite=sum(spearcor_with_t<0),
+            zerocorsite=sum(spearcor_with_t==0),
+            poscorval=sum(spearcor_with_t[which(spearcor_with_t>0)]),
+            negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
+            zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
+  group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
+  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
+
+hist(cons_tab_lowT_taxa$avgcorval,10,col="skyblue",border=F,
+     xlab="overall correlation across cold occurence sites",xlim=c(-1,1),
+     main=paste("fish, ",nrow(cons_tab_lowT_taxa)," unique species across ",length(unique(df_lowT_taxa$newsite))," sites",sep=""))
+abline(v=0,col="black",lty=2)
+text(x=0.5, y=1, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval>0)/nrow(cons_tab_lowT_taxa),2),"%"),
+     col = "red", srt = 0)
+text(x=-0.5, y=1, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval<0)/nrow(cons_tab_lowT_taxa),2),"%"),
+     col = "blue", srt = 0)
+
+#sum(cons_tab_lowT_taxa$diffcor==0)
+# 8 sp. show positive response to warming, 2 was independent
+
+# then with highT 
+cons_tab_highT_taxa<-df_highT_taxa%>%group_by(spname)%>%
+  summarise(poscorsite=sum(spearcor_with_t>0),
+            negcorsite=sum(spearcor_with_t<0),
+            zerocorsite=sum(spearcor_with_t==0),
+            poscorval=sum(spearcor_with_t[which(spearcor_with_t>0)]),
+            negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
+            zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
+  group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
+  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
+
+hist(cons_tab_highT_taxa$avgcorval,50,col="skyblue",border=F,
+     xlab="overall correlation across hot occurence sites",xlim=c(-1,1),
+     main=paste("fish, ",nrow(cons_tab_highT_taxa)," unique species across ",length(unique(df_highT_taxa$newsite))," sites",sep=""))
+abline(v=0,col="black",lty=2)
+text(x=0.5, y=6, paste(round(100*sum(cons_tab_highT_taxa$avgcorval>0)/nrow(cons_tab_highT_taxa),2),"%"),
+     col = "red", srt = 0)
+text(x=-0.5, y=6, paste(round(100*sum(cons_tab_highT_taxa$avgcorval<0)/nrow(cons_tab_highT_taxa),2),"%"),
+     col = "blue", srt = 0)
 ```
 
 ```{r tmed_on_map, echo=F}
@@ -316,9 +450,8 @@ From below figures: at high T, birds have slightly less dispersal ability (lower
 ```{r plot_direct_traits, echo=F}
 #---- plotting richness and traits for birds ----
 # these are direct traits: body size
-## Please add required data file(s) to repo
-#source(here("R/plot_birdtraits.R"))
-#source(here("R/plot_fishtraits.R"))
+source(here("R/plot_birdtraits.R"))
+source(here("R/plot_fishtraits.R"))
 ```
 
 When I showed this to Blake, he was not convinced by the idea to split the data into two: low/high based on t_med (to him this temperature difference is more on latitudinal differences as shown in the map), and same species can exist in both communities - so why changing t_med should change the synchrony level for fish? and getting different bodysize fish from low/high t_med (fewer big fish in lowT and many smaller fish in highT) is not explaining why big fish should be more synchronous - is it because of fewer species (richness) or because bigger fish abundance change needs more time - not on annual scale?
@@ -337,12 +470,12 @@ taxa<-"fish"
 sfi<-sm_all%>%filter(TAXA==taxa)
 
 # all cor with temperature
-## Please add required data file(s) to repo
-df<-read.csv(here("Results/res_Prelim_Report/fish_splist_with_temp_sensitivity.csv"))
+
+df<-read.csv(here("Results/fish_splist_with_temp_sensitivity.csv"))
 
 # consistency table
-## Please add required data file(s) to repo
-dfc<-read.csv("../Results/res_Prelim_Report/fish_splist_consistency_table.csv")
+
+dfc<-read.csv(here("Results/fish_splist_consistency_table.csv"))
 
 # first extract temperature-cor traits per community
 df<-df%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname)
@@ -366,12 +499,10 @@ taxa<-"birds"
 sfi<-sm_all%>%filter(TAXA==taxa)
 
 # all cor with temperature
-## Please add required data file(s) to repo
-df<-read.csv(here("Results/res_Prelim_Report/birds_splist_with_temp_sensitivity.csv"))
+df<-read.csv(here("Results/birds_splist_with_temp_sensitivity.csv"))
 
 # consistency table
-## Please add required data file(s) to repo
-dfc<-read.csv(here("Results/res_Prelim_Report/birds_splist_consistency_table.csv"))
+dfc<-read.csv(here("Results/birds_splist_consistency_table.csv"))
 
 # first extract temperature-cor traits per community
 df<-df%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname)
@@ -394,16 +525,16 @@ ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+geom_smooth(method="loess
 Possible explanation:
 
 ```{r response-scematicfig, echo=FALSE, fig.cap="Response variation with temperature", out.width = '100%', fig.align='center'}
-knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"))
+knitr::include_graphics("../Results/some_assets/responsetraits.jpg") # here() not working with knitr in windows
 ```
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa.
 
-```{r model_psem, echo=F, cache=T, message=F, cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("plot_psem.R"))}
+```{r model_psem, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
 library(tidyverse)
 library(lme4)
 library(piecewiseSEM)
-source(here("r/plot_psem.R"))
+source(here("R/plot_psem.R"))
 
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 sm_all$UID<-paste(sm_all$source,sm_all$STUDY_ID,sep="_")

@@ -7,10 +7,10 @@ taxa<-"fish"
 sb<-sm_all%>%filter(TAXA==taxa)
 
 # all cor with temperature
-df<-read.csv("../Results/res_Prelim_Report/fish_splist_with_temp_sensitivity.csv")
+df<-read.csv("../Results/fish_splist_with_temp_sensitivity.csv")
 
 # consistency table
-dfc<-read.csv("../Results/res_Prelim_Report/fish_splist_consistency_table.csv")
+dfc<-read.csv("../Results/fish_splist_consistency_table.csv")
 
 # birdtraits
 dft<-read.csv("../DATA/traitsdata/fish_traits_from_FishBase.csv")

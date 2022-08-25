@@ -1154,13 +1154,25 @@ source("./BioTIMEx_summary_for_stabilitymetric_and_env.R")
 ```{r gather_all_summary_res,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS"),mtime("../DATA/metadata_summary.csv"),mtime("./gather_all_summary_res.R"),mtime("../Results/for_BioTIME/Freshwater_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIME/Terrestrial_plotlevel/stability_metric_and_env.RDS"),mtime("../Results/for_BioTIMEx/stability_metric_and_env.RDS"),mtime("../Results/for_BBS/stability_metric_and_env.RDS"),mtime("../Results/for_RivFishTIME/stability_metric_and_env.RDS"),mtime("../Results/for_insectRoel/stability_metric_and_env.RDS"),mtime("../Results/for_swisslake/zooplankton/stability_metric_and_env.RDS"),mtime("../Results/for_zoop_2014/stability_metric_and_env.RDS"))}
 
 set.seed(seed) 
-source("./gather_all_summary_res.R") # now does not include BioTIME results
+source("./gather_all_summary_res.R") 
 ```
 
+```{r get_consistency, echo=F, cache=T, message=F, cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("get_sp_birds.R"),mtime("get_sp_fish.R"))}
+
+# I got the idea when discussing with Blake
+source("./get_sp_birds.R")
+source("./get_sp_fish.R")
+```
 
 # CODE AVAILABILITY
 Complete computer code written in R programming language for this project is at https://github.com/sghosh89/WP2.
-This Rmd file genarates the summary table *stability_metric_and_env_all.csv* required for next step analysis and saves the csv file in `Results` folder.
+This Rmd file generates the summary table *stability_metric_and_env_all.csv* required for next step analysis and saves the csv file in `Results` folder.
+It also saves following 4 csv files in the `Results` folder:
+
+- *birds_splist_consistency_table.csv*, 
+- *fish_splist_consistency_table.csv*, 
+- *birds_splist_with_temp_sensitivity.csv*, 
+- *fish_splist_with_temp_sensitivity.csv*.
 
 
 ```{r, out.height = "500px", out.width='500px', echo=F}

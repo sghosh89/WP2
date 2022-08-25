@@ -56,7 +56,7 @@ occur<-as.data.frame(table(tab_spearcor_with_t$spname))%>%arrange(desc(Freq))
 #hist(occur$Freq,200)
 sum(occur$Freq==1) #23 sp occur only in one community
 df<-tab_spearcor_with_t %>% distinct(spname, newsite,.keep_all = TRUE)
-write.csv(df,"../Results/res_Prelim_Report/fish_splist_with_temp_sensitivity.csv",row.names = F)
+write.csv(df,"../Results/fish_splist_with_temp_sensitivity.csv",row.names = F)
 
 length(unique(df$spname)) # 157 unique fish sp in total
 
@@ -92,76 +92,6 @@ cons_tab_all<-df%>%group_by(spname)%>%
   group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
   mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
 
-write.csv(cons_tab_all,"../Results/res_Prelim_Report/fish_splist_consistency_table.csv",row.names = F)
-
-
-hist(cons_tab_all$avgcorval,50,col="skyblue",border=F,
-     xlab="overall correlation across occurence sites",xlim=c(-1,1),
-     main=paste("fish, ",nrow(cons_tab_all)," unique species across ",length(unique(df$newsite))," sites",sep=""))
-abline(v=0,col="black",lty=2)
-text(x=0.5, y=8, paste(round(100*sum(cons_tab_all$avgcorval>0)/nrow(cons_tab_all),2),"%"),
-     col = "red", srt = 0)
-text(x=-0.5, y=8, paste(round(100*sum(cons_tab_all$avgcorval<0)/nrow(cons_tab_all),2),"%"),
-     col = "blue", srt = 0)
-
-#------------------------------------------
-# now, make histogram for those species which occur in lowT_taxa
-q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.25,0.75)))
-#q_T_taxa<-sm_all%>%filter(TAXA==taxa)%>%summarise(q=quantile(t_med,c(0.35,0.65)))
-
-lowT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med<=unname(q_T_taxa[1,1]))
-highT_taxa<-sm_all%>%filter(TAXA==taxa)%>%filter(t_med>=unname(q_T_taxa[2,1]))
-
-df_lowT_taxa<-df%>%filter(newsite%in%lowT_taxa$newsite)
-df_highT_taxa<-df%>%filter(newsite%in%highT_taxa$newsite)
-
-# first with lowT 
-cons_tab_lowT_taxa<-df_lowT_taxa%>%group_by(spname)%>%
-  summarise(poscorsite=sum(spearcor_with_t>0),
-            negcorsite=sum(spearcor_with_t<0),
-            zerocorsite=sum(spearcor_with_t==0),
-            poscorval=sum(spearcor_with_t[which(spearcor_with_t>0)]),
-            negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
-            zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
-  group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
-  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
-
-hist(cons_tab_lowT_taxa$avgcorval,10,col="skyblue",border=F,
-     xlab="overall correlation across cold occurence sites",xlim=c(-1,1),
-     main=paste("fish, ",nrow(cons_tab_lowT_taxa)," unique species across ",length(unique(df_lowT_taxa$newsite))," sites",sep=""))
-abline(v=0,col="black",lty=2)
-text(x=0.5, y=1, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval>0)/nrow(cons_tab_lowT_taxa),2),"%"),
-     col = "red", srt = 0)
-text(x=-0.5, y=1, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval<0)/nrow(cons_tab_lowT_taxa),2),"%"),
-     col = "blue", srt = 0)
-
-#sum(cons_tab_lowT_taxa$diffcor==0)
-# 8 sp. show positive response to warming, 2 was independent
-
-# then with highT 
-cons_tab_highT_taxa<-df_highT_taxa%>%group_by(spname)%>%
-  summarise(poscorsite=sum(spearcor_with_t>0),
-            negcorsite=sum(spearcor_with_t<0),
-            zerocorsite=sum(spearcor_with_t==0),
-            poscorval=sum(spearcor_with_t[which(spearcor_with_t>0)]),
-            negcorval=sum(spearcor_with_t[which(spearcor_with_t<0)]),
-            zerocorval=sum(spearcor_with_t[which(spearcor_with_t==0)]))%>%ungroup()%>%
-  group_by(spname)%>%mutate(occur_sites=sum(poscorsite,negcorsite,zerocorsite))%>%
-  mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
-
-hist(cons_tab_highT_taxa$avgcorval,50,col="skyblue",border=F,
-     xlab="overall correlation across hot occurence sites",xlim=c(-1,1),
-     main=paste("fish, ",nrow(cons_tab_highT_taxa)," unique species across ",length(unique(df_highT_taxa$newsite))," sites",sep=""))
-abline(v=0,col="black",lty=2)
-text(x=0.5, y=6, paste(round(100*sum(cons_tab_highT_taxa$avgcorval>0)/nrow(cons_tab_highT_taxa),2),"%"),
-     col = "red", srt = 0)
-text(x=-0.5, y=6, paste(round(100*sum(cons_tab_highT_taxa$avgcorval<0)/nrow(cons_tab_highT_taxa),2),"%"),
-     col = "blue", srt = 0)
-
-#--------------------------------------------
-
-
-
-
+write.csv(cons_tab_all,"../Results/fish_splist_consistency_table.csv",row.names = F)
 
 
