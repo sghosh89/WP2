@@ -23,8 +23,7 @@ rm(list = ls())
 library(tidyverse)
 library(patchwork)
 library(here)
-#source(here("r", "various_useful_functions.r"))
-source("mtime.R")
+source(here("r", "mtime.R"))
 ```
 
 # Introduction
@@ -34,7 +33,7 @@ source("mtime.R")
 As the global climate is experiencing more heat, and less rainfall - it is reasonable to expect that the distributions of these variables (temperature and rainfall) are becoming more skewed and asymmetric towards the extreme values (see figure \@ref(fig:introduction-figure) below, which comes from the UZH UFO proposal, where it was figure 2). With the availability of more open access long-term databases, it is possible to address how different taxa respond at the community level.
 
 ```{r introduction-figure, echo=FALSE, fig.cap="Introduction figure", out.width = '50%', fig.align='center'}
-knitr::include_graphics("../Results/some_assets/Intro_figure.png")
+knitr::include_graphics(here("Results/some_assets/Intro_figure.png"))
 ```
 
 
@@ -54,7 +53,7 @@ Total 1948 community timeseries we have collected for the timespan 1979-2019. 4 
 library(dplyr)
 library(tidyverse)
 
-sm_all<-read.csv("../Results/stability_metric_and_env_all.csv")
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 str(sm_all) # total communities within 1979-2019 timespan, we selected only 4 taxa
 ```
 
@@ -75,14 +74,15 @@ sitemaplist<-vector(mode = "list", length = length(taxalist))
 #op<-par(mfrow=c(2,2))
 for(i in 1:length(taxalist)){
   taxa<-taxalist[i]
-  dat<-sm_all%>%filter(TAXA==taxa)%>%dplyr::select(STUDY_ID,newsite,LATITUDE,LONGITUDE)
+  dat<-sm_all%>%filter(TAXA==taxa) %>%
+    dplyr::select(STUDY_ID,newsite,LATITUDE,LONGITUDE)
   
   sitemap<-leaflet(dat) %>% addTiles() %>%
     addMarkers(~LONGITUDE, ~LATITUDE, label = ~htmlEscape(newsite))%>%
     addControl(paste(taxa,", n = ",nrow(dat),sep=""), position = "bottomleft", className="map-title")
   sitemaplist[[i]]<-sitemap
-  f<-paste("../Results/res_Prelim_Report/samplingsite_",taxa,
-           ".html",sep="")
+  f<-here(paste("Results/res_Prelim_Report/samplingsite_",taxa,
+           ".html",sep=""))
   htmlwidgets::saveWidget(sitemap, 
                           file.path(normalizePath(dirname(f)),basename(f)))
 }
@@ -107,11 +107,11 @@ My intuition is:
   - Changing $t_{skw}$, means frequent extreme events (like heatwaves, negative skewed annual temperature distribution), and it should be related to tail-dependent synchrony, where pairwise synchrony between species gets stronger beyond a certain threshold.
   
 ```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '50%', fig.align='center'}
-knitr::include_graphics("../Results/some_assets/drawing.jpg")
+knitr::include_graphics(here("Results/some_assets/drawing.jpg"))
 ```
 
 But before go into modeling I just want to visualize the raw data below for birds and fish (top two largest taxa):
-```{r exploratory_plots, echo=F, out.width = '75%',fig.cap="richness-stability-synchrony-relationship"}
+```{r exploratory-plots, echo=F, out.width = '75%',fig.cap="richness-stability-synchrony-relationship"}
 library(dplyr)
 library(tidyverse)
 #------ get stability vs richness rawdata plot for each taxa first -----
@@ -230,12 +230,25 @@ sm_all_bf%>%
   theme_classic()+facet_wrap(~TAXA)
 
 #----- stability vs. temperature plot for varying richness as Owen suggested, though I'm not sure does he mean as I show here ----
-sm_all_bf$richness_level<-cut(sm_all_bf$nsp, breaks = c(1,10,20,30,40,50,60,70,80,90),labels=c("2-10","11-20","21-30","31-40","41-50","51-60",
-                                                                   "61-70","71-80","81-88"))
+sm_all_bf$richness_level<-cut(sm_all_bf$nsp,
+                              breaks = c(1,10,20,30,40,50,60,70,80,90),
+                              labels=c("2-10","11-20","21-30","31-40","41-50",
+                                       "51-60", "61-70","71-80","81-88"))
+sm_all_bf$richness_level2<-cut(sm_all_bf$nsp,
+                              breaks = c(1,20,40,60,80,100),
+                              labels=c("1-20","21-40","41-60",
+                                       "61-80","81-100"))
 
-ggplot()+
-  geom_boxplot(data=sm_all_bf,aes(x=t_med,y=iCValt,col=richness_level),alpha=0.2)+
-  facet_wrap(~TAXA)+ theme_bw()+xlab("t_med (K/10 unit)")+ylab("Stability")
+ggplot(data=sm_all_bf,
+               aes(x=t_med, y=iCValt, col=richness_level2))+
+  geom_point(alpha=0.2) +
+  geom_smooth(method = "lm") +
+  facet_wrap(~TAXA)+
+  theme_bw()+
+  xlab("t_med (K/10 unit)")+
+  ylab("Stability")
+
+
 ```
 
 So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes week. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities. 
@@ -246,8 +259,9 @@ So, from the exploratory plots we can see: at higher temperature positive stabil
 ```{r check_consistency, echo=F, cache=T, message=F, cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("get_sp_birds.R"),mtime("get_sp_fish.R"))}
 
 # I got the idea when discussing with Blake
-source("get_sp_birds.R")
-source("get_sp_fish.R")
+## Please add required data file(s) to repo
+#source(here("r/get_sp_birds.R"))
+#source(here("r/get_sp_fish.R"))
 ```
 
 ```{r tmed_on_map, echo=F}
@@ -302,8 +316,9 @@ From below figures: at high T, birds have slightly less dispersal ability (lower
 ```{r plot_direct_traits, echo=F}
 #---- plotting richness and traits for birds ----
 # these are direct traits: body size
-source("plot_birdtraits.R")
-source("plot_fishtraits.R")
+## Please add required data file(s) to repo
+#source(here("R/plot_birdtraits.R"))
+#source(here("R/plot_fishtraits.R"))
 ```
 
 When I showed this to Blake, he was not convinced by the idea to split the data into two: low/high based on t_med (to him this temperature difference is more on latitudinal differences as shown in the map), and same species can exist in both communities - so why changing t_med should change the synchrony level for fish? and getting different bodysize fish from low/high t_med (fewer big fish in lowT and many smaller fish in highT) is not explaining why big fish should be more synchronous - is it because of fewer species (richness) or because bigger fish abundance change needs more time - not on annual scale?
@@ -314,7 +329,7 @@ So, I thought to make a plot of how community-level average response traits (ave
 # first for fish
 library(tidyverse)
 library(dplyr)
-sm_all<-read.csv("./../Results/stability_metric_and_env_all.csv")
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 #range(sm_all$t_med)
 
 #---- for fish -----
@@ -322,9 +337,11 @@ taxa<-"fish"
 sfi<-sm_all%>%filter(TAXA==taxa)
 
 # all cor with temperature
-df<-read.csv("../Results/res_Prelim_Report/fish_splist_with_temp_sensitivity.csv")
+## Please add required data file(s) to repo
+df<-read.csv(here("Results/res_Prelim_Report/fish_splist_with_temp_sensitivity.csv"))
 
 # consistency table
+## Please add required data file(s) to repo
 dfc<-read.csv("../Results/res_Prelim_Report/fish_splist_consistency_table.csv")
 
 # first extract temperature-cor traits per community
@@ -349,10 +366,12 @@ taxa<-"birds"
 sfi<-sm_all%>%filter(TAXA==taxa)
 
 # all cor with temperature
-df<-read.csv("../Results/res_Prelim_Report/birds_splist_with_temp_sensitivity.csv")
+## Please add required data file(s) to repo
+df<-read.csv(here("Results/res_Prelim_Report/birds_splist_with_temp_sensitivity.csv"))
 
 # consistency table
-dfc<-read.csv("../Results/res_Prelim_Report/birds_splist_consistency_table.csv")
+## Please add required data file(s) to repo
+dfc<-read.csv(here("Results/res_Prelim_Report/birds_splist_consistency_table.csv"))
 
 # first extract temperature-cor traits per community
 df<-df%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname)
@@ -375,7 +394,7 @@ ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+geom_smooth(method="loess
 Possible explanation:
 
 ```{r response-scematicfig, echo=FALSE, fig.cap="Response variation with temperature", out.width = '100%', fig.align='center'}
-knitr::include_graphics("../Results/some_assets/responsetraits.jpg")
+knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"))
 ```
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa. 
@@ -384,9 +403,9 @@ Now, we will do a path analysis for a simplistic mixed effect model to see the e
 library(tidyverse)
 library(lme4)
 library(piecewiseSEM)
-source("plot_psem.R")
+source(here("r/plot_psem.R"))
 
-sm_all<-read.csv("../Results/stability_metric_and_env_all.csv")
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 sm_all$UID<-paste(sm_all$source,sm_all$STUDY_ID,sep="_")
 sm_all$A<-sm_all$L+abs(sm_all$U) # total asymmetry
 sm_all<-sm_all%>%dplyr::rename(
@@ -415,7 +434,7 @@ mydat_scaled$t_var<-as.numeric(scale(mydat_scaled$t_var))
 
 #---  
 
-resloc<-"./../Results/res_Prelim_Report/"
+resloc<-here("Results/res_Prelim_Report/")
 
 #cat("=========================== taxa = birds =============================== \n")
 taxa<-"birds"
