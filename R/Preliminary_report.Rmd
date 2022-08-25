@@ -34,7 +34,8 @@ As the global climate is experiencing more heat, and less rainfall - it is reaso
 
 ```{r introduction-figure, echo=FALSE, fig.cap="Introduction figure", out.width = '50%', fig.align='center'}
 #here("Results/some_assets/Intro_figure.png")
-knitr::include_graphics("../Results/some_assets/Intro_figure.png") ## CHECK LATER TO USE here()
+knitr::include_graphics(here("Results/some_assets/Intro_figure.png"),
+                        rel_path = FALSE)
 ```
 
 
@@ -108,8 +109,9 @@ My intuition is:
   - Changing $t_{skw}$, means frequent extreme events (like heatwaves, negative skewed annual temperature distribution), and it should be related to tail-dependent synchrony, where pairwise synchrony between species gets stronger beyond a certain threshold.
 
 ```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '50%', fig.align='center'}
-knitr::include_graphics("../Results/some_assets/drawing.jpg")
-#knitr::include_graphics(here("Results/some_assets/drawing.jpg"))# CHEK LATER TO HOW USE HERE
+#knitr::include_graphics("../Results/some_assets/drawing.jpg")
+knitr::include_graphics(here("Results/some_assets/drawing.jpg"),
+                        rel_path = FALSE)# CHEK LATER TO HOW USE HERE
 ```
 
 But before go into modeling I just want to visualize the raw data below for birds and fish (top two largest taxa):
@@ -525,7 +527,8 @@ ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+geom_smooth(method="loess
 Possible explanation:
 
 ```{r response-scematicfig, echo=FALSE, fig.cap="Response variation with temperature", out.width = '100%', fig.align='center'}
-knitr::include_graphics("../Results/some_assets/responsetraits.jpg") # here() not working with knitr in windows
+knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"),
+                        rel_path = FALSE)
 ```
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa.
