@@ -127,7 +127,7 @@ cons_tab_lowT_taxa<-df_lowT_taxa%>%group_by(spname)%>%
   mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
 
 hist(cons_tab_lowT_taxa$avgcorval,10,col="skyblue",border=F,
-     xlab="overall correlation across occurence sites",xlim=c(-1,1),
+     xlab="overall correlation across cold occurence sites",xlim=c(-1,1),
      main=paste("fish, ",nrow(cons_tab_lowT_taxa)," unique species across ",length(unique(df_lowT_taxa$newsite))," sites",sep=""))
 abline(v=0,col="black",lty=2)
 text(x=0.5, y=1, paste(round(100*sum(cons_tab_lowT_taxa$avgcorval>0)/nrow(cons_tab_lowT_taxa),2),"%"),
@@ -150,7 +150,7 @@ cons_tab_highT_taxa<-df_highT_taxa%>%group_by(spname)%>%
   mutate(avgcorval=sum(poscorval,negcorval,zerocorval)/occur_sites)%>%ungroup()
 
 hist(cons_tab_highT_taxa$avgcorval,50,col="skyblue",border=F,
-     xlab="overall correlation across occurence sites",xlim=c(-1,1),
+     xlab="overall correlation across hot occurence sites",xlim=c(-1,1),
      main=paste("fish, ",nrow(cons_tab_highT_taxa)," unique species across ",length(unique(df_highT_taxa$newsite))," sites",sep=""))
 abline(v=0,col="black",lty=2)
 text(x=0.5, y=6, paste(round(100*sum(cons_tab_highT_taxa$avgcorval>0)/nrow(cons_tab_highT_taxa),2),"%"),
