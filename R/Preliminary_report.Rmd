@@ -111,7 +111,7 @@ knitr::include_graphics("../Results/some_assets/drawing.jpg")
 ```
 
 But before go into modeling I just want to visualize the raw data below for birds and fish (top two largest taxa):
-```{r exploratory_plots, echo=F, out.width = '75%',fig.cap="richness-stability-synchrony-relationship"}
+```{r exploratory-plots, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship for birds and fish", "Stability-diversity relationship for birds at different temperature levels", "Stability-synchrony relationship for birds at different temperature levels", "Birds: no change in synchrony level with increasing temperature","Stability-diversity relationship for fish at different temperature levels","Stability-synchrony relationship for fish at different temperature levels", "Fish: asynchrony increases with increasing temperature","Density plot of all sites with skewed temperature timeseries","Density plot of all sites with skewed temperature timeseries: for birds and fish","Stability-temperature plot at different richness levels")}
 library(dplyr)
 library(tidyverse)
 #------ get stability vs richness rawdata plot for each taxa first -----
