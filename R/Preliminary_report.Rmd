@@ -108,10 +108,17 @@ My intuition is:
   - Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment. For example, as temperature increases (or decreases) $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species-traits at that particular environment. But if $t_{trend}$ increases, the community is exposing to warmer environment with years, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony. I am not sure, what will happen - but we can see how community-level response (avg of all species'response to warming in that community) changes with temperature?
   - Changing $t_{skw}$, means frequent extreme events (like heatwaves, negative skewed annual temperature distribution), and it should be related to tail-dependent synchrony, where pairwise synchrony between species gets stronger beyond a certain threshold.
 
-```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '50%', fig.align='center'}
+```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '100%', fig.align='center'}
 #knitr::include_graphics("../Results/some_assets/drawing.jpg")
 knitr::include_graphics(here("Results/some_assets/drawing.jpg"),
                         rel_path = FALSE)# CHEK LATER TO HOW USE HERE
+```
+
+
+```{r realdata-timeseries, echo=FALSE, fig.cap="Temperature timeseries figure with real data", out.width = '100%', fig.align='center'}
+#here("Results/some_assets/Intro_figure.png")
+knitr::include_graphics(here("Results/some_assets/realdata_temperature_timeseries.jpg"),
+                        rel_path = FALSE)
 ```
 
 But before go into modeling I just want to visualize the raw data below for birds and fish (top two largest taxa):

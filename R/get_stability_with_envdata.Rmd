@@ -1164,6 +1164,12 @@ source("./get_sp_birds.R")
 source("./get_sp_fish.R")
 ```
 
+```{r realdata_temp_timeseriesplot, echo=F, cache=T, message=F,results="hide",fig.show="hide", cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("./realdata_temperature_timeseriesplot.R"))}
+
+# timeseries schematic plot now with realdata
+source("./realdata_temperature_timeseriesplot.R")
+```
+
 # CODE AVAILABILITY
 Complete computer code written in R programming language for this project is at https://github.com/sghosh89/WP2.
 This Rmd file generates the summary table *stability_metric_and_env_all.csv* required for next step analysis and saves the csv file in `Results` folder.
