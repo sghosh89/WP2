@@ -2,18 +2,18 @@
 library(tidyverse)
 library(dplyr)
 
-sm_all<-read.csv("./../Results/stability_metric_and_env_all.csv")
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 taxa<-"fish"
 sb<-sm_all%>%filter(TAXA==taxa)
 
 # all cor with temperature
-df<-read.csv("../Results/fish_splist_with_temp_sensitivity.csv")
+df<-read.csv(here("Results/fish_splist_with_temp_sensitivity.csv"))
 
 # consistency table
-dfc<-read.csv("../Results/fish_splist_consistency_table.csv")
+dfc<-read.csv(here("Results/fish_splist_consistency_table.csv"))
 
 # birdtraits
-dft<-read.csv("../DATA/traitsdata/fish_traits_from_FishBase.csv")
+dft<-read.csv(here("DATA/traitsdata/fish_traits_from_FishBase.csv"))
 
 # check if with increasing temp trend is there any change in fish length?
 df_allsplen<-left_join(df,dft,by=c("spname"="name_in_mydb"))

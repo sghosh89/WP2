@@ -1,18 +1,19 @@
 # first for birds
 library(tidyverse)
 library(dplyr)
-sm_all<-read.csv("./../Results/stability_metric_and_env_all.csv")
+library(here)
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 taxa<-"birds"
 sb<-sm_all%>%filter(TAXA==taxa)
 
 # all cor with temperature
-df<-read.csv("../Results/birds_splist_with_temp_sensitivity.csv")
+df<-read.csv(here("Results/birds_splist_with_temp_sensitivity.csv"))
 
 # consistency table
-dfc<-read.csv("../Results/birds_splist_consistency_table.csv")
+dfc<-read.csv(here("Results/birds_splist_consistency_table.csv"))
 
 # birdtraits
-dft<-read.csv("../DATA/traitsdata/bird_traits_from_AVONET.csv")
+dft<-read.csv(here("DATA/traitsdata/bird_traits_from_AVONET.csv"))
 length(unique(dft$Avibase.ID))#536
 t1<-dft%>%group_by(Avibase.ID)%>%summarise(nRecords=n(),# number of records for that sp
                                            nSexM=sum(Sex=="M"),# number of records for male sp
