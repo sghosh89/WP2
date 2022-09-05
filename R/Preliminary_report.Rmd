@@ -127,7 +127,7 @@ knitr::include_graphics(here("Results/some_assets/realdata_temperature_timeserie
 
 Let $N_{i,t,s}$ be the abundance/biomass of species $i$ at time $t$ at site $s$. Total abundance at time $t$ at site $s$ is $N_{t,s} = \sum_{i=1}^{s} N_{t,s,i}$. 
 
-*Community stability* at site $s$ was estimated as the inverse of the coefficient of temporal variation in total community *biomass ?or? abundance*: $TempStab_s = 1 / CV(N_{t,s}) = mean(N_{t,s}) / sd(N_{t,s})$
+*Community stability* at site $s$ was estimated as the inverse of the coefficient of temporal variation in total community *biomass ?or? abundance*: $TempStab_s = 1 / CV(N_{t,s}) = median(N_{t,s}) / IQR(N_{t,s})$
 
 *Species richness* at site $s$ was estimated as the number of total species and dominant species that were present minimum 70% of the total years sampled.
 
@@ -178,15 +178,15 @@ q_nsp_birds <- sm_all %>%
   pull(q)
 q_nsp_fish <- sm_all %>%
   filter(TAXA=="fish") %>%
-  summarise(q=quantile(nsp,c(0.5))) %>%
+  summarise(q=quantile(nsp,c(0.5))) %>% # note the change, it is now categorized around median
   pull(q)
 
 sm_all <- sm_all %>%
   mutate(richness_cat = case_when(TAXA == "birds" & nsp < q_nsp_birds[1] ~ "low richness, <50%CI",
                                           TAXA == "birds" & nsp > q_nsp_birds[2] ~ "high richness, >50%CI",
                                           TAXA == "birds" & nsp <= q_nsp_birds[2] & nsp >= q_nsp_birds[1] ~ "mid richness, in 50%CI",
-                                          TAXA == "fish" & nsp < q_nsp_fish[1] ~ "low richness, <50%CI",
-                                          TAXA == "fish" & nsp >= q_nsp_fish[1] ~ "high richness, >50%CI")) %>%
+                                          TAXA == "fish" & nsp < q_nsp_fish[1] ~ "low richness, <median",
+                                          TAXA == "fish" & nsp >= q_nsp_fish[1] ~ "high richness, >median")) %>%
   mutate(richness_cat = fct_relevel(richness_cat,
                                               "low richness, <50%CI",
                                              "mid richness, in 50%CI",
@@ -336,7 +336,7 @@ ggplot(data=sb,aes(x=t_skw, y=iCValt, col = richness_cat)) +
   geom_smooth(method="lm", se=T) +
   #scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2') +
-  ylab("Synchrony, VR_LdM, log2 scale") +
+  ylab("Stability, log2 scale") +
   xlab("Temperature skew (t_skew)") +
   ggtitle(taxa) +
   theme_bw()
@@ -373,7 +373,7 @@ knitr::kable(anova_bird_stab2, digits = 4)
 
 Bird communities display a positive richness stability relationship. This relationship is stronger at higher temperatures. Equally, high richness bird communities are more stable at higher temperatures, while low richness bird communities are less stable at higher temperatures.
 
-There is some suggestion that this may be explained by synchrony, but the statistics show now strong associations of synchrony with t_med or synchrony.
+There is some suggestion that this may be explained by synchrony, but the statistics show no strong associations of synchrony with t_med or synchrony.
 
 
 ### Fish
