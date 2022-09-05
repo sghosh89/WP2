@@ -149,7 +149,7 @@ Let $N_{i,t,s}$ be the abundance/biomass of species $i$ at time $t$ at site $s$.
 
 ## Community stability exploration
 
-```{r}
+```{r categorize-data}
 ## Add the categotical temperature variable for birds and fish
 ## Note that the cutoffs are calculated separate for birds and for fish
 ## Also do the same for number of species
@@ -194,10 +194,10 @@ sm_all <- sm_all %>%
 #sm_all
 ```
 
-```{r exploratory-plots1, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship for birds and fish.")}
+```{r plot-stability-diversity, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship for birds and fish.")}
 library(dplyr)
 library(tidyverse)
-#------ get stability vs richness rawdata plot for each taxa first -----
+#----- stability vs richness rawdata plot for each taxa -----
 sm_all %>%
   filter(TAXA%in%c("birds","fish")) %>%
   ggplot(aes(x=nsp,y=iCValt)) +
@@ -213,7 +213,7 @@ sm_all %>%
 
 ### Birds
 
-```{r}
+```{r birds-data}
 library(dplyr)
 library(tidyverse)
 
@@ -226,8 +226,8 @@ sb <- sm_all %>%
 ```
 
 
-```{r exploratory-plots2, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship for birds at different temperature levels")}
-## stability versus richness, by temperature category
+```{r plot-stability-diversity-birds, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship for birds at different temperature levels")}
+#---- stability versus richness, by temperature category for birds -----
 ggplot(data=sb,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
@@ -239,9 +239,8 @@ ggplot(data=sb,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots3, echo=F, out.width = '75%',fig.cap=c("Stability-temperature relationship for bird communities at different richness levels")}
-## stability versus temperature, by richness category
+```{r plot-stability-temperature-birds, echo=F, out.width = '75%',fig.cap=c("Stability-temperature relationship for bird communities at different richness levels")}
+#---- stability versus temperature, by richness category for birds -----
 ggplot(data=sb,aes(x=t_med, y=iCValt, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
@@ -253,9 +252,8 @@ ggplot(data=sb,aes(x=t_med, y=iCValt, col = richness_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots4, echo=F, out.width = '75%',fig.cap=c("Stability-synchrony relationship for birds at different temperature levels")}
-## stability versus synchrony, by temperature category
+```{r plot-stability-synchrony-birds, echo=F, out.width = '75%',fig.cap=c("Stability-synchrony relationship for birds at different temperature levels")}
+#---- stability versus synchrony, by temperature category for birds ----
 ggplot(data=sb, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
@@ -266,9 +264,8 @@ ggplot(data=sb, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots5, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
-## synchrony versus temperature
+```{r plot-synchrony-temperature-birds-tempcat, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
+#---- synchrony versus temperature for birds ----
 ggplot(data=sb, aes(x=t_med, y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
@@ -280,8 +277,7 @@ ggplot(data=sb, aes(x=t_med, y=phi_LdM, col = median_temperature_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots6, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (boxplot)")}
+```{r boxplot-synchrony-temperature-birds, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (boxplot)")}
 #----- do a boxplot for synchrony at low/high temp, birds -----
 ggplot(data=sb, aes(x=median_temperature_cat, y=phi_LdM)) +
   geom_boxplot(alpha = 0.2) +
@@ -289,18 +285,11 @@ ggplot(data=sb, aes(x=median_temperature_cat, y=phi_LdM)) +
   xlab("Temperature category (t_med)")+
   ylab("Synchrony, VR_LdM, log2 scale")+
   ggtitle(taxa)+
-  theme_bw() 
-  #coord_flip()
-# lowT_taxa$label<-"low T"
-# highT_taxa$label<-"high T"
-# compare_T<-rbind(lowT_taxa,highT_taxa)
-# ggplot(data = compare_T, aes(x=label, y=phi_LdM)) +
-#   geom_boxplot(aes(fill=label))+ggtitle(taxa)+xlab("Temperature beyond 50% CI")+ylab("Synchrony")+theme_bw()
+  theme_bw()
 ```
 
-
-```{r exploratory-plots7, echo=F, out.width = '75%',fig.cap=c("Synchrony richness relationship.")}
-## synchrony versus richness, by temperature category
+```{r plot-synchrony-diversity-birds, echo=F, out.width = '75%',fig.cap=c("Synchrony richness relationship.")}
+#---- synchrony versus richness, by temperature category ----
 ggplot(data=sb,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
@@ -312,9 +301,8 @@ ggplot(data=sb,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots8, echo=F, out.width = '75%',fig.cap=c("Synchrony temperature relationship.")}
-## synchrony versus temperature, by richness category
+```{r plot-synchrony-temperature-birds, echo=F, out.width = '75%',fig.cap=c("Synchrony temperature relationship.")}
+#---- synchrony versus temperature, by richness category for birds ----
 ggplot(data=sb,aes(x=t_med, y=phi_LdM, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
@@ -324,12 +312,9 @@ ggplot(data=sb,aes(x=t_med, y=phi_LdM, col = richness_cat)) +
   xlab("Temperature (t_med)") +
   ggtitle(taxa) +
   theme_bw()
-
-
 ```
 
-
-```{r exploratory-plots8.1, echo=F, out.width = '75%',fig.cap=c("Stability - temperature skew relationship.")}
+```{r plot-stability-tskw-birds, echo=F, out.width = '75%',fig.cap=c("Stability - temperature skew relationship.")}
 
 ggplot(data=sb,aes(x=t_skw, y=iCValt, col = richness_cat)) +
   geom_point(alpha=0.2) +
@@ -340,17 +325,12 @@ ggplot(data=sb,aes(x=t_skw, y=iCValt, col = richness_cat)) +
   xlab("Temperature skew (t_skew)") +
   ggtitle(taxa) +
   theme_bw()
-
-
 ```
 
-
-
-
-#### Basic statistics
+#### Basic statistics for birds
 
 **Model of bird stability:**
-```{r}
+```{r anova_birds_stability}
 ## bird stability model
 bird_stab1 <- lm(log2(iCValt) ~ log2(nsp) * t_med, data = sb)
 par(mfrow = c(2,2))
@@ -360,7 +340,7 @@ anova_bird_stab1 <- tidy(bird_stab1)
 ```
 
 **Model of bird synchrony:**
-```{r}
+```{r anova_birds_synchrony}
 ## bird stability model
 bird_stab2 <- lm(log2(phi_LdM) ~ log2(nsp) * t_med, data = sb)
 par(mfrow = c(2,2))
@@ -373,13 +353,12 @@ knitr::kable(anova_bird_stab2, digits = 4)
 
 Bird communities display a positive richness stability relationship. This relationship is stronger at higher temperatures. Equally, high richness bird communities are more stable at higher temperatures, while low richness bird communities are less stable at higher temperatures.
 
-There is some suggestion that this may be explained by synchrony, but the statistics show no strong associations of synchrony with t_med or synchrony.
+There is some suggestion that this may be explained by synchrony, but the statistics show no strong associations of synchrony with $t_med$ or synchrony.
 
 
 ### Fish
 
-
-```{r}
+```{r fish-data}
 library(dplyr)
 library(tidyverse)
 
@@ -387,14 +366,13 @@ library(tidyverse)
 taxa<-"fish"
 
 # select taxa to plot
-sb <- sm_all %>%
+sfi <- sm_all %>%
   filter(TAXA==taxa)
 ```
 
-
-```{r exploratory-plots9, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship at different temperature levels")}
-## stability versus richness, by temperature category
-ggplot(data=sb,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
+```{r plot-stability-diversity-fish, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship at different temperature levels")}
+#---- stability versus richness, by temperature category for fish -----
+ggplot(data=sfi,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
@@ -405,10 +383,9 @@ ggplot(data=sb,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots10, echo=F, out.width = '75%',fig.cap=c("Stability-temperature relationship at different richness levels")}
-## stability versus temperature, by richness category
-ggplot(data=sb,aes(x=t_med, y=iCValt, col = richness_cat)) +
+```{r plot-stability-temperature-fish, echo=F, out.width = '75%',fig.cap=c("Stability-temperature relationship at different richness levels")}
+#----- stability versus temperature, by richness category for fish ----
+ggplot(data=sfi,aes(x=t_med, y=iCValt, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
@@ -419,10 +396,9 @@ ggplot(data=sb,aes(x=t_med, y=iCValt, col = richness_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots11, echo=F, out.width = '75%',fig.cap=c("Stability-synchrony relationship at different temperature levels")}
-## stability versus synchrony, by temperature category
-ggplot(data=sb, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
+```{r plot-stability-synchrony-fish, echo=F, out.width = '75%',fig.cap=c("Stability-synchrony relationship at different temperature levels")}
+#---- stability versus synchrony, by temperature category for fish ----
+ggplot(data=sfi, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
@@ -432,10 +408,9 @@ ggplot(data=sb, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots12, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
-## synchrony versus temperature
-ggplot(data=sb, aes(x=t_med, y=phi_LdM, col = median_temperature_cat)) +
+```{r plot-synchrony-temperature-fish-tempcat, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
+#---- synchrony versus temperature for fish ----
+ggplot(data=sfi, aes(x=t_med, y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
@@ -446,28 +421,20 @@ ggplot(data=sb, aes(x=t_med, y=phi_LdM, col = median_temperature_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots13, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (boxplot)")}
-#----- do a boxplot for synchrony at low/high temp, birds -----
-ggplot(data=sb, aes(x=median_temperature_cat, y=phi_LdM)) +
+```{r boxplot-synchrony-temperature-fish, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (boxplot)")}
+#----- boxplot for synchrony at low/high temp, fish -----
+ggplot(data=sfi, aes(x=median_temperature_cat, y=phi_LdM)) +
   geom_boxplot(alpha = 0.2) +
   scale_y_continuous(trans = 'log2')+
   xlab("Temperature category (t_med)")+
   ylab("Synchrony, VR_LdM, log2 scale")+
   ggtitle(taxa)+
-  theme_bw() 
-  #coord_flip()
-# lowT_taxa$label<-"low T"
-# highT_taxa$label<-"high T"
-# compare_T<-rbind(lowT_taxa,highT_taxa)
-# ggplot(data = compare_T, aes(x=label, y=phi_LdM)) +
-#   geom_boxplot(aes(fill=label))+ggtitle(taxa)+xlab("Temperature beyond 50% CI")+ylab("Synchrony")+theme_bw()
+  theme_bw()
 ```
 
-
-```{r exploratory-plots14, echo=F, out.width = '75%',fig.cap=c("Synchrony richness relationship.")}
-## synchrony versus richness, by temperature category
-ggplot(data=sb,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
+```{r plot-synchrony-richness-fish, echo=F, out.width = '75%',fig.cap=c("Synchrony richness relationship.")}
+#---- synchrony versus richness, by temperature category for fish ----
+ggplot(data=sfi,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
@@ -478,10 +445,9 @@ ggplot(data=sb,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
   theme_bw()
 ```
 
-
-```{r exploratory-plots15, echo=F, out.width = '75%',fig.cap=c("Synchrony temperature relationship.")}
-## synchrony versus temperature, by richness category
-ggplot(data=sb,aes(x=t_med, y=phi_LdM, col = richness_cat)) +
+```{r plot-synchrony-temperature-fish, echo=F, out.width = '75%',fig.cap=c("Synchrony temperature relationship.")}
+#---- synchrony versus temperature, by richness category for fish ----
+ggplot(data=sfi,aes(x=t_med, y=phi_LdM, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
@@ -490,13 +456,11 @@ ggplot(data=sb,aes(x=t_med, y=phi_LdM, col = richness_cat)) +
   xlab("Temperature (t_med)") +
   ggtitle(taxa) +
   theme_bw()
-
-
 ```
 
-```{r exploratory-plots15.1, echo=F, out.width = '75%',fig.cap=c("Stability - temperature skew relationship.")}
+```{r plot-stability-tskw-fish, echo=F, out.width = '75%',fig.cap=c("Stability - temperature skew relationship.")}
 
-ggplot(data=sb,aes(x=t_skw, y=iCValt, col = richness_cat)) +
+ggplot(data=sfi,aes(x=t_skw, y=iCValt, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   #scale_x_continuous(trans = 'log2') +
@@ -505,16 +469,14 @@ ggplot(data=sb,aes(x=t_skw, y=iCValt, col = richness_cat)) +
   xlab("Temperature skew (t_skew)") +
   ggtitle(taxa) +
   theme_bw()
-
-
 ```
 
 #### Fish basic statistics
 
 **Model of fish stability:**
-```{r}
+```{r anova_fish_stability}
 ## fish stability model
-fish_stab1 <- lm(log2(iCValt) ~ log2(nsp) * t_med, data = sb)
+fish_stab1 <- lm(log2(iCValt) ~ log2(nsp) * t_med, data = sfi)
 par(mfrow = c(2,2))
 #plot(fish_stab1)
 anova_fish_stab1 <- tidy(fish_stab1)
@@ -522,15 +484,14 @@ anova_fish_stab1 <- tidy(fish_stab1)
 ```
 
 **Model of fish synchrony:**
-```{r}
+```{r anova_fish_synchrony}
 ## bird stability model
-fish_stab2 <- lm(log2(phi_LdM) ~ log2(nsp) * t_med, data = sb)
+fish_stab2 <- lm(log2(phi_LdM) ~ log2(nsp) * t_med, data = sfi)
 par(mfrow = c(2,2))
 #plot(fish_stab2)
 anova_fish_stab2 <- tidy(fish_stab2)
 knitr::kable(anova_fish_stab2, digits = 4)
 ```
-
 
 #### Fish conclusions
 
@@ -557,23 +518,17 @@ sm_all_bf%>%
   annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="red")+
   annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
   theme_classic()
-
-
 ```
 
 ```{r tskew-plot2, out.width = '75%', fig.cap=c("Distribution of temperature skewness, birds and fish separate. Fish communities generally experience more negatively skewed temperature fluctuations. In the fish SEM we see that t_skw directly affects stability, with more negative skew being associated with higher stability. No evidence of association of t_skw and stability in birds.")}
 #----- skewness plot across taxa, fish gets more extremes but as taildep synchrony is not important driver for freshwater systems stability is directly affected by skewness there ----
-
 
 sm_all_bf%>%
   ggplot( aes(x=t_skw,y=..scaled..))+geom_density()+ylim(c(0, 1))+
   annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="red")+
   annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
   theme_classic()+facet_wrap(~TAXA)
-
 ```
-
-
 
 **The cue is:** if fish species are not much consistent in their response to warming and vary across sites, that means you cannot make a conclusion that they would become similar with changing temperature. On another note, bird species should be more consistent towards warming if their is no change in their synchrony level across communities. Another possibility could be with changing temperature you might loose some species (its not just number of individuals, it will selectively prefer few species with better fitness), and then the communities will be dominated by few species with similar traits (so increasing synchrony). we will test this below.
 
@@ -852,7 +807,7 @@ knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"),
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa.
 
-```{r model_psem, echo=F, cache=F, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
+```{r model_psem, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
 library(tidyverse)
 library(lme4)
 library(piecewiseSEM)
