@@ -28,26 +28,26 @@ tempo_c<-tempo[4,]
 
 # choose data: +ve trend, no sig. skewness
 tempo<-sbf%>%filter(trend_t_tau_sig==1)
-eps=0.9e-1
-id<-which(abs(tempo$t_skw-0)<eps)
-tempo_d<-tempo[id,]# choose the fourth entry
-tempo_d<-tempo_d[which.max(tempo_d$trend_t_tau),]
+tempo_d<-tempo[which.min(tempo$t_skw),]
 
-# choose data: +ve trend, with -ve skewness
-tempo<-sbf%>%filter(trend_t_tau_sig==1)
-id<-which.min(tempo$t_skw)
+# choose data: +ve trend, with +ve skewness
+tempo<-sbf%>%filter(trend_t_tau_sig==1)# all with +ve trend
+id<-which.max(tempo$t_skw)
 tempo_e<-tempo[id,]# choose the fourth entry
-tempo_e<-tempo_e[which.max(tempo_e$trend_t_tau),]
 
 # all fish data
 alldat<-rbind(tempo_ab,tempo_c,tempo_d,tempo_e)
 gp<-vector(mode = "list", length = nrow(alldat))
 # now plot t_med time series for these five communities
 for(i in 1:nrow(alldat)){
+  
   if(alldat$source[i]=="RivFishTIME"){
     resloc<-here(paste("DATA/for_RivFishTIME/wrangled_data/",alldat$newsite[i],sep=""))
   }
-  if(alldat$source[i]=="BioTIME"){
+  if(alldat$source[i]=="BioTIME" & alldat$newsite[i]==57){
+    resloc<-here(paste("DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/",alldat$newsite[i],sep=""))
+  }
+  if(alldat$source[i]=="BioTIME" & alldat$STUDY_ID[i]==430){
     resloc<-here(paste("DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/",alldat$STUDY_ID[i],"/",alldat$newsite[i],sep=""))
   }
   m<-readRDS(paste(resloc,"/input_mat_for_tailanal_with_env.RDS",sep=""))

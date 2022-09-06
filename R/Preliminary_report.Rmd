@@ -125,7 +125,7 @@ knitr::include_graphics(here("Results/some_assets/realdata_temperature_timeserie
 
 (Perhaps make this into a table.)
 
-Let $N_{i,t,s}$ be the abundance/biomass of species $i$ at time $t$ at site $s$. Total abundance at time $t$ at site $s$ is $N_{t,s} = \sum_{i=1}^{s} N_{t,s,i}$. 
+Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data only if abundance data were not available) of species $i$ at time $t$ at site $s$. Total abundance at time $t$ at site $s$ is $N_{t,s} = \sum_{i=1}^{s} N_{t,s,i}$. 
 
 *Community stability* at site $s$ was estimated as the inverse of the coefficient of temporal variation in total community *biomass ?or? abundance*: $TempStab_s = 1 / CV(N_{t,s}) = median(N_{t,s}) / IQR(N_{t,s})$
 

@@ -64,7 +64,7 @@ for(i in 1:nrow(sb)){
 # (i.e. number of communities they are found)
 occur<-as.data.frame(table(tab_spearcor_with_t$spname))%>%arrange(desc(Freq))
 #hist(occur$Freq,200)
-sum(occur$Freq==1) #139 sp occur only in one community
+sum(occur$Freq==1) #155 sp occur only in one community
 df<-tab_spearcor_with_t %>% distinct(spname, newsite,.keep_all = TRUE)
 
 splist<-read.csv("../DATA/for_BBS/raw_data/BBSdata_accessed_03dec2020/SpeciesList_edited.csv")
@@ -78,7 +78,7 @@ write.csv(df,"../Results/birds_splist_with_temp_sensitivity.csv",row.names = F)
 
 occur2<-as.data.frame(table(df$spname))%>%arrange(desc(Freq)) #537 unique sp across community
 #hist(occur2$Freq,200)
-sum(occur2$Freq==1) #95 sp occur only in one community
+sum(occur2$Freq==1) #101 sp occur only in one community
 
 length(unique(df$spname)) # 537 unique sp in total
 

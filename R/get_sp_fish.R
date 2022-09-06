@@ -54,7 +54,7 @@ for(i in 1:nrow(sb)){
 
 occur<-as.data.frame(table(tab_spearcor_with_t$spname))%>%arrange(desc(Freq))
 #hist(occur$Freq,200)
-sum(occur$Freq==1) #23 sp occur only in one community
+sum(occur$Freq==1) #37 sp occur only in one community
 df<-tab_spearcor_with_t %>% distinct(spname, newsite,.keep_all = TRUE)
 write.csv(df,"../Results/fish_splist_with_temp_sensitivity.csv",row.names = F)
 
