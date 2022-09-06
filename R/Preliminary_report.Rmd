@@ -131,19 +131,17 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data only if abundanc
 
 *Species richness* at site $s$ was estimated as the number of total species and dominant species that were present minimum 70% of the total years sampled.
 
-*Comunity variance ratio*: a measure of synchrony.
+*Comunity variance ratio*: a measure of synchrony, scaled between 0 to 1 ([Loreau & Mazancourt](https://www.journals.uchicago.edu/doi/10.1086/589746)).
 
-*Community level total tail association from pairwise synchrony*: 
+*Community level total tail association from pairwise synchrony*: see BioDyn project, Figure 1.
 
-*Temperature median*:
+*Temperature median*: Median of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
-*Temperature trend*:
+*Temperature trend*: Monotonic trend of annual temperature timeseries (computed by Mann-Kendall test).
 
-*Temperature variability*:
+*Temperature variability*: Temperature variability for the community during the study period = median(annual temperature)/IQR(annual temperature distribution for the study period).
 
-*Temperature skew*: 
-
-
+*Temperature skew*: Skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
 # Results
 
@@ -886,5 +884,10 @@ and for fish -
 - overall synchrony (variance ratio) is the important determinant for stability (this we knew from BioDyn project findings), as it connects the environmental effects to stability.
 - both warming scenario (median temperature or temperature trend) increases richness, increasing temperature increases more asynchrony (-ve effect on VR), which is also consistent with more variable traits for the fish species.
 - increasing extremes makes community biomass more variable (-ve effect of heatwaves on stability via t_skw direct effect, not indirect effect through tail-dep synchrony as it is not important driver for freshwater as we found from BioDyn).
+
+**Why I did not choose t_var (variability in temperature timeseries) in the path model?**
+As I already have added the t_med as one of the variable in the path model, including again it as t_var would increase the multi-collinearity (as increasing VIF). Also we added the t_skw, so together with t_med, it should give you an estimation of whole temperature timeseries distribution - and would be better as directional metric (positive or negative skewness) than just the variability (non-directional). 
+[Results not shown here: I separately ran models replacing t_med, and t_skw with t_var, for birds nothing changes, for fish I found a positive significant effect of t_var on stability - though I don't know why? t_var was not related to richness though. Is it something related to more environmental variability would foster less evenness in fish community? I know a plant community study in PNAS which uses evenness as a driver for stability as well as richness].
+
 
 # Discussion
