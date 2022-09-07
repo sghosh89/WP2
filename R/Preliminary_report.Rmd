@@ -887,7 +887,35 @@ and for fish -
 
 **Why I did not choose t_var (variability in temperature timeseries) in the path model?**
 As I already have added the t_med as one of the variable in the path model, including again it as t_var would increase the multi-collinearity (as increasing VIF). Also we added the t_skw, so together with t_med, it should give you an estimation of whole temperature timeseries distribution - and would be better as directional metric (positive or negative skewness) than just the variability (non-directional). 
-[Results not shown here: I separately ran models replacing t_med, and t_skw with t_var, for birds nothing changes, for fish I found a positive significant effect of t_var on stability - though I don't know why? t_var was not related to richness though. Is it something related to more environmental variability would foster less evenness in fish community? I know a plant community study in PNAS which uses evenness as a driver for stability as well as richness].
 
+
+[I separately ran models replacing t_med, and t_skw with t_var, for birds nothing changes, for fish I found a positive significant effect of t_var on stability - though I don't know why? t_var was not related to richness though. Is it something related to more environmental variability would foster less evenness in fish community? I know a plant community study in PNAS which uses evenness as a driver for stability as well as richness].
+
+```{r model_psem_t_var, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
+
+taxa<-"birds"
+dat<-mydat_scaled%>%filter(TAXA==taxa)
+n<-nrow(dat)
+model_psem<-piecewiseSEM::psem(
+  lmer(VR ~ R+t_var+trend_t_tau+(1|UID),data=dat),
+  lmer(A ~ R+t_var+(1|UID),data=dat),
+  lmer(R~t_var+trend_t_tau+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t_var+trend_t_tau+
+         (1|UID), data=dat))
+cc<-coefs(model_psem)
+plot_psem(n,taxa,cc,layout="circle")
+
+taxa<-"fish"
+dat<-mydat_scaled%>%filter(TAXA==taxa)
+n<-nrow(dat)
+model_psem<-piecewiseSEM::psem(
+  lmer(VR ~ R+t_var+trend_t_tau+(1|UID),data=dat),
+  lmer(A ~ R+t_var+(1|UID),data=dat),
+  lmer(R~t_var+trend_t_tau+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t_var+trend_t_tau+
+         (1|UID), data=dat))
+cc<-coefs(model_psem)
+plot_psem(n,taxa,cc,layout="circle")
+```
 
 # Discussion
