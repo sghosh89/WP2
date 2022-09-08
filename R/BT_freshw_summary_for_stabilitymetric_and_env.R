@@ -30,6 +30,12 @@ r_BT_freshw$t_var<-NA # variability of annual temperature
 r_BT_freshw$trend_t_tau<-NA # tau of Mann-Kendall trend test, for shorter time series it is difficult to see a trend
 r_BT_freshw$trend_t_tau_sig<-NA # is the trend significant?
 
+# strength of linear trend estimated with parametric and non-parametric method
+r_BT_freshw$t.lm.slope<-NA
+r_BT_freshw$t.lm.slope.sig<-NA
+r_BT_freshw$t.sens.slope<-NA
+r_BT_freshw$t.sens.slope.sig<-NA # based on 95%CI
+
 for(i in 1:nrow(r_BT_freshw)){
   siteid<-r_BT_freshw$STUDY_ID[i]
   newsite<-r_BT_freshw$newsite[i]
@@ -47,6 +53,21 @@ for(i in 1:nrow(r_BT_freshw)){
   r_BT_freshw$tmax_skw[i]<-myskns(m$tmax)
   r_BT_freshw$tmin_skw[i]<-myskns(m$tmin)
   r_BT_freshw$t_var[i]<-median(m$t)/IQR(m$t,type=7)
+  
+  m2<-m
+  m2$year<-as.integer(rownames(m2))
+  model <- lm(t ~ year, data = m2)
+  r_BT_freshw$t.lm.slope[i]<-unname(model$coefficients[2])
+  
+  tempo<-summary(model)
+  tempo<-tempo$coefficients[,4]
+  tempo<-unname(tempo[2])
+  r_BT_freshw$t.lm.slope.sig[i]<-ifelse(tempo<0.05,1,0)
+  
+  tempo_sens<-sens.slope(m$t, conf.level = 0.95)
+  r_BT_freshw$t.sens.slope[i]<-unname(tempo_sens$estimates["Sen's slope"])
+  r_BT_freshw$t.sens.slope.sig[i]<-ifelse(tempo_sens$p.value<0.05,1,0) # 1 means significant trend
+  
   trend_mk<-mk.test(m$t)
   r_BT_freshw$trend_t_tau<-unname(trend_mk$estimates["tau"]) # tau of Mann-Kendall trend test, for shorter time series it is difficult to see a trend
   r_BT_freshw$trend_t_tau_sig<-ifelse(trend_mk$p.value<0.05,1,0) # 1 means significant trend
