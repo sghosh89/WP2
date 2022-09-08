@@ -523,11 +523,20 @@ sm_all_bf%>%
 
 sm_all_bf%>%
   ggplot( aes(x=t_skw,y=..scaled..))+geom_density()+ylim(c(0, 1))+
-  annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="red")+
-  annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="red")+
   theme_classic()+facet_wrap(~TAXA)
 ```
 
+```{r trend-density-plot,out.width = '75%', fig.cap=c("Distribution of temperature trend estimated by non-parametric Sen's slope, birds and fish separate. Fish communities generally experience more increasing trend.")}
+# extra plots of trend density across taxa
+
+sm_all_bf%>%
+  ggplot( aes(x=t.sens.slope,y=..scaled..))+geom_density()+ylim(c(0, 1))+
+  annotate("rect", xmin=min(sm_all_bf$t.sens.slope), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=0, xmax=max(sm_all_bf$t.sens.slope), ymin=0, ymax=1, alpha=0.15, fill="red")+
+  theme_classic()+facet_wrap(~TAXA)
+```
 
 **The cue is:** if fish species are not much consistent in their response to warming and vary across sites, that means you cannot make a conclusion that they would become similar with changing temperature. On another note, bird species should be more consistent towards warming if their is no change in their synchrony level across communities. Another possibility could be with changing temperature you might loose some species (its not just number of individuals, it will selectively prefer few species with better fitness), and then the communities will be dominated by few species with similar traits (so increasing synchrony). we will test this below.
 
@@ -839,6 +848,8 @@ mydat_scaled$tmax_skw<-as.numeric(scale(mydat_scaled$tmax_skw))
 mydat_scaled$tmin_skw<-as.numeric(scale(mydat_scaled$tmin_skw))
 mydat_scaled$t_var<-as.numeric(scale(mydat_scaled$t_var))
 mydat_scaled$trend_t_tau<-as.numeric(scale(mydat_scaled$trend_t_tau))
+mydat_scaled$t.sens.slope<-as.numeric(scale(mydat_scaled$t.sens.slope))
+mydat_scaled$t.lm.slope<-as.numeric(scale(mydat_scaled$t.lm.slope))
 
 #---  
 
@@ -848,11 +859,17 @@ resloc<-here("Results/res_Prelim_Report/")
 taxa<-"birds"
 dat<-mydat_scaled%>%filter(TAXA==taxa)
 n<-nrow(dat)
+#model_psem<-piecewiseSEM::psem(
+#  lmer(VR ~ R+t_med+trend_t_tau+(1|UID),data=dat),
+#  lmer(A ~ R+t_skw+(1|UID),data=dat),
+#  lmer(R~t_med+trend_t_tau+(1|UID),data=dat),
+#  lmer(stability ~ (R + VR +A)+t_med+trend_t_tau+t_skw+
+#         (1|UID), data=dat))
 model_psem<-piecewiseSEM::psem(
-  lmer(VR ~ R+t_med+trend_t_tau+(1|UID),data=dat),
-  lmer(A ~ R+t_skw+(1|UID),data=dat),
-  lmer(R~t_med+trend_t_tau+(1|UID),data=dat),
-  lmer(stability ~ (R + VR +A)+t_med+trend_t_tau+t_skw+
+  lmer(VR ~ R+t_med+t.sens.slope+(1|UID),data=dat),
+  lmer(A ~ R+t.sens.slope+t_skw+(1|UID),data=dat),
+  lmer(R~t_med+t.sens.slope+t_skw+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t_med+t.sens.slope+t_skw+
          (1|UID), data=dat))
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
@@ -863,11 +880,17 @@ saveRDS(model_psem,paste(resloc,"model_psem_",taxa,".RDS",sep=""))
 taxa<-"fish"
 dat<-mydat_scaled%>%filter(TAXA==taxa)
 n<-nrow(dat)
+#model_psem<-piecewiseSEM::psem(
+#  lmer(VR ~ R+t_med+trend_t_tau+(1|UID),data=dat),
+#  lmer(A ~ R+t_skw+(1|UID),data=dat),
+#  lmer(R~t_med+trend_t_tau+(1|UID),data=dat),
+#  lmer(stability ~ (R + VR +A)+t_med+trend_t_tau+t_skw+
+#         (1|UID), data=dat))
 model_psem<-piecewiseSEM::psem(
-  lmer(VR ~ R+t_med+trend_t_tau+(1|UID),data=dat),
-  lmer(A ~ R+t_skw+(1|UID),data=dat),
-  lmer(R~t_med+trend_t_tau+(1|UID),data=dat),
-  lmer(stability ~ (R + VR +A)+t_med+trend_t_tau+t_skw+
+  lmer(VR ~ R+t_med+t.sens.slope+(1|UID),data=dat),
+  lmer(A ~ R+t.sens.slope+t_skw+(1|UID),data=dat),
+  lmer(R~t_med+t.sens.slope+t_skw+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t_med+t.sens.slope+t_skw+
          (1|UID), data=dat))
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
