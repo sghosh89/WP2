@@ -105,8 +105,8 @@ My intuition is:
 
   - community stability would be affected by any of these temperature component either directly or indirectly via the drivers.
   - As $t_{med}$, $t_{trend}$ changes, diversity-stability relationship should be affected, so stability would change via portfolio effect. e.g. terrestrial plants, beetles, and vertebrates show declining richness with incresing temperature in the past studies.
-  - Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment. For example, as temperature increases (or decreases) $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species-traits at that particular environment. But if $t_{trend}$ increases, the community is exposing to warmer environment with years, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony. I am not sure, what will happen - but we can see how community-level response (avg of all species'response to warming in that community) changes with temperature?
-  - Changing $t_{skw}$, means frequent extreme events (like heatwaves, negative skewed annual temperature distribution), and it should be related to tail-dependent synchrony, where pairwise synchrony between species gets stronger beyond a certain threshold.
+  - Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment. For example, as temperature increases (or decreases) $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species-traits at that particular environment. But if $t_{trend}$ increases, the community is exposing to warmer environment with years, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony. I am not sure, what will happen, but we can see how community-level response (avg of all species'response to warming in that community) changes with temperature?
+  - Changing $t_{trend}$, $t_{skw}$, means frequent extreme events (like heatwaves, or cold winter), and it should be related to tail-dependent synchrony, where pairwise synchrony between species gets stronger beyond a certain threshold.
 
 ```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '100%', fig.align='center'}
 #knitr::include_graphics("../Results/some_assets/drawing.jpg")
@@ -137,7 +137,7 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data only if abundanc
 
 *Temperature median*: Median of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
-*Temperature trend*: Monotonic trend of annual temperature timeseries (computed by Mann-Kendall test).
+*Temperature trend*: Monotonic trend of annual temperature timeseries (computed by non-parametric Sen's method or parametric linear fit slope).
 
 *Temperature variability*: Temperature variability for the community during the study period = median(annual temperature)/IQR(annual temperature distribution for the study period).
 
@@ -493,13 +493,9 @@ knitr::kable(anova_fish_stab2, digits = 4)
 
 #### Fish conclusions
 
-Fish communities display a positive richness stability relationship at low temperature, and a negative one at higher temperatures. This is the opposite of the interaction pattern for birds, where the relationship became more positive when temperature was higher. Equally, high richness bird communities are slightly less stable at higher temperatures, while low richness bird communities are more stable at higher temperatures (again the opposite to the bird patterns).
+Fish communities display a positive richness stability relationship at low temperature, and a negative one at higher temperatures. This is the opposite of the interaction pattern for birds, where the relationship became more positive when temperature was higher. Equally, high richness fish communities are slightly less stable at higher temperatures, while low richness fish communities are more stable at higher temperatures (again the opposite to the bird patterns).
 
 Not sure, at present, how much can be explained by synchrony, but the statistics show no strong associations of synchrony with t_med or richness.
-
-## Explanations
-
-So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes weaker. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities.
 
 **Which pattern / finding are we trying to explain with the following two graphs?**
 
@@ -518,7 +514,7 @@ sm_all_bf%>%
   theme_classic()
 ```
 
-```{r tskew-plot2, out.width = '75%', fig.cap=c("Distribution of temperature skewness, birds and fish separate. Fish communities generally experience more negatively skewed temperature fluctuations. In the fish SEM we see that t_skw directly affects stability, with more negative skew being associated with higher stability. No evidence of association of t_skw and stability in birds.")}
+```{r tskew-plot2, out.width = '75%', fig.cap=c("Distribution of temperature skewness, birds and fish separate. Fish communities generally experience more negatively skewed temperature fluctuations. In the fish SEM we see that t_skw directly affects stability, with more positive skew being associated with less stability. No evidence of association of t_skw and stability in birds.")}
 #----- skewness plot across taxa, fish gets more extremes but as taildep synchrony is not important driver for freshwater systems stability is directly affected by skewness there ----
 
 sm_all_bf%>%
@@ -528,15 +524,39 @@ sm_all_bf%>%
   theme_classic()+facet_wrap(~TAXA)
 ```
 
-```{r trend-density-plot,out.width = '75%', fig.cap=c("Distribution of temperature trend estimated by non-parametric Sen's slope, birds and fish separate. Fish communities generally experience more increasing trend.")}
-# extra plots of trend density across taxa
+```{r trend-plot,out.width = '75%', fig.cap=c("Distribution of temperature trend estimated by non-parametric Sen's slope, and parametric linear fit slope. Colored points are significant Sen's slope (green: birds, blue: fish) .", "Histogram plot for trends, both taxa.","Histogram plot for significant trends, both taxa.")}
+# simulated data trend plot: see test_trend_bothway.R
 
-sm_all_bf%>%
-  ggplot( aes(x=t.sens.slope,y=..scaled..))+geom_density()+ylim(c(0, 1))+
-  annotate("rect", xmin=min(sm_all_bf$t.sens.slope), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="blue")+
-  annotate("rect", xmin=0, xmax=max(sm_all_bf$t.sens.slope), ymin=0, ymax=1, alpha=0.15, fill="red")+
+# Now you can plot them from real data
+slope_sig_bf<-sm_all_bf%>%filter(t.sens.slope.sig==1)
+plot(x=sm_all_bf$t.sens.slope,y=sm_all_bf$t.lm.slope,col=rgb(0,0,0,0.05),
+     pch=19,xlim=c(-1,1.5),ylim=c(-1,1.5),xlab="Sen's slope",ylab="lm.slope")
+slope_sig_bf$col<-ifelse(slope_sig_bf$REALM=="Freshwater","blue","green")
+points(x=slope_sig_bf$t.sens.slope,y=slope_sig_bf$t.lm.slope,col=slope_sig_bf$col)
+abline(h=0,col="black",lty=2)
+abline(v=0,col="black",lty=2)
+table(slope_sig_bf$REALM)/table(sm_all_bf$REALM) # 34% freshwater, and 25% terrestrial sig trend
+# at least from primary visualization, 
+# I can see slopes when > 0.25 has higher chance to be significant
+
+gp1<-sm_all_bf%>%
+  ggplot( aes(x=t.sens.slope))+geom_histogram()+xlim(-1.5,1.5)+xlab("Sen's slope, all")+
+  annotate("rect", xmin=min(sm_all_bf$t.sens.slope), xmax=0, ymin=0, ymax=Inf, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=0, xmax=max(sm_all_bf$t.sens.slope), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
   theme_classic()+facet_wrap(~TAXA)
+print(gp1)
+
+gp2<-slope_sig_bf%>%
+  ggplot( aes(x=t.sens.slope))+geom_histogram()+xlim(-1.5,1.5)+xlab("Sen's slope, siginificant")+
+  annotate("rect", xmin=min(slope_sig_bf$t.sens.slope), xmax=0, ymin=0, ymax=Inf, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=0, xmax=max(slope_sig_bf$t.sens.slope), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
+  theme_classic()+facet_wrap(~TAXA)
+print(gp2)
 ```
+
+## Explanations
+
+So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes weaker. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities.
 
 **The cue is:** if fish species are not much consistent in their response to warming and vary across sites, that means you cannot make a conclusion that they would become similar with changing temperature. On another note, bird species should be more consistent towards warming if their is no change in their synchrony level across communities. Another possibility could be with changing temperature you might loose some species (its not just number of individuals, it will selectively prefer few species with better fitness), and then the communities will be dominated by few species with similar traits (so increasing synchrony). we will test this below.
 
@@ -866,10 +886,10 @@ n<-nrow(dat)
 #  lmer(stability ~ (R + VR +A)+t_med+trend_t_tau+t_skw+
 #         (1|UID), data=dat))
 model_psem<-piecewiseSEM::psem(
-  lmer(VR ~ R+t_med+t.sens.slope+(1|UID),data=dat),
+  lmer(VR ~ R+t.sens.slope+t_med+(1|UID),data=dat),
   lmer(A ~ R+t.sens.slope+t_skw+(1|UID),data=dat),
-  lmer(R~t_med+t.sens.slope+t_skw+(1|UID),data=dat),
-  lmer(stability ~ (R + VR +A)+t_med+t.sens.slope+t_skw+
+  lmer(R~t.sens.slope+t_med+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t.sens.slope+t_skw+t_med+
          (1|UID), data=dat))
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
@@ -887,10 +907,10 @@ n<-nrow(dat)
 #  lmer(stability ~ (R + VR +A)+t_med+trend_t_tau+t_skw+
 #         (1|UID), data=dat))
 model_psem<-piecewiseSEM::psem(
-  lmer(VR ~ R+t_med+t.sens.slope+(1|UID),data=dat),
+  lmer(VR ~ R+t.sens.slope+t_med+(1|UID),data=dat),
   lmer(A ~ R+t.sens.slope+t_skw+(1|UID),data=dat),
-  lmer(R~t_med+t.sens.slope+t_skw+(1|UID),data=dat),
-  lmer(stability ~ (R + VR +A)+t_med+t.sens.slope+t_skw+
+  lmer(R~t.sens.slope+t_med+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t.sens.slope+t_skw+t_med+
          (1|UID), data=dat))
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
@@ -900,21 +920,22 @@ saveRDS(model_psem,paste(resloc,"model_psem_",taxa,".RDS",sep=""))
 
 So, from the path analysis, what do we see for birds -
 
-- for birds: increasing temperature trend (communities exposed to continuous warming) decreases species richness, increasing synchrony. (because of similar species traits in warmer condition?)
-- increasing extreme heatwaves (note this is negative skewness) will increase tail dep synchrony, which in turn decreases stability. Here direct effect of t_skw is not significant on stability, as all bird data have equal proportion of +ve and -ve skewness (see above plot). But still tail dependent synchrony is important mechanism for stability, especially for terrestrial taxa (we found this from BioDyn project), and driven by the skewness of temperature time series (extreme events).
+- for birds: increasing temperature $t_{med}$ decreases community stability, though it has no significant direct effect on the drivers (like richness, synchrony).
+- increasing temperature trend also has no significant effect on birds.
+- increasing extreme heatwaves decreases tail dep synchrony. Here direct effect of t_skw is not significant on stability, as all bird data have equal proportion of +ve and -ve skewness (see above plot). But still tail dependent synchrony is important mechanism for stability, especially for terrestrial taxa (we found this from BioDyn project), and driven by the skewness of temperature time series (extreme events).
 - positive diversity-stability relationship and negative synchrony-stability relationship are observed as expected.
 
 and for fish -
 
 - overall synchrony (variance ratio) is the important determinant for stability (this we knew from BioDyn project findings), as it connects the environmental effects to stability.
-- both warming scenario (median temperature or temperature trend) increases richness, increasing temperature increases more asynchrony (-ve effect on VR), which is also consistent with more variable traits for the fish species.
-- increasing extremes makes community biomass more variable (-ve effect of heatwaves on stability via t_skw direct effect, not indirect effect through tail-dep synchrony as it is not important driver for freshwater as we found from BioDyn).
+- increasing $t_{med}$ increases richness, and more asynchrony (-ve effect on VR), which is also consistent with more variable traits for the fish species.
+- for fish, extremes has direct negative effect on stability, not indirect effect through tail-dep synchrony as it is not important driver for freshwater as we found from BioDyn.
 
 **Why I did not choose t_var (variability in temperature timeseries) in the path model?**
 As I already have added the t_med as one of the variable in the path model, including again it as t_var would increase the multi-collinearity (as increasing VIF). Also we added the t_skw, so together with t_med, it should give you an estimation of whole temperature timeseries distribution - and would be better as directional metric (positive or negative skewness) than just the variability (non-directional). 
 
 
-[I separately ran models replacing t_med, and t_skw with t_var, for birds nothing changes, for fish I found a positive significant effect of t_var on stability - though I don't know why? t_var was not related to richness though. Is it something related to more environmental variability would foster less evenness in fish community? I know a plant community study in PNAS which uses evenness as a driver for stability as well as richness].
+[I separately ran models replacing t_med with t_var (see graphs below): for birds no environmental effects, for fish I found increasing variability decreases richness.]
 
 ```{r model_psem_t_var, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
 
@@ -922,10 +943,10 @@ taxa<-"birds"
 dat<-mydat_scaled%>%filter(TAXA==taxa)
 n<-nrow(dat)
 model_psem<-piecewiseSEM::psem(
-  lmer(VR ~ R+t_var+trend_t_tau+(1|UID),data=dat),
-  lmer(A ~ R+t_var+(1|UID),data=dat),
-  lmer(R~t_var+trend_t_tau+(1|UID),data=dat),
-  lmer(stability ~ (R + VR +A)+t_var+trend_t_tau+
+  lmer(VR ~ R+t_var+t.sens.slope+(1|UID),data=dat),
+  lmer(A ~ R+t_var+t.sens.slope+t_skw+(1|UID),data=dat),
+  lmer(R~t_var+t.sens.slope+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t_var+t.sens.slope+t_skw+
          (1|UID), data=dat))
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
@@ -934,10 +955,10 @@ taxa<-"fish"
 dat<-mydat_scaled%>%filter(TAXA==taxa)
 n<-nrow(dat)
 model_psem<-piecewiseSEM::psem(
-  lmer(VR ~ R+t_var+trend_t_tau+(1|UID),data=dat),
-  lmer(A ~ R+t_var+(1|UID),data=dat),
-  lmer(R~t_var+trend_t_tau+(1|UID),data=dat),
-  lmer(stability ~ (R + VR +A)+t_var+trend_t_tau+
+  lmer(VR ~ R+t_var+t.sens.slope+(1|UID),data=dat),
+  lmer(A ~ R+t_var+t.sens.slope+t_skw+(1|UID),data=dat),
+  lmer(R~t_var+t.sens.slope+(1|UID),data=dat),
+  lmer(stability ~ (R + VR +A)+t_var+t.sens.slope+t_skw+
          (1|UID), data=dat))
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")

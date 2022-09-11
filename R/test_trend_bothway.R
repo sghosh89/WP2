@@ -1,6 +1,8 @@
 # This script tests parametric lm fit slope and non-parametric Sen's slope
 # create random timeseries data with some trends
 rm(list=ls())
+library(dplyr)
+library(tidyverse)
 library(here)
 library(trend)
 set.seed(123)
@@ -81,16 +83,5 @@ for(i in 1:ncol(mat)){
 # when there is no serial correlation, and the method is very sensitive to 
 # outliers. A more robust method was developed by Sen (1968), 
 # see this: https://www.researchgate.net/post/Sens_slope_vs_least_squares_regression"
-plot(trendmat$lm.slope,trendmat$sens.slope)
-
-# Now you can plot them from real data
-sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
-plot(sm_all$t.lm.slope,sm_all$t.sens.slope,col=rgb(0,0,0,0.2),pch=19)
-abline(h=0,col="red")
-abline(v=0,col="red")
-
-#################################################################
-
-
-
+plot(y=trendmat$lm.slope,x=trendmat$sens.slope,xlab="Sen's slope, simulated data",ylab="lm.slope, simulated data")
 
