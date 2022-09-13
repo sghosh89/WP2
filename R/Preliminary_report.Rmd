@@ -104,9 +104,13 @@ I want to see how community stability-drivers relationship would affect by the c
 My intuition is:
 
   - community stability would be affected by any of these temperature component either directly or indirectly via the drivers.
-  - As $t_{med}$, $t_{trend}$ changes, diversity-stability relationship should be affected, so stability would change via portfolio effect. e.g. terrestrial plants, beetles, and vertebrates show declining richness with incresing temperature in the past studies.
-  - Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment. For example, as temperature increases (or decreases) $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species-traits at that particular environment. But if $t_{trend}$ increases, the community is exposing to warmer environment with years, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony. I am not sure, what will happen, but we can see how community-level response (avg of all species'response to warming in that community) changes with temperature?
-  - Changing $t_{trend}$, $t_{skw}$, means frequent extreme events (like heatwaves, or cold winter), and it should be related to tail-dependent synchrony, where pairwise synchrony between species gets stronger beyond a certain threshold.
+  - My hypothesis for **direct effect** is: warming environment (i.e., increasing any of these temperature component) should make the total productivity (community level abundance or biomass) more variable - so should decrease community stability.
+  
+  - For **indirect effect** via richness: increasing temperature (i.e. $t_{med}$, $t_{trend}$) might increase or decrease species richness and diversity-stability relationship could be affected via portfolio effect, or via the factors which are affected by the richness. e.g. terrestrial plants, beetles, and vertebrates show declining richness with incresing temperature in the past studies. [***Shya: add citations for birds and fish particularly which shows increasing or decreasing richness due to temperature change].
+  
+  - For **indirect effect** via overall synchrony (variance ratio): Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment, i.e., affecting the synchrony level (variance ratio). For example, as temperature increases (or decreases) $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species-traits at that particular environment. If the community is exposing to warmer environment, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony. I am not sure, what will happen, but we can see how community-level response (avg of all species'response to warming for a given community) changes with temperature across the communities?
+  
+  - For **indirect effect** via tail-dependent synchrony (total tail asymmetry): Community level tail dependent synchrony (A) is the measure of how much species pair are synchronous in their extreme values (rare or common). It is reasonable to think that with increasing $t_{trend}$, species would be more similar in their extreme values - continuous warming/cooling could make the species assembly similar - either species become simultaneously rare (if all could not adapt well in warmer condition) or abundant (due to release from competitive pressure from other species which could not adapt well in warmer environment but were dominant otherwise). On the other hand, a finite $t_{skw}$ means extreme events (like heatwaves or cold winter) which should be related to species' extremes, especially if species response is regulated by some environmental threshold-like phenomena. Now depending on the tolerance limit (or temperature threshold) of all the species in a given community, their synchronous response in the extremes could differ. For example, if all species have similar tolerance limit then an extreme heat or winter event would make them more synchronous in their tails - so skewness would increase tail dependent synchrony. But if the species in the community vary in their tolerance limits then an extreme event (skewed temperature timeseries) would decrease the tail dependent synchrony. [***Shya: maybe we can test this with STI]
 
 ```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '100%', fig.align='center'}
 #knitr::include_graphics("../Results/some_assets/drawing.jpg")
@@ -125,23 +129,24 @@ knitr::include_graphics(here("Results/some_assets/realdata_temperature_timeserie
 
 (Perhaps make this into a table.)
 
-Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data only if abundance data were not available) of species $i$ at time $t$ at site $s$. Total abundance at time $t$ at site $s$ is $N_{t,s} = \sum_{i=1}^{s} N_{t,s,i}$. 
+Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance data were not available) of species $i$ at time $t$ at site $s$. Total abundance at time $t$ at site $s$ is $N_{t,s} = \sum_{i=1}^{s} N_{t,s,i}$. 
 
-*Community stability* at site $s$ was estimated as the inverse of the coefficient of temporal variation in total community *biomass ?or? abundance*: $TempStab_s = 1 / CV(N_{t,s}) = median(N_{t,s}) / IQR(N_{t,s})$
+*Community stability* at site $s$ was estimated as the inverse of the coefficient of temporal variation in total community abundance (when abundance info were not available, then biomass): $TempStab_s = 1 / CV(N_{t,s}) = median(N_{t,s}) / IQR(N_{t,s})$
 
-*Species richness* at site $s$ was estimated as the number of total species and dominant species that were present minimum 70% of the total years sampled.
+*Species richness* at site $s$ was estimated as the number of total species ($nsp$) and dominant species that were present minimum 70% of the total years sampled ($R$).
 
-*Comunity variance ratio*: a measure of synchrony, scaled between 0 to 1 ([Loreau & Mazancourt](https://www.journals.uchicago.edu/doi/10.1086/589746)).
+*Community variance ratio*: a measure of synchrony, scaled between 0 to 1 ([Loreau & Mazancourt](https://www.journals.uchicago.edu/doi/10.1086/589746)).
 
 *Community level total tail association from pairwise synchrony*: see BioDyn project, Figure 1.
 
 *Temperature median*: Median of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
-*Temperature trend*: Monotonic trend of annual temperature timeseries (computed by non-parametric Sen's method or parametric linear fit slope).
-
-*Temperature variability*: Temperature variability for the community during the study period = median(annual temperature)/IQR(annual temperature distribution for the study period).
+*Temperature trend*: Monotonic trend of annual temperature timeseries (computed by non-parametric Sen's method or parametric linear fit slope). I used the Sen's slope in the path model, as non-parametric estimation has some advantage[, see wikipedia](https://en.wikipedia.org/wiki/Theil%E2%80%93Sen_estimator), but it is very similar to linear slope (see \@ref(fig:trend-plot-compare)).
 
 *Temperature skew*: Skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
+
+*Temperature variability*: Temperature variability for the community during the study period = median(annual temperature)/IQR(annual temperature distribution for the study period). 
+[Not included in the path model, see explanation in Sec. \@ref(exclude-tvar).]
 
 # Results
 
@@ -509,8 +514,8 @@ sm_all_bf%>%
     aes(label = round(stat(count) / sum((count)), 3)),
     stat = 'bin', vjust = -0.5, breaks = br
   )+ ylim(c(0, 1))+geom_density()+
-  annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="red")+
-  annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="red")+
   theme_classic()
 ```
 
@@ -524,7 +529,7 @@ sm_all_bf%>%
   theme_classic()+facet_wrap(~TAXA)
 ```
 
-```{r trend-plot,out.width = '75%', fig.cap=c("Distribution of temperature trend estimated by non-parametric Sen's slope, and parametric linear fit slope. Colored points are significant Sen's slope (green: birds, blue: fish) .", "Histogram plot for trends, both taxa.","Histogram plot for significant trends, both taxa.")}
+```{r trend-plot-compare, out.width = '75%', fig.cap="Distribution of temperature trend estimated by non-parametric Sen's slope, and parametric linear fit slope. Colored points are significant Sen's slope (green: birds, blue: fish)."}
 # simulated data trend plot: see test_trend_bothway.R
 
 # Now you can plot them from real data
@@ -538,6 +543,9 @@ abline(v=0,col="black",lty=2)
 table(slope_sig_bf$REALM)/table(sm_all_bf$REALM) # 34% freshwater, and 25% terrestrial sig trend
 # at least from primary visualization, 
 # I can see slopes when > 0.25 has higher chance to be significant
+```
+
+```{r trend-plot, out.width = '75%', fig.cap=c("Histogram plot for trends, both taxa.","Histogram plot for significant trends, both taxa.")}
 
 gp1<-sm_all_bf%>%
   ggplot( aes(x=t.sens.slope))+geom_histogram()+xlim(-1.5,1.5)+xlab("Sen's slope, all")+
@@ -929,9 +937,10 @@ and for fish -
 
 - overall synchrony (variance ratio) is the important determinant for stability (this we knew from BioDyn project findings), as it connects the environmental effects to stability.
 - increasing $t_{med}$ increases richness, and more asynchrony (-ve effect on VR), which is also consistent with more variable traits for the fish species.
-- for fish, extremes has direct negative effect on stability, not indirect effect through tail-dep synchrony as it is not important driver for freshwater as we found from BioDyn.
+- for fish, skewness has direct negative effect on stability, not indirect effect through tail-dep synchrony as it is not important driver for freshwater as we found from BioDyn. Increasing temperature trend increases tail-dependent synchrony.
 
-**Why I did not choose t_var (variability in temperature timeseries) in the path model?**
+### Why I did not choose t_var (variability in temperature timeseries) in the path model? {#exclude-tvar}
+
 As I already have added the t_med as one of the variable in the path model, including again it as t_var would increase the multi-collinearity (as increasing VIF). Also we added the t_skw, so together with t_med, it should give you an estimation of whole temperature timeseries distribution - and would be better as directional metric (positive or negative skewness) than just the variability (non-directional). 
 
 

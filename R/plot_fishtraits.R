@@ -44,5 +44,5 @@ g2<-ggplot(compare_data, aes(x = type, y = nsp, color = type)) +
   geom_boxplot(width = .1, outlier.shape = NA, color="black")+
   geom_jitter(width = .02,alpha=0.3)+
   theme_bw()+theme(legend.position="none")+ 
-  ylab("Fish richness, body length in cm")+xlab("Community in environment")
+  ylab("Fish richness")+xlab("Community in environment")
 print(g2)
