@@ -1,4 +1,5 @@
-# first for birds
+# first for fish
+library(here)
 library(tidyverse)
 library(dplyr)
 
@@ -12,7 +13,7 @@ df<-read.csv(here("Results/fish_splist_with_temp_sensitivity.csv"))
 # consistency table
 dfc<-read.csv(here("Results/fish_splist_consistency_table.csv"))
 
-# birdtraits
+# fishtraits
 dft<-read.csv(here("DATA/traitsdata/fish_traits_from_FishBase.csv"))
 
 # check if with increasing temp trend is there any change in fish length?
