@@ -51,13 +51,17 @@ I will gather annual climate data (mean, minimum, maximum for temperature, rainf
 
 # Data
 
-## Data structure
-Total 1948 community timeseries we have collected for the timespan 1979-2019. 4 taxa are considered - birds, fish, freshwater invertebrates, terrestrial invertebrates. Below is the summary of the datatable. Description of each column is given in [README.txt](https://github.com/sghosh89/WP2/tree/main/Results)
 ```{r read_data_str, echo=F}
 library(dplyr)
 library(tidyverse)
 
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+```
+
+## Data structure
+Total `r nrow(sm_all)` community timeseries we have collected for the timespan 1979-2019. 4 taxa are considered - birds, fish, freshwater invertebrates, terrestrial invertebrates. Below is the summary of the datatable. Description of each column is given in [README.txt](https://github.com/sghosh89/WP2/tree/main/Results)
+
+```{r str_data, echo=F}
 str(sm_all) # total communities within 1979-2019 timespan, we selected only 4 taxa
 ```
 
@@ -104,13 +108,13 @@ I want to see how community stability-drivers relationship would affect by the c
 My intuition is:
 
   - community stability would be affected by any of these temperature component either directly or indirectly via the drivers.
-  - My hypothesis for **direct effect** is: warming environment (i.e., increasing any of these temperature component) should make the total productivity (community level abundance or biomass) more variable - so should decrease community stability.
+  - My hypothesis for **direct effect** is: warming environment (i.e., increasing any of these temperature components) should make the total productivity (community level abundance or biomass) more variable - so should decrease community stability.
   
   - For **indirect effect** via richness: increasing temperature (i.e. $t_{med}$, $t_{trend}$) might increase or decrease species richness and diversity-stability relationship could be affected via portfolio effect, or via the factors which are affected by the richness. e.g. terrestrial plants, beetles, and vertebrates show declining richness with incresing temperature in the past studies. [***Shya: add citations for birds and fish particularly which shows increasing or decreasing richness due to temperature change].
   
-  - For **indirect effect** via overall synchrony (variance ratio): Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment, i.e., affecting the synchrony level (variance ratio). For example, as temperature increases (or decreases) $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species-traits at that particular environment. If the community is exposing to warmer environment, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony. I am not sure, what will happen, but we can see how community-level response (avg of all species'response to warming for a given community) changes with temperature across the communities?
+  - For **indirect effect** via overall synchrony (variance ratio): Similarly, changing $t_{med}$, $t_{trend}$ should relate how species interactions get modified in a changing environment, i.e., affecting the synchrony level (variance ratio). For example, as temperature increases (or decreases) $t_{med}$, community might loose some species, and might be dominated by fewer species which may or may not be synchronous, depending on the species-traits at that particular environment. If the community is exposing to warmer environment, then maybe warm adapted species will become dominant and species with similar traits can have higher synchrony. I am not sure, what will happen, but we can see how community-level response (avg of all species'response to warming for a given community) changes with temperature across the communities? [***Shya: add citations for birds and fish particularly which shows increasing or decreasing synchrony due to temperature change].[***Shya: we can test this with standardized correlation, shown later in Sec. \@ref(explanations).]
   
-  - For **indirect effect** via tail-dependent synchrony (total tail asymmetry): Community level tail dependent synchrony (A) is the measure of how much species pair are synchronous in their extreme values (rare or common). It is reasonable to think that with increasing $t_{trend}$, species would be more similar in their extreme values - continuous warming/cooling could make the species assembly similar - either species become simultaneously rare (if all could not adapt well in warmer condition) or abundant (due to release from competitive pressure from other species which could not adapt well in warmer environment but were dominant otherwise). On the other hand, a finite $t_{skw}$ means extreme events (like heatwaves or cold winter) which should be related to species' extremes, especially if species response is regulated by some environmental threshold-like phenomena. Now depending on the tolerance limit (or temperature threshold) of all the species in a given community, their synchronous response in the extremes could differ. For example, if all species have similar tolerance limit then an extreme heat or winter event would make them more synchronous in their tails - so skewness would increase tail dependent synchrony. But if the species in the community vary in their tolerance limits then an extreme event (skewed temperature timeseries) would decrease the tail dependent synchrony. [***Shya: maybe we can test this with STI]
+  - For **indirect effect** via tail-dependent synchrony (total tail asymmetry): Community level tail dependent synchrony (A) is the measure of how much species pair are synchronous in their extreme values (rare or common). It is reasonable to think that with increasing $t_{trend}$, species would be more similar in their extreme values - continuous warming/cooling could make the species assembly similar - either species become simultaneously rare (if all could not adapt well in warmer condition) or abundant (due to release from competitive pressure from other species which could not adapt well in warmer environment but were dominant otherwise). On the other hand, a finite $t_{skw}$ means extreme events (like heatwaves or cold winter) which should be related to species' extremes, especially if species response is regulated by some environmental threshold-like phenomena. Now depending on the tolerance limit (or temperature threshold) of all the species in a given community, their synchronous response in the extremes could differ. For example, if all species have similar tolerance limit then an extreme heat or winter event would make them more synchronous in their tails - so skewness would increase tail dependent synchrony. But if the species in the community vary in their tolerance limits then an extreme event (skewed temperature timeseries) would decrease the tail dependent synchrony. [***Shya: maybe we can test this with STI-related concept]
 
 ```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '100%', fig.align='center'}
 #knitr::include_graphics("../Results/some_assets/drawing.jpg")
@@ -562,7 +566,7 @@ gp2<-slope_sig_bf%>%
 print(gp2)
 ```
 
-## Explanations
+## Explanations {#explanations}
 
 So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes weaker. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities.
 
