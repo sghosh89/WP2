@@ -914,11 +914,19 @@ n<-nrow(dat)
 #  lmer(R~t.sens.slope+t_med+(1|UID),data=dat),
 #  lmer(stability ~ (R + VR +A)+t.sens.slope+t_skw+t_med+
 #         (1|UID), data=dat))
+
+#model_psem<-piecewiseSEM::psem(
+#  lmer(VR ~ R+t_med+t.sens.slope+(1|UID),data=dat),
+#  lmer(A ~ R+t.sens.slope+t_skw+(1|UID),data=dat),
+#  lmer(R~t_med+t.sens.slope+(1|UID),data=dat),
+#  lmer(stability ~ (R*t_med)+VR+A+t.sens.slope+t_skw+(1|UID), data=dat))
+
 model_psem<-piecewiseSEM::psem(
   lmer(VR ~ R+t_med+t.sens.slope+(1|UID),data=dat),
   lmer(A ~ R+t.sens.slope+t_skw+(1|UID),data=dat),
-  lmer(R~t_med+t.sens.slope+(1|UID),data=dat),
-  lmer(stability ~ (R*t_med)+VR+A+t.sens.slope+t_skw+(1|UID), data=dat))
+  lmer(R~t_med+t_var+t.sens.slope+(1|UID),data=dat),
+  lmer(stability ~ (R*t_med)+VR+A+t.sens.slope+t_skw+t_var+(1|UID), data=dat))
+
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
 #print(summary(model_psem))
@@ -963,17 +971,20 @@ mydat_scaled$t.lm.slope<-as.numeric(scale(mydat_scaled$t.lm.slope,
 #---  
 dat<-mydat_scaled
 n<-nrow(dat)
+
 model_psem<-piecewiseSEM::psem(
   lmer(VR ~ R+t_med+t.sens.slope+(1|UID),data=dat),
   lmer(A ~ R+t.sens.slope+t_skw+(1|UID),data=dat),
-  lmer(R~t_med+t.sens.slope+(1|UID),data=dat),
-  lmer(stability ~ (R*t_med)+VR+A+t.sens.slope+t_skw+(1|UID), data=dat))
+  lmer(R~t_med+t_var+t.sens.slope+(1|UID),data=dat),
+  lmer(stability ~ (R*t_med)+VR+A+t.sens.slope+t_skw+t_var+(1|UID), data=dat))
+
 cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
 #print(summary(model_psem))
 saveRDS(model_psem,paste(resloc,"model_psem_",taxa,".RDS",sep=""))
 ```
 
+<!--- currently blocked code
 ```{r model_psem_without_meancentering, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
 
 library(tidyverse)
@@ -1100,6 +1111,7 @@ plot_psem(n,taxa,cc,layout="circle")
 #print(summary(model_psem))
 saveRDS(model_psem,paste(resloc,"model_psem_wo_meancentering_",taxa,".RDS",sep=""))
 ```
+--->
 
 So, from the path analysis, what do we see for birds -
 
@@ -1114,6 +1126,7 @@ and for fish -
 - increasing $t_{med}$ increases richness, and more asynchrony (-ve effect on VR), which is also consistent with more variable traits for the fish species.
 - for fish, skewness has direct negative effect on stability, not indirect effect through tail-dep synchrony as it is not important driver for freshwater as we found from BioDyn. Increasing temperature trend increases tail-dependent synchrony.
 
+<!-- currently blocked portion 
 ### Why I did not choose t_var (variability in temperature timeseries) in the path model? {#exclude-tvar}
 
 As I already have added the t_med as one of the variable in the path model, including again it as t_var would increase the multi-collinearity (as increasing VIF). Also we added the t_skw, so together with t_med, it should give you an estimation of whole temperature timeseries distribution - and would be better as directional metric (positive or negative skewness) than just the variability (non-directional). 
@@ -1239,5 +1252,7 @@ cc<-coefs(model_psem)
 plot_psem(n,taxa,cc,layout="circle")
 #print(summary(model_psem))
 ```
+
+-->
 
 # Discussion
