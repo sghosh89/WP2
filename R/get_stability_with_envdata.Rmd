@@ -1175,6 +1175,16 @@ source("./get_sp_fish.R")
 source("./realdata_temperature_timeseriesplot.R")
 ```
 
+<!--test some ideas related to STI-->
+<!--first, test with fish data-->
+```{r clean_fish_gbif_data, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime(here("DATA/STI_related/fish_gbif_data/fish_occurrence_data_needed_edited.csv")))}
+
+# to run this code you need to first get fish gbif raw data by running "./get_fish_gbif_data.R"
+# I did not run the get_fish_gbif_data.R file here to avoid long run time
+source("./clean_fish_gbif_data.R") 
+```
+
+
 # CODE AVAILABILITY
 Complete computer code written in R programming language for this project is at https://github.com/sghosh89/WP2.
 This Rmd file generates the summary table *stability_metric_and_env_all.csv* required for next step analysis and saves the csv file in `Results` folder.
