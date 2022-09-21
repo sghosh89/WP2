@@ -1115,10 +1115,9 @@ saveRDS(model_psem,paste(resloc,"model_psem_wo_meancentering_",taxa,".RDS",sep="
 
 So, from the path analysis, what do we see for birds -
 
-- for birds: increasing temperature $t_{med}$ decreases community stability, though it has no significant direct effect on the drivers (like richness, synchrony).
+- for birds: increasing richness increases stability (positive diversity-stability relationship is confirmed). But temperature plays an important role in detecting the slope or strength of such relationship. High temperature increases the positive slope compared to low temperature. 
 - increasing temperature trend also has no significant effect on birds.
-- increasing extreme heatwaves decreases tail dep synchrony. Here direct effect of t_skw is not significant on stability, as all bird data have equal proportion of +ve and -ve skewness (see above plot). But still tail dependent synchrony is important mechanism for stability, especially for terrestrial taxa (we found this from BioDyn project), and driven by the skewness of temperature time series (extreme events).
-- positive diversity-stability relationship and negative synchrony-stability relationship are observed as expected.
+- increasing extreme heatwaves decreases tail dependent synchrony. We guess this is because Here direct effect of t_skw is not significant on stability, as all bird data have equal proportion of +ve and -ve skewness (see above plot). But still tail dependent synchrony is important mechanism for stability, especially for terrestrial taxa (we found this from BioDyn project), and driven by the skewness of temperature time series (extreme events).
 
 and for fish -
 
