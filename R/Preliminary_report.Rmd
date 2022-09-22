@@ -566,6 +566,13 @@ gp2<-slope_sig_bf%>%
 print(gp2)
 ```
 
+```{r tvar-plot, out.width = '75%', fig.cap=c("Histogram plot for variability in temperature")}
+gp3<-sm_all_bf%>%
+  ggplot( aes(x=t_var))+geom_histogram()+
+   theme_classic()+facet_wrap(~TAXA)
+print(gp3)
+```
+
 ## Explanations {#explanations}
 
 So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes weaker. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities.
@@ -777,6 +784,7 @@ So, I thought to make a plot of how community-level average response traits (ave
 ```{r plot_tempcor_traits, echo=F}
 # first for fish
 library(tidyverse)
+library(ggbreak)
 library(dplyr)
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 #range(sm_all$t_med)
@@ -798,17 +806,53 @@ df<-df%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname)
 df2<-left_join(df,dfc,by="spname")
 df2<-df2%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname,avgcorval)
 
-df3<-df2%>%group_by(STUDY_ID,newsite)%>%summarise(avgcortraitval=mean(avgcorval))%>%ungroup()
+df3<-df2%>%group_by(STUDY_ID,newsite)%>%
+  summarise(avgcortraitval=mean(avgcorval),
+            cortrait_sd=sd(avgcorval),
+            cortrait_var=sd(avgcorval)/abs(mean(avgcorval)))%>%ungroup()
 
 mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
 
-# response traits vs. t_med plot
-g1<-ggplot(mydat,aes(x=t_med,y=avgcortraitval))+geom_point(alpha=0.2)+geom_smooth(method="loess",color="blue",fill="cornflowerblue")+
-  geom_hline(yintercept=0,linetype='dashed')+xlab("t_med, K/10 unit")+ylab("community-wide correlation traits, fish")+xlim(2600,3000)+theme_bw()
+#df4<-df3%>%filter(cortrait_var<0)
+
+# response traits (avgvalue) vs. t_med plot
+g1<-ggplot(mydat,aes(x=t_med,y=avgcortraitval))+
+  geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  geom_hline(yintercept=0,linetype='dashed')+
+  xlab("t_med, K/10 unit")+
+  ylab("community-wide correlation traits (avg. value), fish")+
+  xlim(2600,3000)+theme_bw()
 print(g1)
+
+# response traits (variability) vs. t_med plot
+g1<-ggplot(mydat,aes(x=t_med,y=cortrait_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  geom_hline(yintercept=0,linetype='dashed')+
+  #scale_y_break(c(11.5,38,56, 129))+
+  #ylim(0,132)+
+  xlab("t_med, K/10 unit")+
+  ylab("community-wide correlation traits \n
+       variability (absolute), fish")+
+  xlim(2600,3000)+theme_bw()
+print(g1)
+
+g1wbrk<-ggplot(mydat,aes(x=t_med,y=cortrait_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  geom_hline(yintercept=0,linetype='dashed')+
+  scale_y_break(c(11.5,38,56, 129))+
+  ylim(0,132)+
+  xlab("t_med, K/10 unit")+
+  ylab("community-wide correlation traits \n
+       variability (absolute), fish")+
+  xlim(2600,3000)+theme_bw()
+print(g1wbrk)
+
 # richness vs. t_med plot
-ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+geom_smooth(method="loess",color="blue",fill="cornflowerblue")+xlab("t_med, K/10 unit")+ylab("Richness, fish")+
-  theme_bw()
+#ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+
+#  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+#  xlab("t_med, K/10 unit")+ylab("Richness, fish")+
+#  theme_bw()
 
 #---- for birds -----
 taxa<-"birds"
@@ -825,17 +869,39 @@ df<-df%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname)
 df2<-left_join(df,dfc,by="spname")
 df2<-df2%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname,avgcorval)
 
-df3<-df2%>%group_by(STUDY_ID,newsite)%>%summarise(avgcortraitval=mean(avgcorval))%>%ungroup()
+df3<-df2%>%group_by(STUDY_ID,newsite)%>%
+  summarise(avgcortraitval=mean(avgcorval),
+            cortrait_sd=sd(avgcorval),
+            cortrait_var=sd(avgcorval)/abs(mean(avgcorval)))%>%ungroup()
 
 mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
 
 # response traits vs. t_med plot
-g1<-ggplot(mydat,aes(x=t_med,y=avgcortraitval))+geom_point(alpha=0.2)+geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
-  geom_hline(yintercept=0,linetype='dashed')+xlab("t_med, K/10 unit")+ylab("community-wide correlation traits, birds")+xlim(2600,3000)+theme_bw()
+g1<-ggplot(mydat,aes(x=t_med,y=avgcortraitval))+
+  geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
+  geom_hline(yintercept=0,linetype='dashed')+
+  xlab("t_med, K/10 unit")+
+  ylab("community-wide correlation traits (avg. value), birds")+
+  xlim(2600,3000)+theme_bw()
 print(g1)
+
+# response traits (variability) vs. t_med plot
+g1<-ggplot(mydat,aes(x=t_med,y=cortrait_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
+  geom_hline(yintercept=0,linetype='dashed')+
+  #scale_y_log10()+
+  xlab("t_med, K/10 unit")+
+  ylab("community-wide correlation traits \n variability (absolute), birds")+
+  xlim(2600,3000)+theme_bw()
+print(g1)
+
 # richness vs. t_med plot
-ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+geom_smooth(method="loess",color="green",fill="darkolivegreen1")+xlab("t_med, K/10 unit")+ylab("Richness, birds")+
-  theme_bw()
+#ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+
+#  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
+#  xlab("t_med, K/10 unit")+
+#  ylab("Richness, birds")+
+#  theme_bw()
 ```
 
 Possible explanation:
