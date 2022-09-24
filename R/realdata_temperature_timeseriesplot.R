@@ -10,9 +10,12 @@ sbf<-sm_all%>%filter(TAXA%in%c("fish","birds"))%>%
   dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,
                 initR,nsp,nyr_used,L,U,phi_LdM,iCValt,
                 LONGITUDE,LATITUDE,
-                t_med,t_skw,trend_t_tau,trend_t_tau_sig,
+                t_med,t_skw,t_var,
+                t_med_celcius,t_skw_celcius,t_var_celcius,
                 t.lm.slope,t.lm.slope.sig,
-                t.sens.slope,t.sens.slope.sig)
+                t.sens.slope,t.sens.slope.sig,
+                t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                t.sens.slope.celcius,t.sens.slope.sig.celcius)
 
 #================= first do some exploration ===============================
 tempo<-sbf%>%filter(t.lm.slope.sig!=t.sens.slope.sig)# 193 communities
@@ -21,8 +24,9 @@ tempo<-sbf%>%filter(t.lm.slope.sig!=t.sens.slope.sig)# 193 communities
 range(tempo$nyr_used)
 
 # one example with 41 datapoints
-m<-readRDS("../DATA/for_BioTIMEx/wrangled_data/oneida_fish_gillnets/input_mat_for_tailanal_with_env_oneida_fish_gillnets_Buoy 113.RDS")
+m<-readRDS("../DATA/for_BioTIMEx/wrangled_data/oneida_fish_gillnets/input_mat_for_tailanal_with_env_celcius_oneida_fish_gillnets_Buoy 113.RDS")
 m$year<-as.integer(rownames(m))
+
 plot(m$year,m$t,type="b")
 model<-lm(t~year,m)
 summary(model) # marginal p value, sig in lm fit

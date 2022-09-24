@@ -81,11 +81,13 @@ sm_BT_freshw<-sm_BT_freshw%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,
                                              cvsq_real,cvsq_indep,phi,phi_LdM,
                                              skw_real,skw_indep,phi_skw,
                                              iCV,iCValt,LONGITUDE,LATITUDE,
-                                             t_med,tmax_med,tmin_med,
-                                             t_skw,tmax_skw,tmin_skw,t_var,
-                                             trend_t_tau,trend_t_tau_sig,
+                                             t_med,t_skw,t_var,
+                                             t_med_celcius,t_skw_celcius,t_var_celcius,
                                              t.lm.slope,t.lm.slope.sig,
-                                             t.sens.slope,t.sens.slope.sig))
+                                             t.sens.slope,t.sens.slope.sig,
+                                             t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                                             t.sens.slope.celcius,t.sens.slope.sig.celcius,
+                                             GiniSimpson,Simpson,Shannon,Heip,McIntosh,SmithWilson,Pielou))
 
 #----------------------------- for BioTIME: terrestrial -----------------------------------------------------
 df<-md%>%filter(source=="BioTIME" & REALM=="Terrestrial")%>%filter(TAXA%in%c("birds","terrestrial invertebrates"))
@@ -109,8 +111,6 @@ sm_BT_terres<-left_join(sm_BT_terres,singlesite,by="STUDY_ID")
 sm_BT_terres$LONGITUDE<-dplyr::coalesce(sm_BT_terres$LONGITUDE.x,sm_BT_terres$LONGITUDE.y)
 sm_BT_terres$LATITUDE<-dplyr::coalesce(sm_BT_terres$LATITUDE.x,sm_BT_terres$LATITUDE.y)
 sm_BT_terres<-sm_BT_terres%>%dplyr::select(-c(LONGITUDE.x,LONGITUDE.y,LATITUDE.x,LATITUDE.y))
-
-
 
 id<-which(sm_BT_terres$STUDY_ID==67)
 mylonlat<-read.csv("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/67/mylonlat.csv")
@@ -146,26 +146,31 @@ sm_BT_terres<-sm_BT_terres%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,
                                              cvsq_real,cvsq_indep,phi,phi_LdM,
                                              skw_real,skw_indep,phi_skw,
                                              iCV,iCValt,LONGITUDE,LATITUDE,
-                                             t_med,tmax_med,tmin_med,
-                                             t_skw,tmax_skw,tmin_skw,t_var,
-                                             trend_t_tau,trend_t_tau_sig,
+                                             t_med,t_skw,t_var,
+                                             t_med_celcius,t_skw_celcius,t_var_celcius,
                                              t.lm.slope,t.lm.slope.sig,
-                                             t.sens.slope,t.sens.slope.sig))
+                                             t.sens.slope,t.sens.slope.sig,
+                                             t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                                             t.sens.slope.celcius,t.sens.slope.sig.celcius,
+                                             GiniSimpson,Simpson,Shannon,Heip,McIntosh,SmithWilson,Pielou))
 
 #----------------------------- for BioTIMEx -----------------------------------------------------
 sm_BTx<-readRDS("../Results/for_BioTIMEx/stability_metric_and_env.RDS")
 # rearrange
 sm_BTx<-sm_BTx%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
-                                             initR,nsp,nyr_used,startyr,endyr,nint,nind,npos,nL,nU,nneg,
-                                             L,U,f_nind,f_nL,f_nU,f_nneg,
-                                             cvsq_real,cvsq_indep,phi,phi_LdM,
-                                             skw_real,skw_indep,phi_skw,
-                                             iCV,iCValt,LONGITUDE,LATITUDE,
-                                             t_med,tmax_med,tmin_med,
-                                             t_skw,tmax_skw,tmin_skw,t_var,
-                                 trend_t_tau,trend_t_tau_sig,
+                                 initR,nsp,nyr_used,startyr,endyr,nint,nind,npos,nL,nU,nneg,
+                                 L,U,f_nind,f_nL,f_nU,f_nneg,
+                                 cvsq_real,cvsq_indep,phi,phi_LdM,
+                                 skw_real,skw_indep,phi_skw,
+                                 iCV,iCValt,LONGITUDE,LATITUDE,
+                                 t_med,t_skw,t_var,
+                                 t_med_celcius,t_skw_celcius,t_var_celcius,
                                  t.lm.slope,t.lm.slope.sig,
-                                 t.sens.slope,t.sens.slope.sig))
+                                 t.sens.slope,t.sens.slope.sig,
+                                 t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                                 t.sens.slope.celcius,t.sens.slope.sig.celcius,
+                                 GiniSimpson,Simpson,Shannon,Heip,McIntosh,SmithWilson,Pielou))
+
 
 #----------------------------- for BBS -----------------------------------------------------
 sm_BBS<-readRDS("../Results/for_BBS/stability_metric_and_env.RDS")
@@ -184,11 +189,13 @@ sm_BBS<-sm_BBS%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
                                  cvsq_real,cvsq_indep,phi,phi_LdM,
                                  skw_real,skw_indep,phi_skw,
                                  iCV,iCValt,LONGITUDE,LATITUDE,
-                                 t_med,tmax_med,tmin_med,
-                                 t_skw,tmax_skw,tmin_skw,t_var,
-                                 trend_t_tau,trend_t_tau_sig,
+                                 t_med,t_skw,t_var,
+                                 t_med_celcius,t_skw_celcius,t_var_celcius,
                                  t.lm.slope,t.lm.slope.sig,
-                                 t.sens.slope,t.sens.slope.sig))
+                                 t.sens.slope,t.sens.slope.sig,
+                                 t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                                 t.sens.slope.celcius,t.sens.slope.sig.celcius,
+                                 GiniSimpson,Simpson,Shannon,Heip,McIntosh,SmithWilson,Pielou))
 
 #----------------------------- for RivFishTIME -----------------------------------------------------
 sm_RF<-readRDS("../Results/for_RivFishTIME/stability_metric_and_env.RDS")
@@ -207,11 +214,14 @@ sm_RF<-sm_RF%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
                                cvsq_real,cvsq_indep,phi,phi_LdM,
                                skw_real,skw_indep,phi_skw,
                                iCV,iCValt,LONGITUDE,LATITUDE,
-                               t_med,tmax_med,tmin_med,
-                               t_skw,tmax_skw,tmin_skw,t_var,
-                               trend_t_tau,trend_t_tau_sig,
+                               t_med,t_skw,t_var,
+                               t_med_celcius,t_skw_celcius,t_var_celcius,
                                t.lm.slope,t.lm.slope.sig,
-                               t.sens.slope,t.sens.slope.sig))
+                               t.sens.slope,t.sens.slope.sig,
+                               t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                               t.sens.slope.celcius,t.sens.slope.sig.celcius,
+                               GiniSimpson,Simpson,Shannon,Heip,McIntosh,SmithWilson,Pielou))
+
 #----------------------------- for insectRoel -----------------------------------------------------
 sm_insect<-readRDS("../Results/for_insectRoel/stability_metric_and_env.RDS")
 sm_insect$source<-"InsectRoel"
@@ -225,11 +235,13 @@ sm_insect<-sm_insect%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANI
                                        cvsq_real,cvsq_indep,phi,phi_LdM,
                                        skw_real,skw_indep,phi_skw,
                                        iCV,iCValt,LONGITUDE,LATITUDE,
-                                       t_med,tmax_med,tmin_med,
-                                       t_skw,tmax_skw,tmin_skw,t_var,
-                                       trend_t_tau,trend_t_tau_sig,
+                                       t_med,t_skw,t_var,
+                                       t_med_celcius,t_skw_celcius,t_var_celcius,
                                        t.lm.slope,t.lm.slope.sig,
-                                       t.sens.slope,t.sens.slope.sig))
+                                       t.sens.slope,t.sens.slope.sig,
+                                       t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                                       t.sens.slope.celcius,t.sens.slope.sig.celcius,
+                                       GiniSimpson,Simpson,Shannon,Heip,McIntosh,SmithWilson,Pielou))
 
 #--------------------------------------- for swisslake zoo -----------------------------------------------------
 sm_swisslake_zoo<-readRDS("../Results/for_swisslake/zooplankton/stability_metric_and_env.RDS")
@@ -242,11 +254,13 @@ sm_swisslake_zoo<-sm_swisslake_zoo%>%dplyr::select(c(source,STUDY_ID,newsite,REA
                                                      cvsq_real,cvsq_indep,phi,phi_LdM,
                                                      skw_real,skw_indep,phi_skw,
                                                      iCV,iCValt,LONGITUDE,LATITUDE,
-                                                     t_med,tmax_med,tmin_med,
-                                                     t_skw,tmax_skw,tmin_skw,t_var,
-                                                     trend_t_tau,trend_t_tau_sig,
+                                                     t_med,t_skw,t_var,
+                                                     t_med_celcius,t_skw_celcius,t_var_celcius,
                                                      t.lm.slope,t.lm.slope.sig,
-                                                     t.sens.slope,t.sens.slope.sig))
+                                                     t.sens.slope,t.sens.slope.sig,
+                                                     t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                                                     t.sens.slope.celcius,t.sens.slope.sig.celcius,
+                                                     GiniSimpson,Simpson,Shannon,Heip,McIntosh,SmithWilson,Pielou))
 
 #------------------------------- for zoop2014 ----------------------------------------------
 sm_zoop<-readRDS("../Results/for_zoop_2014/stability_metric_and_env.RDS")
@@ -259,14 +273,17 @@ sm_zoop<-sm_zoop%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
                                    cvsq_real,cvsq_indep,phi,phi_LdM,
                                    skw_real,skw_indep,phi_skw,
                                    iCV,iCValt,LONGITUDE,LATITUDE,
-                                   t_med,tmax_med,tmin_med,
-                                   t_skw,tmax_skw,tmin_skw,t_var,
-                                   trend_t_tau,trend_t_tau_sig,
+                                   t_med,t_skw,t_var,
+                                   t_med_celcius,t_skw_celcius,t_var_celcius,
                                    t.lm.slope,t.lm.slope.sig,
-                                   t.sens.slope,t.sens.slope.sig))
+                                   t.sens.slope,t.sens.slope.sig,
+                                   t.lm.slope.celcius,t.lm.slope.sig.celcius,
+                                   t.sens.slope.celcius,t.sens.slope.sig.celcius,
+                                   GiniSimpson,Simpson,Shannon,Heip,McIntosh,SmithWilson,Pielou))
+
 #================================================================================================
 sm_all<-rbind(sm_BT_freshw,sm_BT_terres,sm_BTx,sm_BBS,sm_RF,sm_swisslake_zoo,sm_zoop,sm_insect)
-#sm_all<-rbind(sm_BTx,sm_BBS,sm_RF,sm_swisslake_zoo,sm_zoop,sm_insect)
+#sm_all<-rbind(sm_BBS,sm_RF)
 sm_all$TAXA<-tolower(sm_all$TAXA)
 sm_all<-sm_all%>%filter(nyr_used>=20)
 write.csv(sm_all,"../Results/stability_metric_and_env_all.csv",row.names=F)
