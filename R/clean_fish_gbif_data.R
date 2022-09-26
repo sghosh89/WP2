@@ -46,7 +46,7 @@ for(i in 1:tot_sp_manual){
   print(summary(flags))
   y<-y[flags$.summary,]# cleaned data
   ddft$cleaned_records[which(ddft$Species==s)]<-nrow(y)
-  write.csv(y,here(paste("DATA/STI_related/fish_gbif_data/cleaned/",s,".csv",sep="")))
+  write.csv(y,here(paste("DATA/STI_related/fish_gbif_data/cleaned/",s,".csv",sep="")),row.names = F)
 }
 
 # now do the same for coded species

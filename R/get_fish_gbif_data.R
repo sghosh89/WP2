@@ -1,14 +1,18 @@
 # I want to get an idea of thermal preference niche and tolerance limit of a given species: STI
 
+# WON'T RUN ON WINDOWS
+
 #rm(list=ls())
 library(here)
 library(rgbif)
 library(tidyverse)
 library(dplyr)
 library(parallel)
-library(countrycode)
-library(CoordinateCleaner)
+
+#freecores<-1
+busycores<-20 # for parallell computing with mclapply your computer will use all cores except the number of freecores.
 `%notin%` <- Negate(`%in%`)
+
 
 # fishtraits
 dft<-read.csv(here("DATA/traitsdata/fish_traits_from_FishBase.csv"))
@@ -67,9 +71,8 @@ totsp<-length(splist)
 limit<-99999
 # running a for loop may take longer time, so you can run the code with 
 # mclapply using multiple cores, but mclapply does not work from windows
-for(isp in 1:totsp){
+res_single_sp<-function(isp,splist,limit=99999){
   s<-splist[isp]
-  print(s)
   sp_data <- rgbif::occ_data(scientificName=s,
                              limit=limit,# change this limit later, default=500, max=100000
                              hasCoordinate=TRUE, 
@@ -90,9 +93,13 @@ for(isp in 1:totsp){
   
   coords<-coords%>%filter(occurrenceStatus=="PRESENT")# just to ensure
   
-  write.csv(coords, here(paste("DATA/STI_related/fish_gbif_data/fishrecords_from_GBIF_for_",s,".csv",sep="")),row.names = F)
+  write.csv(coords, paste(here("DATA/STI_related/fish_gbif_data/fishrecords_from_GBIF_for_"),s,".csv",sep=""),row.names = F)
   cat(paste("----------- isp = ",isp," , species = ",s," -----    \n"))
 }
+totsp<-length(splist)
+res_all_sp<-mclapply(X=c(1:totsp),FUN=res_single_sp,
+                     splist=splist,
+                     limit=limit,mc.cores=busycores)
 
 
 

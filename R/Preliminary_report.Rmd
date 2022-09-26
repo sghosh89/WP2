@@ -917,7 +917,7 @@ Now, we will do a path analysis for a simplistic mixed effect model to see the e
 library(tidyverse)
 library(lme4)
 library(piecewiseSEM)
-source(here("R/plot_psem.R"))
+source(here("R/plot_psem.R")) 
 
 call_model_psem<-function(taxa,data=sm_all,
                           rescaling=T,
