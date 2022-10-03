@@ -62,7 +62,7 @@ for(i in 1:nrow(r_insect)){
   # Everything in K/10 scale
   r_insect$t_med[i]<-median(m$t)
   r_insect$t_skw[i]<-myskns(m$t)
-  r_insect$t_var[i]<-median(m$t)/IQR(m$t,type=7)
+  r_insect$t_var[i]<-abs(median(m$t))/IQR(m$t,type=7)
   #--------------------------
   # Now everything in celcius scale
   r_insect$t_med_celcius[i]<-median(m$t_in_celcius)

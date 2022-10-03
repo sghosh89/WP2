@@ -27,6 +27,9 @@ rst_bio7 <- raster::raster(bio7_path)
 fish_meta<-read.csv(here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata.csv"))
 # 2 out of 146 species has <10 cleaned records
 
+fish_meta$maxTtol<-NA # max temp tolerance limit
+fish_meta$minTtol<-NA # min temp tolerance limit
+
 for(i in 1:nrow(fish_meta)){
   sp<-fish_meta$Species[i]
   occ_dat<-read.csv(here(paste("DATA/STI_related/fish_gbif_data/cleaned/",sp,".csv",sep="")))
@@ -49,19 +52,14 @@ for(i in 1:nrow(fish_meta)){
   occ_dat$bio6<-get_values_bio6
   occ_dat$bio7<-get_values_bio7
   
-  write.csv(occ_dat,here(paste("DATA/STI_related/fish_gbif_data/cleaned/",sp,"_with_bio567.csv",sep="")),row.names = F)
+  #write.csv(occ_dat,here(paste("DATA/STI_related/fish_gbif_data/cleaned/",sp,"_with_bio567.csv",sep="")),row.names = F)
   #print(i)
-}
-
-#--------- now get the max temp and minimum temp for each fish species ------------------
-# we want to take average of top 5 max temp records and bottom 5 min temp records
-# if there are less than 5 distinct records, then take avg of whatever records found
-fish_meta$maxTtol<-NA # max temp tolerance limit
-fish_meta$minTtol<-NA # min temp tolerance limit
-
-for(i in 1:nrow(fish_meta)){
-  sp<-fish_meta$Species[i]
-  xx<-read.csv(here(paste("DATA/STI_related/fish_gbif_data/cleaned/",sp,"_with_bio567.csv",sep="")))
+  
+  #--------- now get the max temp and minimum temp for each fish species ------------------
+  # we want to take average of top 5 max temp records and bottom 5 min temp records
+  # if there are less than 5 distinct records, then take avg of whatever records found
+  
+  xx<-occ_dat
   xxbio5<-xx%>%dplyr::select(species,year,bio5)%>%distinct(bio5,.keep_all = T)
   #xxbio5<-xxbio5%>%filter(year<1980)
   xxbio5<-xxbio5%>%arrange(desc(bio5))
@@ -72,6 +70,7 @@ for(i in 1:nrow(fish_meta)){
     top5avg<-mean(xxbio5$bio5)
   }
   fish_meta$maxTtol[i]<-top5avg
+  
   xxbio6<-xx%>%dplyr::select(species,year,bio6)%>%distinct(bio6,.keep_all = T)
   #xxbio6<-xxbio6%>%filter(year<1980)
   xxbio6<-xxbio6%>%arrange(bio6)

@@ -71,7 +71,7 @@ for(i in 1:nrow(r_BTx)){
   # Everything in K/10 scale
   r_BTx$t_med[i]<-median(m$t)
   r_BTx$t_skw[i]<-myskns(m$t)
-  r_BTx$t_var[i]<-median(m$t)/IQR(m$t,type=7)
+  r_BTx$t_var[i]<-abs(median(m$t))/IQR(m$t,type=7)
   #--------------------------
   # Now everything in celcius scale
   r_BTx$t_med_celcius[i]<-median(m$t_in_celcius)

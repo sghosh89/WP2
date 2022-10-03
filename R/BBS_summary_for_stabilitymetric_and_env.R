@@ -62,7 +62,7 @@ for(i in 1:nrow(r_BBS)){
   # Everything in K/10 scale
   r_BBS$t_med[i]<-median(m$t)
   r_BBS$t_skw[i]<-myskns(m$t)
-  r_BBS$t_var[i]<-median(m$t)/IQR(m$t,type=7)
+  r_BBS$t_var[i]<-abs(median(m$t))/IQR(m$t,type=7)
   #--------------------------
   # Now everything in celcius scale
   r_BBS$t_med_celcius[i]<-median(m$t_in_celcius)

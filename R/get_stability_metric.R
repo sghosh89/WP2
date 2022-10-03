@@ -55,8 +55,8 @@ get_stability_metric<-function(m){
   df_stability$phi_skw<-df_stability$skw_real/df_stability$skw_indep
   
   # inverse of CV
-  df_stability$iCV<-mean(tot_quantity)/sd(tot_quantity)
-  df_stability$iCValt<-median(tot_quantity)/IQR(tot_quantity,type=7)
+  df_stability$iCV<-abs(mean(tot_quantity))/sd(tot_quantity)
+  df_stability$iCValt<-abs(median(tot_quantity))/IQR(tot_quantity,type=7)
   
   return(df_stability)
   

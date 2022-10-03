@@ -135,7 +135,7 @@ knitr::include_graphics(here("Results/some_assets/realdata_temperature_timeserie
 
 Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance data were not available) of species $i$ at time $t$ at site $s$. Total abundance at time $t$ at site $s$ is $N_{t,s} = \sum_{i=1}^{s} N_{t,s,i}$. 
 
-*Community stability* at site $s$ was estimated as the inverse of the coefficient of temporal variation in total community abundance (when abundance info were not available, then biomass): $TempStab_s = 1 / CV(N_{t,s}) = median(N_{t,s}) / IQR(N_{t,s})$
+*Community stability* at site $s$ was estimated as the inverse of the coefficient of temporal variation in total community abundance (when abundance info were not available, then biomass): $TempStab_s = 1 / CV(N_{t,s}) = abs(median(N_{t,s})) / IQR(N_{t,s})$
 
 *Species richness* at site $s$ was estimated as the number of total species ($nsp$) and dominant species that were present minimum 70% of the total years sampled ($R$).
 
@@ -149,7 +149,7 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance d
 
 *Temperature skew*: Skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
-*Temperature variability*: Temperature variability for the community during the study period = abs(median(annual temperature))/IQR(annual temperature distribution for the study period). [Note: in Celcius scale temperature t_med could be negative for some sites, so use absolute value]
+*Temperature variability*: Temperature variability for the community during the study period = abs(median(annual temperature))/IQR(annual temperature distribution for the study period). [Note: in Celcius scale temperature t_med could be negative for some sites, so use absolute value always]
 
 # Results
 
@@ -570,6 +570,11 @@ gp3<-sm_all_bf%>%
   ggplot( aes(x=t_var))+geom_histogram()+
    theme_classic()+facet_wrap(~TAXA)
 print(gp3)
+
+gp3c<-sm_all_bf%>%
+  ggplot( aes(x=t_var_celcius))+geom_histogram()+
+   theme_classic()+facet_wrap(~TAXA)
+print(gp3c)
 ```
 
 ## Explanations {#explanations}
@@ -913,7 +918,7 @@ knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"),
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa.
 
 ```{r model_psem_with_meancentering, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
-
+library(car)
 library(tidyverse)
 library(lme4)
 library(piecewiseSEM)
@@ -925,6 +930,17 @@ call_model_psem<-function(taxa,data=sm_all,
   
   sm_all_eachtaxa<-data%>%filter(TAXA==taxa)
   mydat_scaled<-sm_all_eachtaxa
+  
+  #------ check variation inflation factor for multi-collinearity  
+  cat(paste(" VIF for model, taxa = ",taxa," ------- \n"))
+  vf<-car::vif(lmer(stability ~ R+VR+A+t.sens.slope+t_skw+t_var+(1|UID), data=mydat_scaled))
+  print(vf)
+  vf<-car::vif(lmer(stability ~ R+VR+A+t.sens.slope.celcius+t_skw_celcius+t_var_celcius+(1|UID), data=mydat_scaled))
+  print(vf)
+  vf<-car::vif(lmer(stability ~ R+E+VR+A+t.sens.slope+t_skw+t_var+(1|UID), data=mydat_scaled))
+  print(vf)
+  vf<-car::vif(lmer(stability ~ R+E+VR+A+t.sens.slope.celcius+t_skw_celcius+t_var_celcius+(1|UID), data=mydat_scaled))
+  print(vf)
   
   #------ want rescaling? 
   if(rescaling==T){
@@ -982,7 +998,7 @@ call_model_psem<-function(taxa,data=sm_all,
     lmer(E~R+t_med+t.sens.slope+t_var+(1|UID),data=dat),
     lmer(stability ~ R+E+VR+A+(R:t_med)+
            t_med+t_var+t.sens.slope+t_skw+(1|UID), data=dat))
-  
+ 
   model_psem_c2<-piecewiseSEM::psem(
     lmer(VR ~ R+E+t_med_celcius+t.sens.slope.celcius+(1|UID),data=dat),
     lmer(A ~ R+E+t.sens.slope.celcius+t_skw_celcius+(1|UID),data=dat),
@@ -1049,6 +1065,84 @@ call_model_psem(taxa = taxa, data=sm_all,
                 resloc=resloc)
 ```
 
+```{r fish-skw-and-taildepsyn, echo=F}
+library(here)
+library(dplyr)
+library(tidyverse)
+library(gridExtra)
+
+fish_meta<-read.csv(here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata_with_tolerance.csv"))
+fish_meta<-fish_meta%>%dplyr::select(SpecCode,maxTtol,minTtol)
+
+# now extract community wide value of tolerance limit variability
+df<-read.csv(here("Results/fish_splist_with_temp_sensitivity.csv"))
+df<-df%>%dplyr::select(STUDY_ID,newsite,spname)
+
+dfc<-read.csv(here("DATA/traitsdata/fish_traits_from_FishBase.csv"))
+dfc<-dfc%>%dplyr::select(SpecCode,Species,Author,name_in_mydb)
+# first extract temperature-cor traits per community
+
+df2<-left_join(df,dfc,by=c("spname"="name_in_mydb"))# spname is name_in_mydb, search "Catasomus"
+df3<-left_join(df2,fish_meta,by="SpecCode")
+
+df4<-df3%>%group_by(STUDY_ID,newsite)%>%
+  summarise(avg_maxTtol=mean(maxTtol),
+            avg_minTtol=mean(minTtol),
+            maxTtol_var=sd(maxTtol)/abs(mean(maxTtol)),
+            minTtol_var=sd(minTtol)/abs(mean(minTtol)))%>%ungroup()
+
+taxa<-"fish"
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+sfi<-sm_all%>%filter(TAXA==taxa)
+
+mydat<-left_join(sfi,df4,by=c("STUDY_ID","newsite"))
+# response traits (variability) vs. t_med plot
+
+mydat$A<-mydat$L+abs(mydat$U)
+g1<-ggplot(mydat,aes(x=t_skw,y=avg_minTtol))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  #xlab("t_skw, K/10 unit")+
+  #ylab("community-wide min tolerance limit \n
+  #    variability (absolute), fish")+
+  theme_bw()
+
+g2<-ggplot(mydat,aes(x=t_skw,y=avg_maxTtol))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  #xlab("t_skw, K/10 unit")+
+  #ylab("community-wide min tolerance limit \n
+  #    variability (absolute), fish")+
+  theme_bw()
+
+g3<-ggplot(mydat,aes(x=t_skw,y=minTtol_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  #xlab("t_skw, K/10 unit")+
+  #ylab("community-wide min tolerance limit \n
+  #    variability (absolute), fish")+
+  theme_bw()
+
+g4<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  #xlab("t_skw, K/10 unit")+
+  #ylab("community-wide min tolerance limit \n
+  #    variability (absolute), fish")+
+  theme_bw()
+
+g5<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  #xlab("t_skw, K/10 unit")+
+  #ylab("community-wide min tolerance limit \n
+  #    variability (absolute), fish")+
+  theme_bw()
+
+g6<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  #xlab("t_skw, K/10 unit")+
+  #ylab("community-wide min tolerance limit \n
+  #    variability (absolute), fish")+
+  theme_bw()
+grid.arrange(g1,g2,g3,g4,g5,g6, ncol=2)
+```
+
 <!--
 So, from the path analysis, what do we see for birds -
 
@@ -1062,5 +1156,10 @@ and for fish -
 - increasing $t_{med}$ increases richness, and more asynchrony (-ve effect on VR), which is also consistent with more variable traits for the fish species.
 - for fish, skewness has direct negative effect on stability, not indirect effect through tail-dep synchrony as it is not important driver for freshwater as we found from BioDyn. Increasing temperature trend increases tail-dependent synchrony.
 -->
+
+
+
+
+
 
 # Discussion
