@@ -1181,7 +1181,7 @@ source("./realdata_temperature_timeseriesplot.R")
 
 # to run this code you need to first get fish gbif raw data by running "./get_fish_gbif_data.R"
 # I did not run the get_fish_gbif_data.R file here to avoid long run time
-source("./clean_fish_gbif_data.R") 
+#source("./clean_fish_gbif_data.R") 
 ```
 
 ```{r get_fish_tol_limit, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime("get_fish_tol_limit.R"),mtime(here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata.csv")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio5_1981-2010_V.2.1.TIF")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio6_1981-2010_V.2.1.TIF")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio7_1981-2010_V.2.1.TIF")))}

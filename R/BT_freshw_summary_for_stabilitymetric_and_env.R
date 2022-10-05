@@ -68,12 +68,12 @@ for(i in 1:nrow(r_BT_freshw)){
   # Everything in K/10 scale
   r_BT_freshw$t_med[i]<-median(m$t)
   r_BT_freshw$t_skw[i]<-myskns(m$t)
-  r_BT_freshw$t_var[i]<-abs(median(m$t))/IQR(m$t,type=7)
+  r_BT_freshw$t_var[i]<-IQR(m$t,type=7)/abs(median(m$t))
   #--------------------------
   # Now everything in celcius scale
   r_BT_freshw$t_med_celcius[i]<-median(m$t_in_celcius)
   r_BT_freshw$t_skw_celcius[i]<-myskns(m$t_in_celcius)
-  r_BT_freshw$t_var_celcius[i]<-abs(median(m$t_in_celcius))/IQR(m$t_in_celcius,type=7)
+  r_BT_freshw$t_var_celcius[i]<-IQR(m$t_in_celcius,type=7)/abs(median(m$t_in_celcius))
   # note celcius scale temp can be negative, so take abs value for t_var_celcius
   #----------------------------
   
