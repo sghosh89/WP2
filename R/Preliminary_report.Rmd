@@ -852,12 +852,14 @@ g1wbrk<-ggplot(mydat,aes(x=t_med,y=cortrait_var))+geom_point(alpha=0.2)+
   xlim(2600,3000)+theme_bw()
 print(g1wbrk)
 
-# richness vs. t_med plot
-#ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+
-#  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
-#  xlab("t_med, K/10 unit")+ylab("Richness, fish")+
-#  theme_bw()
-
+# variance ratio vs. community-wide correlation traits variability
+gex<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
+  scale_x_continuous(trans = 'log10') +
+  #scale_y_continuous(trans = 'log10')+
+  xlab("community-wide correlation traits variability (absolute), fish, log10 scale")+ylab("VR, fish")+
+  theme_bw()
+print(gex)
 #---- for birds -----
 taxa<-"birds"
 sfi<-sm_all%>%filter(TAXA==taxa)
@@ -900,12 +902,14 @@ g1<-ggplot(mydat,aes(x=t_med,y=cortrait_var))+geom_point(alpha=0.2)+
   xlim(2600,3000)+theme_bw()
 print(g1)
 
-# richness vs. t_med plot
-#ggplot(mydat,aes(x=t_med,y=nsp))+geom_point(alpha=0.2)+
-#  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
-#  xlab("t_med, K/10 unit")+
-#  ylab("Richness, birds")+
-#  theme_bw()
+# variance ratio vs. community-wide correlation traits variability
+gexb<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
+  scale_x_continuous(trans = 'log10') +
+  #scale_y_continuous(trans = 'log10')+
+  xlab("community-wide correlation traits variability (absolute), birds, log10 scale")+ylab("VR, birds")+
+  theme_bw()
+print(gexb)
 ```
 
 Possible explanation:
