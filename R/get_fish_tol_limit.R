@@ -83,3 +83,16 @@ for(i in 1:nrow(fish_meta)){
 }
 write.csv(fish_meta,here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata_with_tolerance.csv"),row.names = F)
 
+fish_meta<-read.csv(here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata_with_tolerance.csv"))
+fish_meta<-rename(fish_meta,maxTtol_K0.1=maxTtol,minTtol_K0.1=minTtol)
+# now convert to celcilus scale
+fish_meta$maxTtol_celcius <- (fish_meta$maxTtol_K0.1/10)-273.15
+fish_meta$minTtol_celcius <- (fish_meta$minTtol_K0.1/10)-273.15
+write.csv(fish_meta,here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata_with_tolerance.csv"),row.names = F)
+
+
+
+
+
+
+
