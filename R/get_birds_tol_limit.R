@@ -51,7 +51,7 @@ for(i in 1:nrow(birds_meta)){
   occ_dat$bio5<-get_values_bio5
   occ_dat$bio6<-get_values_bio6
   occ_dat$bio7<-get_values_bio7
-  
+  print(i)
   #write.csv(occ_dat,here(paste("DATA/STI_related/birds_gbif_data/cleaned/",sp,"_with_bio567.csv",sep="")),row.names = F)
   #print(i)
   

@@ -96,6 +96,8 @@ for (i in 1:nrow(ddft)){
   s<-ddft$Species[i]
   filename<-here(paste("DATA/STI_related/birds_gbif_data/cleaned/",s,".csv",sep=""))
   x<-read.csv(filename,row.names = NULL)
+  x<-na.omit(x) # just to make sure
+  write.csv(x,filename,row.names = F)
   ddft$cleaned_records[i]<-nrow(x)
   print(i)
 }

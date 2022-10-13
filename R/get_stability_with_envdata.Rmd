@@ -1180,8 +1180,9 @@ source("./realdata_temperature_timeseriesplot.R")
 ```{r clean_fish_gbif_data, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime("clean_fish_gbif_data.R"),mtime(here("DATA/STI_related/fish_gbif_data/fish_occurrence_data_needed_edited.csv")))}
 
 # to run this code you need to first get fish gbif raw data by running "./get_fish_gbif_data.R"
-# I did not run the get_fish_gbif_data.R file here to avoid long run time
+# clean data then 
 #source("./clean_fish_gbif_data.R") 
+# I did not run this r chunk from rmd to avoid long run time, please run separately those files (codes are written in parallel using mclapply, won't run on windows)
 ```
 
 ```{r get_fish_tol_limit, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime("get_fish_tol_limit.R"),mtime(here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata.csv")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio5_1981-2010_V.2.1.TIF")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio6_1981-2010_V.2.1.TIF")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio7_1981-2010_V.2.1.TIF")))}
@@ -1190,6 +1191,20 @@ source("./realdata_temperature_timeseriesplot.R")
 source("./get_fish_tol_limit.R") 
 ```
 
+<!--now, test with birds data-->
+```{r clean_birds_gbif_data, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime("clean_birds_gbif_data.R"),mtime(here("DATA/STI_related/birds_gbif_data/birds_occurrence_data_needed_edited.csv")))}
+
+# to run this code you need to first get fish gbif raw data by running "./get_birds_gbif_data.R"
+# clean data then 
+#source("./clean_birds_gbif_data.R") 
+# I did not run this r chunk from rmd to avoid long run time, please run separately those files (codes are written in parallel using mclapply, won't run on windows)
+```
+
+```{r get_birds_tol_limit, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime("get_birds_tol_limit.R"),mtime(here("DATA/STI_related/birds_gbif_data/cleaned/birds_occurrence_metadata_filledin.csv")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio5_1981-2010_V.2.1.TIF")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio6_1981-2010_V.2.1.TIF")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio7_1981-2010_V.2.1.TIF")))}
+
+# I did not run the get_fish_gbif_data.R file here to avoid long run time
+source("./get_birds_tol_limit.R") 
+```
 
 # CODE AVAILABILITY
 Complete computer code written in R programming language for this project is at https://github.com/sghosh89/WP2.
