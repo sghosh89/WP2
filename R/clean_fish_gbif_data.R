@@ -84,21 +84,4 @@ for(i in 1:tot_sp_coded){
 }
 sink()
 write.csv(ddft,here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata.csv"),row.names = F)
-# check on map
-#world.inp <- map_data("world")
-#ggplot() + geom_map(data = world.inp, map = world.inp, 
-#                    aes(x = long, y = lat, map_id = region), fill = "grey80") +
-#  xlim(min(x$decimalLongitude, na.rm = T), 
-#       max(x$decimalLongitude, na.rm = T)) + 
-#  ylim(min(x$decimalLatitude, na.rm = T), 
-#       max(x$decimalLatitude, na.rm = T)) + 
-#  geom_point(data = y, aes(x = decimalLongitude, 
-#                                y = decimalLatitude, colour = "red"), size = 1) + 
-#  coord_fixed() + theme_bw() + 
-#  theme(axis.title = element_blank())
 
-
-#s<-"Phenacobius crassilabrum"
-#filename<-here(paste("DATA/STI_related/fish_gbif_data/fishrecords_from_GBIF_for_",s,".csv",sep=""))
-#x<-read.csv(filename,row.names = NULL)
-#y<-x

@@ -35,7 +35,7 @@ for(i in 1:tot_sp_coded){
   # is known, for example: Kosovo country (XK) has no 3 letter code
   # filter out also those ambiguous country records
   y<-y%>%filter(!is.na(countryCode))
-  y<-y%>%filter(!is.na(decimalLongitude) & !is.na(decimalLongitude))
+  y<-y%>%filter(!is.na(decimalLongitude) & !is.na(decimalLatitude))
   
   # automated fixing the issues
   flags <- clean_coordinates(x = y, lon = "decimalLongitude", lat = "decimalLatitude", 
@@ -54,7 +54,7 @@ tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual")
 #----- Now clean and save the manually downloaded species in the same format as of automatically downloaded data -----
 sp_manual<-tab_manual$Species # 438 species
 tot_sp_manual<-length(sp_manual)
-sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning.txt"),append=TRUE, split=TRUE)
+sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning_manual.txt"),append=TRUE, split=TRUE)
 for(i in 1:tot_sp_manual){
   s<-sp_manual[i]
   filename<-here(paste("DATA/STI_related/birds_gbif_data/",s,".csv",sep=""))
@@ -77,7 +77,7 @@ for(i in 1:tot_sp_manual){
   # just to ensure
   y$decimalLatitude<-as.numeric(y$decimalLatitude)
   y$decimalLongitude<-as.numeric(y$decimalLongitude)
-  y<-y%>%filter(!is.na(decimalLongitude))%>%filter(!is.na(decimalLongitude))
+  y<-y%>%filter(!is.na(decimalLongitude))%>%filter(!is.na(decimalLatitude))
   
   # automated fixing the issues
   flags <- clean_coordinates(x = y, lon = "decimalLongitude", lat = "decimalLatitude", 
