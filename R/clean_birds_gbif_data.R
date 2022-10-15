@@ -11,13 +11,13 @@ length(unique(ddft$Species))
 ddft<-ddft%>%distinct(Species,.keep_all = T)
 ddft$cleaned_records<-NA
 
-tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual")
+tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual") #441 obs
 length(unique(tab_manual$Species))
-tab_coded<-ddft%>%filter(gbif_dwnld_type=="code")
+tab_coded<-ddft%>%filter(gbif_dwnld_type=="code") #72 obs
 #------------------------------------------------------
 sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning_codedsp.txt"),append=TRUE, split=TRUE)
 # now do the same for coded species
-sp_coded<-tab_coded$Species # 64 species
+sp_coded<-tab_coded$Species # 72 species
 tot_sp_coded<-length(sp_coded)
 for(i in 1:tot_sp_coded){
   s<-sp_coded[i]
@@ -52,7 +52,7 @@ sink()
 
 tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual")
 #----- Now clean and save the manually downloaded species in the same format as of automatically downloaded data -----
-sp_manual<-tab_manual$Species # 438 species
+sp_manual<-tab_manual$Species # 441 species
 tot_sp_manual<-length(sp_manual)
 sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning_manual.txt"),append=TRUE, split=TRUE)
 for(i in 1:tot_sp_manual){
@@ -96,8 +96,6 @@ for (i in 1:nrow(ddft)){
   s<-ddft$Species[i]
   filename<-here(paste("DATA/STI_related/birds_gbif_data/cleaned/",s,".csv",sep=""))
   x<-read.csv(filename,row.names = NULL)
-  x<-na.omit(x) # just to make sure
-  write.csv(x,filename,row.names = F)
   ddft$cleaned_records[i]<-nrow(x)
   print(i)
 }

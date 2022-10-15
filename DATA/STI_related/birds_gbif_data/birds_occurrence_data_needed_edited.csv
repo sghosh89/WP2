@@ -24,6 +24,7 @@ AVIBASE-56CCA717,Anas acuta,Anas acuta,9/25/2022,2498112,2418018,2415106,https:/
 AVIBASE-BC6C3CCE,Anas crecca,Anas crecca,9/25/2022,8214667,4900429,4895619,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=8214667&occurrence_status=present,manual
 AVIBASE-697B933E,Anas fulvigula,Anas fulvigula,9/25/2022,2498080,410842,410842,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498080&occurrence_status=present,manual
 AVIBASE-85625D75,Anas platyrhynchos,Anas platyrhynchos,9/25/2022,9761484,18438327,18423910,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9761484&occurrence_status=present,manual
+AVIBASE-85625D75,Anas platyrhynchos diazi,Anas platyrhynchos,9/25/2022,9761484,18438327,18423910,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9761484&occurrence_status=present,manual
 AVIBASE-C732CB10,Anas rubripes,Anas rubripes,9/25/2022,9581438,1894630,1894589,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9581438&occurrence_status=present,manual
 AVIBASE-FBDAE86A,Anhinga anhinga,Anhinga anhinga,9/25/2022,2482082,955040,954983,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482082&occurrence_status=present,manual
 AVIBASE-466E9077,Anser albifrons,Anser albifrons,9/25/2022,2498017,1101338,1098561,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498017&occurrence_status=present,manual
@@ -34,10 +35,10 @@ AVIBASE-E196D6F9,Antigone canadensis,Antigone canadensis,9/25/2022,9036008,14813
 AVIBASE-8D3E8871,Antrostomus carolinensis,Antrostomus carolinensis,9/24/2022,6101173,98951,98935,NA,code
 AVIBASE-1A09655B,Antrostomus vociferus,Antrostomus vociferus,9/25/2022,6101178,116059,116052,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=6101178&occurrence_status=present,manual
 AVIBASE-151C2B3F,Aphelocoma californica,Aphelocoma californica,9/25/2022,2482414,1905185,1905129,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482414&occurrence_status=present,manual
-AVIBASE-0B0B18C4,Aphelocoma californica,Aphelocoma californica,9/25/2022,2482414,1905185,1905129,NA,manual
 AVIBASE-EC9E9745,Aphelocoma californica / woodhouseii,Aphelocoma woodhouseii,9/25/2022,5844900,395881,395820,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5844900&occurrence_status=present,manual
 AVIBASE-D78D24B9,Aphelocoma coerulescens,Aphelocoma coerulescens,9/24/2022,2482400,35124,35118,NA,code
 AVIBASE-56B8CE7A,Aphelocoma wollweberi,Aphelocoma wollweberi,9/25/2022,9441907,156649,156647,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9441907&occurrence_status=present,manual
+AVIBASE-EC9E9745,Aphelocoma woodhouseii,Aphelocoma woodhouseii,9/25/2022,5844900,395881,395820,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5844900&occurrence_status=present,manual
 AVIBASE-5F8E7CA8,Aquila chrysaetos,Aquila chrysaetos,9/25/2022,2480506,553352,546789,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480506&occurrence_status=present,manual
 AVIBASE-4BB4F257,Archilochus alexandri,Archilochus alexandri,9/25/2022,5228513,675671,675636,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5228513&occurrence_status=present,manual
 AVIBASE-DEC3D8D0,Archilochus colubris,Archilochus colubris,9/25/2022,5228514,2910944,2910886,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5228514&occurrence_status=present,manual
@@ -46,6 +47,7 @@ AVIBASE-93694BB5,Ardea herodias,Ardea herodias,9/25/2022,9630752,9144347,9143709
 AVIBASE-EF18C1EC,Arremonops rufivirgatus,Arremonops rufivirgatus,9/25/2022,2491031,119185,119155,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2491031&occurrence_status=present,manual
 AVIBASE-87878948,Artemisiospiza belli,Artemisiospiza belli,9/24/2022,6100797,44815,44770,NA,code
 AVIBASE-55572EBE,Artemisiospiza nevadensis,Artemisiospiza nevadensis,9/24/2022,8276794,38178,38173,NA,code
+AVIBASE-87878948,Artemisiospiza nevadensis / belli,Artemisiospiza belli,9/24/2022,6100797,44815,44770,NA,code
 AVIBASE-B9EE9676,Athene cunicularia,Athene cunicularia,9/26/2022,2497240,237377,237289,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2497240&occurrence_status=present,manual
 AVIBASE-A5EFA84D,Auriparus flaviceps,Auriparus flaviceps,9/26/2022,2487397,639247,639197,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487397&occurrence_status=present,manual
 AVIBASE-50566E50,Aythya affinis,Aythya affinis,9/26/2022,2498257,1690702,1690625,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498257&occurrence_status=present,manual
@@ -55,6 +57,7 @@ AVIBASE-25C94A8F,Aythya marila,Aythya marila,9/26/2022,2498265,1040894,1038419,h
 AVIBASE-1929E1E1,Aythya valisineria,Aythya valisineria,9/26/2022,2498256,701716,701632,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498256&occurrence_status=present,manual
 AVIBASE-66698D9B,Baeolophus atricristatus,Baeolophus atricristatus,9/26/2022,2487919,398638,398637,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487919&occurrence_status=present,manual
 AVIBASE-B488AB70,Baeolophus bicolor,Baeolophus bicolor,9/26/2022,2487887,8164703,8164668,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487887&occurrence_status=present,manual
+AVIBASE-B488AB70,Baeolophus bicolor / atricristatus,Baeolophus bicolor,9/26/2022,2487887,8164703,8164668,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487887&occurrence_status=present,manual
 AVIBASE-715D4DDE,Baeolophus inornatus,Baeolophus inornatus,9/26/2022,2487905,682882,682852,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487905&occurrence_status=present,manual
 AVIBASE-E366AB90,Baeolophus ridgwayi,Baeolophus ridgwayi,9/24/2022,2487898,90574,90520,NA,code
 AVIBASE-4CB87DBB,Baeolophus wollweberi,Baeolophus wollweberi,9/26/2022,2487892,163591,163556,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487892&occurrence_status=present,manual
@@ -66,7 +69,6 @@ AVIBASE-13E9F9B4,Botaurus lentiginosus,Botaurus lentiginosus,9/26/2022,2480911,3
 AVIBASE-31557374,Brachyramphus marmoratus,Brachyramphus marmoratus,9/26/2022,5229281,106044,106012,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229281&occurrence_status=present,manual
 AVIBASE-B59E1863,Branta canadensis,Branta canadensis,9/26/2022,5232437,14722574,14713871,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5232437&occurrence_status=present,manual
 AVIBASE-15F7CE4C,Bubo virginianus,Bubo virginianus,9/26/2022,5959118,1066555,1066398,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5959118&occurrence_status=present,manual
-AVIBASE-FC366114,Bubo virginianus,Bubo virginianus,9/26/2022,5959118,1066555,1066398,NA,manual
 AVIBASE-6CCDAC53,Bubulcus ibis,Bubulcus ibis,9/26/2022,2480830,2936877,2931084,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480830&occurrence_status=present,manual
 AVIBASE-FB738385,Bucephala albeola,Bucephala albeola,9/26/2022,2498329,3433307,3433271,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498329&occurrence_status=present,manual
 AVIBASE-68EA281A,Bucephala clangula,Bucephala clangula,9/26/2022,2498326,4120759,4114155,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498326&occurrence_status=present,manual
@@ -99,17 +101,17 @@ AVIBASE-B18D3F08,Cardellina rubrifrons,Cardellina rubrifrons,9/24/2022,2489634,3
 AVIBASE-4E74AE22,Cardinalis cardinalis,Cardinalis cardinalis,9/26/2022,2490384,16708053,16707903,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490384&occurrence_status=present,manual
 AVIBASE-DE21A6BE,Cardinalis sinuatus,Cardinalis sinuatus,9/26/2022,2490405,217324,217303,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490405&occurrence_status=present,manual
 AVIBASE-0B397CB0,Carduelis flammea,Carduelis flammea,9/26/2022,2494622,528889,524889,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2494622&occurrence_status=present,manual
+AVIBASE-0B397CB0,Carduelis flammea / hornemanni,Carduelis hornemanni,10/15/2022,2494732,24164,21480,NA,code
 AVIBASE-C9ABA616,Carduelis tristis,Carduelis tristis,9/26/2022,2494653,287437,287405,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2494653&occurrence_status=present,manual
 AVIBASE-36B3872D,Cathartes aura,Cathartes aura,9/26/2022,2481930,10992390,10988724,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481930&occurrence_status=present,manual
 AVIBASE-0B8F4EE6,Catharus fuscescens,Catharus fuscescens,9/26/2022,2490804,930848,930794,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490804&occurrence_status=present,manual
 AVIBASE-B01E8BD4,Catharus guttatus,Catharus guttatus,9/26/2022,2490810,2196317,2196023,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490810&occurrence_status=present,manual
 AVIBASE-B904BB22,Catharus minimus,Catharus minimus,9/26/2022,2490826,201692,201645,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490826&occurrence_status=present,manual
 AVIBASE-B066CD21,Catharus ustulatus,Catharus ustulatus,9/26/2022,2490821,1576102,1575778,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490821&occurrence_status=present,manual
-AVIBASE-AC269ED8,Catharus ustulatus,Catharus ustulatus,9/26/2022,2490821,1576102,1575778,NA,manual
-AVIBASE-E53FC25C,Catharus ustulatus,Catharus ustulatus,9/26/2022,2490821,1576102,1575778,NA,manual
 AVIBASE-EAD14427,Catherpes mexicanus,Catherpes mexicanus,9/26/2022,5231430,292491,292469,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231430&occurrence_status=present,manual
 AVIBASE-B7E467E2,Centrocercus urophasianus,Centrocercus urophasianus,9/24/2022,5959240,14433,14387,NA,code
 AVIBASE-67EFC061,Centronyx bairdii,Centronyx bairdii,9/24/2022,10783710,12709,12709,NA,code
+AVIBASE-CDA2F827,Centronyx henslowii,Centronyx henslowii,10/15/2022,10850807,75088,75085,NA,code
 AVIBASE-2F5DF476,Cepphus columba,Cepphus columba,9/26/2022,9315520,270129,270096,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9315520&occurrence_status=present,manual
 AVIBASE-BAC33609,Certhia americana,Certhia americana,9/26/2022,9581157,1866706,1866250,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9581157&occurrence_status=present,manual
 AVIBASE-C3AD1AFF,Chaetura pelagica,Chaetura pelagica,9/27/2022,4409023,2519356,2519334,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=4409023&occurrence_status=present,manual
@@ -132,8 +134,8 @@ AVIBASE-C6B5497C,Coccothraustes vespertinus,Coccothraustes vespertinus,9/27/2022
 AVIBASE-0CF12F81,Coccyzus americanus,Coccyzus americanus,9/27/2022,2496287,919155,919015,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2496287&occurrence_status=present,manual
 AVIBASE-41E9F54B,Coccyzus erythropthalmus,Coccyzus erythropthalmus,9/27/2022,2496286,189153,189132,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2496286,manual
 AVIBASE-75600969,Colaptes auratus,Colaptes auratus,9/27/2022,2478259,9409776,9409533,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2478259&occurrence_status=present,manual
-AVIBASE-6CC34F06,Colaptes auratus,Colaptes auratus,9/27/2022,2478259,9409776,9409533,NA,manual
-AVIBASE-1661C375,Colaptes auratus,Colaptes auratus,9/27/2022,2478259,9409776,9409533,NA,manual
+AVIBASE-75600969,Colaptes auratus auratus,Colaptes auratus,9/27/2022,2478259,9409776,9409533,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2478259&occurrence_status=present,manual
+AVIBASE-6CC34F06,Colaptes auratus cafer,Colaptes cafer,9/24/2022,8738161,723,723,NA,code
 AVIBASE-28E5D551,Colaptes chrysoides,Colaptes chrysoides,9/24/2022,2478248,58854,58846,NA,code
 AVIBASE-91CCBC71,Colinus virginianus,Colinus virginianus,9/27/2022,9791464,355055,352418,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9791464&occurrence_status=present,manual
 AVIBASE-BBA263C2,Columba livia,Columba livia,9/27/2022,2495414,9234579,9224777,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2495414&occurrence_status=present,manual
@@ -144,10 +146,13 @@ AVIBASE-F6CA75F0,Contopus sordidulus,Contopus sordidulus,9/27/2022,5229754,85186
 AVIBASE-9891BF73,Contopus virens,Contopus virens,9/27/2022,5229734,2292843,2292782,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229734&occurrence_status=present,manual
 AVIBASE-4FF7DE80,Coragyps atratus,Coragyps atratus,9/27/2022,2481942,3822829,3822211,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481942&occurrence_status=present,manual
 AVIBASE-69544B59,Corvus brachyrhynchos,Corvus brachyrhynchos,9/27/2022,2482507,18286252,18285975,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482507&occurrence_status=present,manual
-AVIBASE-2F784967,Corvus brachyrhynchos,Corvus brachyrhynchos,9/27/2022,2482507,18286252,18285975,NA,manual
+AVIBASE-2F784967,Corvus brachyrhynchos / caurinus,Corvus brachyrhynchos,9/27/2022,2482507,18286252,18285975,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482507&occurrence_status=present,manual
 AVIBASE-43E56D2C,Corvus brachyrhynchos / ossifragus,Corvus ossifragus,9/27/2022,2482481,2073054,2073044,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482481&occurrence_status=present,manual
+AVIBASE-2F784967,Corvus caurinus,Corvus caurinus,10/15/2022,2482523,9792,9786,NA,code
 AVIBASE-B9B272F4,Corvus corax,Corvus corax,9/27/2022,2482492,7484161,7479509,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482492&occurrence_status=present,manual
 AVIBASE-F3B84E07,Corvus cryptoleucus,Corvus cryptoleucus,9/27/2022,2482500,101127,101122,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482500&occurrence_status=present,manual
+AVIBASE-F3B84E07,Corvus cryptoleucus / corax,Corvus cryptoleucus,9/27/2022,2482500,101127,101122,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482500&occurrence_status=present,manual
+AVIBASE-43E56D2C,Corvus ossifragus,Corvus ossifragus,9/27/2022,2482481,2073054,2073044,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482481&occurrence_status=present,manual
 AVIBASE-2B100B36,Coturnicops noveboracensis,Coturnicops noveboracensis,9/24/2022,5228183,13637,13632,NA,code
 AVIBASE-1DA430B8,Cyanocitta cristata,Cyanocitta cristata,9/27/2022,2482593,14987744,14987662,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482593&occurrence_status=present,manual
 AVIBASE-2225D685,Cyanocitta stelleri,Cyanocitta stelleri,9/27/2022,2482598,1792002,1791568,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482598&occurrence_status=present,manual
@@ -155,7 +160,6 @@ AVIBASE-B86C504C,Cygnus buccinator,Cygnus buccinator,9/27/2022,2498345,598468,59
 AVIBASE-0BCBA6B9,Cygnus columbianus,Cygnus columbianus,9/27/2022,2498338,747136,744467,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498338&occurrence_status=present,manual
 AVIBASE-694C127A,Cygnus olor,Cygnus olor,9/27/2022,2498343,4216934,4213784,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498343&occurrence_status=present,manual
 AVIBASE-C29BA985,Cynanthus latirostris,Cynanthus latirostris,9/27/2022,5228542,245565,245539,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5228542&occurrence_status=present,manual
-AVIBASE-74CFA678,Cynanthus latirostris,Cynanthus latirostris,9/27/2022,5228542,245565,245539,NA,manual
 AVIBASE-E4A5B66A,Dendragapus fuliginosus,Dendragapus fuliginosus,9/24/2022,7340146,40913,40890,NA,code
 AVIBASE-C01A22D6,Dendrocygna autumnalis,Dendrocygna autumnalis,9/27/2022,2498393,640380,640339,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498393&occurrence_status=present,manual
 AVIBASE-9A60617E,Dendrocygna bicolor,Dendrocygna bicolor,9/27/2022,2498402,101810,101796,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498402&occurrence_status=present,manual
@@ -181,6 +185,7 @@ AVIBASE-1EB2595E,Empidonax hammondii,Empidonax hammondii,9/27/2022,2482800,19179
 AVIBASE-F5837054,Empidonax minimus,Empidonax minimus,9/27/2022,2482791,894520,894454,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482791&occurrence_status=present,manual
 AVIBASE-499FFF98,Empidonax oberholseri,Empidonax oberholseri,9/27/2022,2482803,188583,188455,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482803&occurrence_status=present,manual
 AVIBASE-6FD04659,Empidonax occidentalis,Empidonax occidentalis,9/27/2022,2482805,122380,122192,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482805&occurrence_status=present,manual
+AVIBASE-499FFF98,Empidonax sp.,Empidonax oberholseri,9/27/2022,2482803,188583,188455,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482803&occurrence_status=present,manual
 AVIBASE-5BC4E0EF,Empidonax traillii,Empidonax traillii,9/27/2022,2482786,661018,660954,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482786&occurrence_status=present,manual
 AVIBASE-2778A3F4,Empidonax virescens,Empidonax virescens,9/27/2022,2482802,496871,496827,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482802&occurrence_status=present,manual
 AVIBASE-DACF7A98,Empidonax wrightii,Empidonax wrightii,9/27/2022,9585359,108944,108880,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9585359&occurrence_status=present,manual
@@ -225,17 +230,20 @@ AVIBASE-526A3692,Icterus cucullatus,Icterus cucullatus,9/28/2022,5229882,402238,
 AVIBASE-5110842F,Icterus galbula,Icterus galbula,9/28/2022,2484340,2694836,2694708,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2484340&occurrence_status=present,manual
 AVIBASE-9EE6D524,Icterus parisorum,Icterus parisorum,9/24/2022,5229930,94182,94150,NA,code
 AVIBASE-5E9777FB,Icterus spurius,Icterus spurius,9/28/2022,5229935,920725,920648,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229935&occurrence_status=present,manual
-AVIBASE-E2014696,Icterus spurius,Icterus spurius,9/28/2022,5229935,920725,920648,NA,manual
 AVIBASE-ACFC8EB6,Ictinia mississippiensis,Ictinia mississippiensis,9/28/2022,2480719,309076,309022,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480719&occurrence_status=present,manual
 AVIBASE-58312873,Ixoreus naevius,Ixoreus naevius,9/28/2022,2490926,474238,474182,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490926&occurrence_status=present,manual
 AVIBASE-05FF3C9B,Junco hyemalis,Junco hyemalis,9/28/2022,9362842,9430926,9430395,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9362842&occurrence_status=present,manual
+AVIBASE-05FF3C9B,Junco hyemalis aikeni,Junco hyemalis,9/28/2022,9362842,9430926,9430395,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9362842&occurrence_status=present,manual
+AVIBASE-05FF3C9B,Junco hyemalis caniceps,Junco hyemalis,9/28/2022,9362842,9430926,9430395,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9362842&occurrence_status=present,manual
+AVIBASE-05FF3C9B,Junco hyemalis hyemalis,Junco hyemalis,9/28/2022,9362842,9430926,9430395,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9362842&occurrence_status=present,manual
+AVIBASE-05FF3C9B,Junco hyemalis mearnsi,Junco hyemalis,9/28/2022,9362842,9430926,9430395,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9362842&occurrence_status=present,manual
+AVIBASE-05FF3C9B,Junco hyemalis oreganus,Junco hyemalis,9/28/2022,9362842,9430926,9430395,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9362842&occurrence_status=present,manual
 AVIBASE-FC3D07C6,Lagopus lagopus,Lagopus lagopus,9/28/2022,2473421,205720,203377,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2473421&occurrence_status=present,manual
 AVIBASE-36171C2B,Lanius ludovicianus,Lanius ludovicianus,9/28/2022,2492870,1112551,1112447,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2492870&occurrence_status=present,manual
 AVIBASE-F002188E,Larus argentatus,Larus argentatus,9/28/2022,2481139,9004124,8995822,NA,manual
-AVIBASE-60F32AF8,Larus argentatus,Larus argentatus,9/28/2022,2481139,9004124,8995822,NA,manual
-AVIBASE-8535345B,Larus argentatus,Larus argentatus,9/28/2022,2481139,9004124,8995949,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481139&occurrence_status=present,manual
 AVIBASE-7FCE8A43,Larus californicus,Larus californicus,9/28/2022,2481146,1190344,1190293,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481146&occurrence_status=present,manual
 AVIBASE-00DA9D91,Larus canus,Larus canus,9/28/2022,7982160,2255674,2248875,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7982160&occurrence_status=present,manual
+AVIBASE-23863F65,Larus delawarensis,Larus delawarensis,10/15/2022,2481134,7421300,7420687,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481134&occurrence_status=present,manual
 AVIBASE-E6536E4E,Larus dominicanus,Larus dominicanus,9/28/2022,2481173,460705,460546,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481173&occurrence_status=present,manual
 AVIBASE-03AC32BA,Larus glaucescens,Larus glaucescens,9/28/2022,2481196,1042135,1041956,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481196&occurrence_status=present,manual
 AVIBASE-5941F453,Larus hartlaubii,Larus hartlaubii,9/24/2022,2481148,14871,14871,NA,code
@@ -256,6 +264,7 @@ AVIBASE-93013964,Limosa haemastica,Limosa haemastica,9/24/2022,2481680,94924,949
 AVIBASE-60E6081E,Lophodytes cucullatus,Lophodytes cucullatus,9/28/2022,2498408,2157265,2157215,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498408&occurrence_status=present,manual
 AVIBASE-135564AA,Loxia curvirostra,Loxia curvirostra,9/28/2022,9629160,1048042,1046471,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9629160&occurrence_status=present,manual
 AVIBASE-80C297E6,Loxia leucoptera,Loxia leucoptera,9/28/2022,8144830,242159,239648,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=8144830&occurrence_status=present,manual
+AVIBASE-135564AA,Loxia sinesciuris / curvirostra,Loxia curvirostra,9/28/2022,9629160,1048042,1046471,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9629160&occurrence_status=present,manual
 AVIBASE-6EC66752,Luscinia luscinia,Luscinia luscinia,9/28/2022,2492542,384286,377693,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2492542&occurrence_status=present,manual
 AVIBASE-AFD6FD81,Luscinia svecica,Luscinia svecica,9/28/2022,4408732,745855,742656,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=4408732&occurrence_status=present,manual
 AVIBASE-D201EB72,Mareca americana,Mareca americana,9/28/2022,2498155,2369221,2369138,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2498155&occurrence_status=present,manual
@@ -279,7 +288,6 @@ AVIBASE-407E2CA8,Mergus merganser,Mergus merganser,9/28/2022,9537647,3753319,374
 AVIBASE-7EFF698D,Mimus polyglottos,Mimus polyglottos,9/28/2022,5231677,7546362,7546273,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231677&occurrence_status=present,manual
 AVIBASE-4D207AF6,Mniotilta varia,Mniotilta varia,9/28/2022,2489613,2173641,2173559,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2489613&occurrence_status=present,manual
 AVIBASE-EAEEA093,Molothrus aeneus,Molothrus aeneus,9/28/2022,2484404,234821,234810,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2484404&occurrence_status=present,manual
-AVIBASE-C21B323A,Molothrus aeneus,Molothrus aeneus,9/28/2022,2484404,234821,234810,NA,manual
 AVIBASE-1E1AB415,Molothrus ater,Molothrus ater,9/28/2022,2484391,5346302,5346073,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2484391&occurrence_status=present,manual
 AVIBASE-534FB490,Morus bassanus,Morus bassanus,9/28/2022,2480964,1027199,1024219,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480964&occurrence_status=present,manual
 AVIBASE-5487B650,Motacilla tschutschensis,Motacilla tschutschensis,9/24/2022,2490303,93787,93777,NA,code
@@ -297,7 +305,6 @@ AVIBASE-F9305BAA,Numenius phaeopus,Numenius phaeopus,9/28/2022,2481784,1094557,1
 AVIBASE-C6772490,Nyctanassa violacea,Nyctanassa violacea,9/28/2022,2480953,536650,536021,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480953&occurrence_status=present,manual
 AVIBASE-6BB94D7E,Nycticorax nycticorax,Nycticorax nycticorax,9/28/2022,2480863,1906554,1902135,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480863&occurrence_status=present,manual
 AVIBASE-AB031597,Oenanthe oenanthe,Oenanthe oenanthe,9/28/2022,5231240,1207592,1204367,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231240&occurrence_status=present,manual
-AVIBASE-3983013B,Oenanthe oenanthe,Oenanthe oenanthe,9/28/2022,5231240,1207592,1204365,NA,manual
 AVIBASE-0B23929D,Oporornis agilis,Oporornis agilis,9/24/2022,2489611,34765,34752,NA,code
 AVIBASE-171E91FF,Oreortyx pictus,Oreortyx pictus,9/24/2022,2474320,62807,62793,NA,code
 AVIBASE-F6DF700B,Oreoscoptes montanus,Oreoscoptes montanus,9/28/2022,2494973,111893,111853,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2494973&occurrence_status=present,manual
@@ -312,21 +319,13 @@ AVIBASE-523763E5,Parus palustris,Parus palustris,9/24/2022,8126684,63761,61954,N
 AVIBASE-240E3390,Passer domesticus,Passer domesticus,9/28/2022,5231190,15401834,15387842,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231190&occurrence_status=present,manual
 AVIBASE-C22FBF8D,Passer montanus,Passer montanus,9/28/2022,5231198,2496185,2488782,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231198&occurrence_status=present,manual
 AVIBASE-3C974C47,Passerculus sandwichensis,Passerculus sandwichensis,9/28/2022,5231142,2786698,2786341,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231142&occurrence_status=present,manual
-AVIBASE-249F7C3C,Passerculus sandwichensis,Passerculus sandwichensis,9/28/2022,5231142,2786698,2786341,NA,manual
-AVIBASE-1A2CCEDE,Passerculus sandwichensis,Passerculus sandwichensis,9/28/2022,5231142,2786698,2786341,NA,manual
-AVIBASE-31CE00C7,Passerculus sandwichensis,Passerculus sandwichensis,9/28/2022,5231142,2786698,2786341,NA,manual
 AVIBASE-0B1B2EB6,Passerella iliaca,Passerella iliaca,9/28/2022,2491872,1318128,1318051,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2491872&occurrence_status=present,manual
-AVIBASE-82ACE0AF,Passerella iliaca,Passerella iliaca,9/28/2022,2491872,1318128,1318051,NA,manual
-AVIBASE-15BD1543,Passerella iliaca,Passerella iliaca,9/28/2022,2491872,1318128,1318051,NA,manual
-AVIBASE-2D663DC8,Passerella iliaca,Passerella iliaca,9/28/2022,2491872,1318128,1318051,NA,manual
 AVIBASE-9F67F3AF,Passerina amoena,Passerina amoena,9/28/2022,5230861,416016,415896,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5230861&occurrence_status=present,manual
 AVIBASE-A7A75EA1,Passerina caerulea,Passerina caerulea,9/28/2022,5230862,806273,806212,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5230862&occurrence_status=present,manual
 AVIBASE-0BDB87DE,Passerina ciris,Passerina ciris,9/28/2022,5230852,374223,374033,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5230852&occurrence_status=present,manual
 AVIBASE-043F337A,Passerina cyanea,Passerina cyanea,9/28/2022,2490327,2509202,2509078,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490327&occurrence_status=present,manual
 AVIBASE-1680EFDE,Passerina versicolor,Passerina versicolor,9/24/2022,5230855,53772,53740,NA,code
 AVIBASE-3B008E78,Patagioenas fasciata,Patagioenas fasciata,9/28/2022,2495266,619513,619478,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2495266&occurrence_status=present,manual
-AVIBASE-0693123F,Patagioenas fasciata,Patagioenas fasciata,9/28/2022,2495266,619513,619478,NA,manual
-AVIBASE-31ACA998,Patagioenas fasciata,Patagioenas fasciata,9/28/2022,2495266,619513,619478,NA,manual
 AVIBASE-5F571C8A,Patagioenas leucocephala,Patagioenas leucocephala,9/24/2022,2495310,81122,81113,NA,code
 AVIBASE-866903B9,Pelecanus erythrorhynchos,Pelecanus erythrorhynchos,9/28/2022,5229155,1386233,1386203,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229155&occurrence_status=present,manual
 AVIBASE-F59AB6B3,Pelecanus occidentalis,Pelecanus occidentalis,9/28/2022,5229158,1775955,1775336,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229158&occurrence_status=present,manual
@@ -342,10 +341,10 @@ AVIBASE-BD929CBC,Phainopepla nitens,Phainopepla nitens,9/29/2022,2492885,398247,
 AVIBASE-3AC46C54,Phalacrocorax auritus,Phalacrocorax auritus,9/29/2022,2481875,6757122,6756570,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481875&occurrence_status=present,manual
 AVIBASE-A429B5B8,Phalacrocorax pelagicus,Phalacrocorax pelagicus,9/29/2022,2481870,426445,426423,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481870&occurrence_status=present,manual
 AVIBASE-987A703D,Phalacrocorax penicillatus,Phalacrocorax penicillatus,9/24/2022,2481892,4016,4001,NA,code
+AVIBASE-3AC46C54,Phalacrocorax sp.,Phalacrocorax auritus,9/29/2022,2481875,6757122,6756570,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481875&occurrence_status=present,manual
 AVIBASE-D621FFC6,Phalaenoptilus nuttallii,Phalaenoptilus nuttallii,9/24/2022,2497062,68845,68808,NA,code
 AVIBASE-667C6969,Phalaropus tricolor,Phalaropus tricolor,9/29/2022,5229389,352326,351751,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229389&occurrence_status=present,manual
 AVIBASE-2FA39DCD,Phasianus colchicus,Phasianus colchicus,9/29/2022,9752149,2092099,2081825,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9752149&occurrence_status=present,manual
-AVIBASE-22C500C0,Phasianus colchicus,Phasianus colchicus,9/29/2022,9752149,2092099,2081821,NA,manual
 AVIBASE-7C2FCB13,Pheucticus ludovicianus,Pheucticus ludovicianus,9/29/2022,2490494,1782038,1781921,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490494&occurrence_status=present,manual
 AVIBASE-824361E5,Pheucticus melanocephalus,Pheucticus melanocephalus,9/29/2022,2490487,987985,987510,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490487&occurrence_status=present,manual
 AVIBASE-2DABF98F,Philomachus pugnax,Philomachus pugnax,9/29/2022,5229387,920141,917666,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229387&occurrence_status=present,manual
@@ -355,23 +354,23 @@ AVIBASE-88F4B969,Phylloscopus trochilus,Phylloscopus trochilus,9/29/2022,2493052
 AVIBASE-640D71AA,Pica hudsonia,Pica hudsonia,9/29/2022,5229487,1693819,1693781,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229487&occurrence_status=present,manual
 AVIBASE-538A9CA7,Pica nuttalli,Pica nuttalli,9/24/2022,5229489,93523,93518,NA,code
 AVIBASE-6BDADC9C,Picoides arcticus,Picoides arcticus,9/24/2022,2477774,58734,58700,NA,code
+AVIBASE-1B2A6386,Picoides pubescens,Picoides pubescens,9/24/2022,2477781,281621,281589,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2477781&occurrence_status=present,manual
+AVIBASE-9D06AF89,Picoides villosus,Picoides villosus,9/24/2022,2477741,109292,109255,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2477741&occurrence_status=present,manual
 AVIBASE-83AC4DAD,Pinicola enucleator,Pinicola enucleator,9/29/2022,2494771,377051,374361,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2494771&occurrence_status=present,manual
 AVIBASE-45D829B3,Pipilo chlorurus,Pipilo chlorurus,9/29/2022,2491276,257133,257031,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2491276&occurrence_status=present,manual
 AVIBASE-6090278A,Pipilo erythrophthalmus,Pipilo erythrophthalmus,9/29/2022,2491205,3469561,3469444,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2491205&occurrence_status=present,manual
 AVIBASE-58E25701,Pipilo maculatus,Pipilo maculatus,9/29/2022,9709230,3014335,3013747,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9709230&occurrence_status=present,manual
-AVIBASE-26AB0890,Pipilo maculatus,Pipilo maculatus,9/29/2022,9709230,3014335,3013747,NA,manual
 AVIBASE-6AA879E6,Piranga flava,Piranga flava,9/29/2022,2488498,147923,147798,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2488498&occurrence_status=present,manual
-AVIBASE-2FA3743B,Piranga flava,Piranga flava,9/29/2022,2488498,147923,147798,NA,manual
-AVIBASE-0C8A1792,Piranga flava,Piranga flava,9/29/2022,2488498,147923,147798,NA,manual
-AVIBASE-083E787F,Piranga flava,Piranga flava,9/29/2022,2488498,147923,147798,NA,manual
 AVIBASE-0ADA5F17,Piranga ludoviciana,Piranga ludoviciana,9/29/2022,2488484,912014,911472,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2488484&occurrence_status=present,manual
 AVIBASE-42101632,Piranga olivacea,Piranga olivacea,9/29/2022,2488517,1207430,1207364,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2488517&occurrence_status=present,manual
 AVIBASE-891798D9,Piranga rubra,Piranga rubra,9/29/2022,2488485,1139896,1139819,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2488485&occurrence_status=present,manual
 AVIBASE-9C883C7B,Pitangus sulphuratus,Pitangus sulphuratus,9/29/2022,2482755,1397143,1397095,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482755&occurrence_status=present,manual
 AVIBASE-FD2B0309,Plegadis chihi,Plegadis chihi,9/29/2022,9375033,567829,567805,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9375033&occurrence_status=present,manual
 AVIBASE-D4540F88,Plegadis falcinellus,Plegadis falcinellus,9/29/2022,2480773,864992,862262,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480773&occurrence_status=present,manual
+AVIBASE-FD2B0309,Plegadis falcinellus / chihi,Plegadis chihi,9/29/2022,9375033,567829,567805,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9375033&occurrence_status=present,manual
 AVIBASE-25A20BA6,Pluvialis apricaria,Pluvialis apricaria,9/29/2022,2480332,737401,723370,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480332&occurrence_status=present,manual
 AVIBASE-2143A852,Pluvialis dominica,Pluvialis dominica,9/29/2022,2480328,193686,192871,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480328&occurrence_status=present,manual
+AVIBASE-88F4B969,Plylloscopus trochilus,Phylloscopus trochilus,10/15/2022,2493052,3921164,3905097,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2493052&occurrence_status=present,manual
 AVIBASE-1CBD2CED,Podiceps grisegena,Podiceps grisegena,9/29/2022,2482051,831212,828712,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482051&occurrence_status=present,manual
 AVIBASE-32DCEC14,Podiceps nigricollis,Podiceps nigricollis,9/29/2022,2482065,981414,979164,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482065&occurrence_status=present,manual
 AVIBASE-9A8E55D0,Podilymbus podiceps,Podilymbus podiceps,9/29/2022,2482077,3507182,3507097,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482077&occurrence_status=present,manual
@@ -380,6 +379,7 @@ AVIBASE-F941AAD3,Poecile carolinensis,Poecile carolinensis,9/29/2022,2487844,539
 AVIBASE-DE0971C1,Poecile gambeli,Poecile gambeli,9/29/2022,2487825,918400,917781,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487825&occurrence_status=present,manual
 AVIBASE-68887DE7,Poecile hudsonicus,Poecile hudsonicus,9/29/2022,2487793,202048,202014,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487793&occurrence_status=present,manual
 AVIBASE-FF592882,Poecile rufescens,Poecile rufescens,9/29/2022,2487783,1308993,1308919,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487783&occurrence_status=present,manual
+AVIBASE-B1F0CC82,Poecile sp.,Poecile atricapillus,9/29/2022,2487805,11915794,11915647,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487805&occurrence_status=present,manual
 AVIBASE-A15C5071,Polioptila caerulea,Polioptila caerulea,9/29/2022,2487596,3467961,3467794,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487596&occurrence_status=present,manual
 AVIBASE-C05CE29C,Polioptila melanura,Polioptila melanura,9/30/2022,2487586,183770,183704,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487586&occurrence_status=present,manual
 AVIBASE-3647E146,Pooecetes gramineus,Pooecetes gramineus,9/30/2022,2491728,638935,638815,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2491728&occurrence_status=present,manual
@@ -407,6 +407,7 @@ AVIBASE-62CA2AF8,Sayornis phoebe,Sayornis phoebe,9/30/2022,2483606,4634124,46340
 AVIBASE-28669A3D,Sayornis saya,Sayornis saya,9/30/2022,2483607,1154296,1154230,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2483607&occurrence_status=present,manual
 AVIBASE-F4829920,Scolopax minor,Scolopax minor,9/30/2022,2481695,285440,285395,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481695&occurrence_status=present,manual
 AVIBASE-CEA5B6AA,Seiurus aurocapilla,Seiurus aurocapilla,9/30/2022,2489590,1797262,1797118,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2489590&occurrence_status=present,manual
+AVIBASE-7AB0F3A4,Seiurus motacilla,Seiurus motacilla,9/24/2022,2489589,1705,1676,NA,code
 AVIBASE-5816834E,Selasphorus calliope,Selasphorus calliope,9/30/2022,7597244,129751,129733,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7597244&occurrence_status=present,manual
 AVIBASE-AFBD5A5F,Selasphorus platycercus,Selasphorus platycercus,9/30/2022,2476844,391453,391382,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2476844&occurrence_status=present,manual
 AVIBASE-1E1B6D19,Selasphorus rufus,Selasphorus rufus,9/30/2022,2476855,650416,650315,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2476855&occurrence_status=present,manual
@@ -417,8 +418,8 @@ AVIBASE-10C601D3,Setophaga castanea,Setophaga castanea,9/30/2022,6093202,415815,
 AVIBASE-D00EC2C9,Setophaga cerulea,Setophaga cerulea,9/30/2022,6093350,136567,136551,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=6093350&occurrence_status=present,manual
 AVIBASE-15EB3000,Setophaga citrina,Setophaga citrina,9/30/2022,6093374,572096,572038,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=6093374&occurrence_status=present,manual
 AVIBASE-BC5A9498,Setophaga coronata,Setophaga coronata,9/30/2022,7341805,7707368,7707230,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7341805&occurrence_status=present,manual
-AVIBASE-631CB970,Setophaga coronata,Setophaga coronata,9/30/2022,7341805,7707368,7707229,NA,manual
-AVIBASE-524C7116,Setophaga coronata,Setophaga coronata,9/30/2022,7341805,7707368,7707229,NA,manual
+AVIBASE-631CB970,Setophaga coronata audoboni,Setophaga coronata auduboni,9/24/2022,6542061,11734,11726,NA,code
+AVIBASE-524C7116,Setophaga coronata coronata,Setophaga coronata coronata,9/24/2022,7341806,8394,8392,NA,code
 AVIBASE-E36325FA,Setophaga discolor,Setophaga discolor,9/30/2022,7341789,578726,578282,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7341789&occurrence_status=present,manual
 AVIBASE-136451CF,Setophaga dominica,Setophaga dominica,9/30/2022,7341800,605052,605030,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7341800&occurrence_status=present,manual
 AVIBASE-4168AF09,Setophaga fusca,Setophaga fusca,9/30/2022,6093199,746928,746873,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=6093199&occurrence_status=present,manual
@@ -448,11 +449,13 @@ AVIBASE-0E599E6C,Spatula cyanoptera,Spatula cyanoptera,9/30/2022,9345027,767651,
 AVIBASE-90E2543E,Spatula discors,Spatula discors,9/30/2022,9422220,1963792,1963757,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9422220&occurrence_status=present,manual
 AVIBASE-20F4B01D,Sphyrapicus nuchalis,Sphyrapicus nuchalis,9/30/2022,9406038,183365,183275,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9406038&occurrence_status=present,manual
 AVIBASE-52F63879,Sphyrapicus ruber,Sphyrapicus ruber,9/30/2022,2478597,309866,309808,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2478597&occurrence_status=present,manual
+AVIBASE-20F4B01D,Sphyrapicus sp.,Sphyrapicus nuchalis,9/30/2022,9406038,183365,183275,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9406038&occurrence_status=present,manual
 AVIBASE-28A4DA76,Sphyrapicus thyroideus,Sphyrapicus thyroideus,9/24/2022,2478602,61693,61629,NA,code
 AVIBASE-9BE68BD3,Sphyrapicus varius,Sphyrapicus varius,9/30/2022,2478605,1749393,1749314,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2478605&occurrence_status=present,manual
 AVIBASE-C27D9E26,Spinus lawrencei,Spinus lawrencei,9/24/2022,5231643,77971,77958,NA,code
 AVIBASE-B48335B1,Spinus pinus,Spinus pinus,9/30/2022,5231635,2512026,2511830,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231635&occurrence_status=present,manual
 AVIBASE-CD5C21CA,Spinus psaltria,Spinus psaltria,9/30/2022,5231647,2561441,2561336,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231647&occurrence_status=present,manual
+AVIBASE-C9ABA616,Spinus tristis,Spinus tristis,9/24/2022,5231640,13001776,13001683,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231640&occurrence_status=present,manual
 AVIBASE-592E58CE,Spiza americana,Spiza americana,9/30/2022,2490363,453328,453267,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490363&occurrence_status=present,manual
 AVIBASE-ECC32BD0,Spizella atrogularis,Spizella atrogularis,9/24/2022,2492104,41811,41765,NA,code
 AVIBASE-29967541,Spizella breweri,Spizella breweri,9/30/2022,2492099,243613,243507,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2492099&occurrence_status=present,manual
@@ -461,19 +464,19 @@ AVIBASE-37E9CCDA,Spizella passerina,Spizella passerina,9/30/2022,2492109,5734091
 AVIBASE-E23F6DE0,Spizella pusilla,Spizella pusilla,9/30/2022,2492096,1972618,1972593,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2492096&occurrence_status=present,manual
 AVIBASE-2A86F9C9,Spizelloides arborea,Spizelloides arborea,9/30/2022,7357320,1566847,1566796,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7357320&occurrence_status=present,manual
 AVIBASE-259B5E46,Stelgidopteryx serripennis,Stelgidopteryx serripennis,9/30/2022,2489202,2145704,2145658,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2489202&occurrence_status=present,manual
-AVIBASE-B90C04E9,Stelgidopteryx serripennis,Stelgidopteryx serripennis,9/30/2022,2489202,2145704,2145658,NA,manual
 AVIBASE-1D446440,Stercorarius longicaudus,Stercorarius longicaudus,9/24/2022,2481613,99189,96350,NA,code
 AVIBASE-526978C4,Sterna bergii,Sterna bergii,9/24/2022,5229248,22802,22778,NA,code
+AVIBASE-BC06BC0D,Sterna caspia,Sterna caspia,9/24/2022,5229221,10524,7894,NA,code
 AVIBASE-D13B9122,Sterna forsteri,Sterna forsteri,9/30/2022,5229247,1160217,1160183,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229247&occurrence_status=present,manual
 AVIBASE-4D2FF6F1,Sterna hirundo,Sterna hirundo,9/30/2022,9367409,1878326,1871530,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9367409&occurrence_status=present,manual
 AVIBASE-BDC5CF80,Sterna paradisaea,Sterna paradisaea,9/30/2022,5229230,597619,593540,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229230&occurrence_status=present,manual
 AVIBASE-F7504353,Sterna sandvicensis,Sterna sandvicensis,9/24/2022,5229223,53840,51325,NA,code
 AVIBASE-BE78E765,Sternula antillarum,Sternula antillarum,10/1/2022,5789285,441993,441914,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5789285&occurrence_status=present,manual
 AVIBASE-0C1EFC9B,Streptopelia decaocto,Streptopelia decaocto,10/3/2022,2495696,5431814,5415476,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2495696&occurrence_status=present,manual
-AVIBASE-4B62C0C3,Streptopelia decaocto,Streptopelia decaocto,10/1/2022,2495696,5431814,5414926,NA,manual
 AVIBASE-BDBB04D5,Strix varia,Strix varia,10/1/2022,2497541,815794,815800,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2497541&occurrence_status=present,manual
 AVIBASE-27410227,Sturnella magna,Sturnella magna,10/1/2022,2484254,1651629,1651576,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2484254&occurrence_status=present,manual
 AVIBASE-4A5B4883,Sturnella magna / neglecta,Sturnella neglecta,10/1/2022,9596413,1565966,1565924,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9596413&occurrence_status=present,manual
+AVIBASE-4A5B4883,Sturnella neglecta,Sturnella neglecta,10/1/2022,9596413,1565966,1565924,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9596413&occurrence_status=present,manual
 AVIBASE-94A44032,Sturnus vulgaris,Sturnus vulgaris,10/1/2022,9809229,17977036,17950946,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9809229&occurrence_status=present,manual
 AVIBASE-61F9065B,Sylvia atricapilla,Sylvia atricapilla,10/1/2022,2492956,3879767,3874682,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2492956&occurrence_status=present,manual
 AVIBASE-A6A4FC63,Sylvia borin,Sylvia borin,10/1/2022,2492942,1176957,1177948,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2492942&occurrence_status=present,manual
@@ -483,7 +486,6 @@ AVIBASE-75DC49AD,Tachycineta thalassina,Tachycineta thalassina,10/1/2022,5230754
 AVIBASE-719935EF,Thalasseus maximus,Thalasseus maximus,10/1/2022,5789281,876747,876208,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5789281&occurrence_status=present,manual
 AVIBASE-603194D3,Thryomanes bewickii,Thryomanes bewickii,10/1/2022,2493843,2088615,2088584,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2493843&occurrence_status=present,manual
 AVIBASE-0B70AD86,Thryothorus ludovicianus,Thryothorus ludovicianus,10/1/2022,2493801,7635694,7635710,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2493801&occurrence_status=present,manual
-AVIBASE-CB5469E1,Thryothorus ludovicianus,Thryothorus ludovicianus,10/1/2022,2493801,7635694,7635654,NA,manual
 AVIBASE-E866F8FA,Toxostoma bendirei,Toxostoma bendirei,9/24/2022,5231697,15283,15274,NA,code
 AVIBASE-F4EE41F5,Toxostoma crissale,Toxostoma crissale,9/24/2022,5231693,67991,67964,NA,code
 AVIBASE-033B53E6,Toxostoma curvirostre,Toxostoma curvirostre,10/1/2022,5231688,548905,548903,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231688&occurrence_status=present,manual
@@ -496,14 +498,12 @@ AVIBASE-6EB81C98,Tringa melanoleuca,Tringa melanoleuca,10/1/2022,2481720,2187839
 AVIBASE-E7A14E91,Tringa semipalmata,Tringa semipalmata,10/1/2022,5789298,1351572,1351143,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5789298&occurrence_status=present,manual
 AVIBASE-D4A73324,Tringa solitaria,Tringa solitaria,10/1/2022,2481710,749662,749615,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481710&occurrence_status=present,manual
 AVIBASE-A381417F,Troglodytes aedon,Troglodytes aedon,10/1/2022,5231459,4977052,4976676,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231459&occurrence_status=present,manual
-AVIBASE-5506AF3C,Troglodytes aedon,Troglodytes aedon,10/1/2022,5231459,4977052,4976553,NA,manual
 AVIBASE-C757BD95,Troglodytes hiemalis,Troglodytes hiemalis,10/1/2022,7340825,756164,756160,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7340825&occurrence_status=present,manual
 AVIBASE-CF5B7A9D,Troglodytes pacificus,Troglodytes pacificus,10/1/2022,9533566,558892,558822,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9533566&occurrence_status=present,manual
 AVIBASE-AF700208,Troglodytes troglodytes,Troglodytes troglodytes,10/1/2022,5231438,3374982,3359618,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5231438&occurrence_status=present,manual
 AVIBASE-A8A85BCF,Turdus iliacus,Turdus iliacus,10/1/2022,2490781,1439478,1418766,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490781&occurrence_status=present,manual
 AVIBASE-88BB4F2A,Turdus merula,Turdus merula,10/1/2022,2490719,7639354,7628137,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490719&occurrence_status=present,manual
 AVIBASE-7738F2BC,Turdus migratorius,Turdus migratorius,10/1/2022,9510564,18211466,18211231,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9510564&occurrence_status=present,manual
-AVIBASE-D77E4B41,Turdus migratorius,Turdus migratorius,10/1/2022,9510564,18211466,18210966,NA,manual
 AVIBASE-D929EB21,Turdus philomelos,Turdus philomelos,10/1/2022,7901064,2796187,2775265,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7901064&occurrence_status=present,manual
 AVIBASE-D120D5A0,Turdus pilaris,Turdus pilaris,10/1/2022,2490737,2096978,2072475,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2490737&occurrence_status=present,manual
 AVIBASE-861CBBDA,Tympanuchus phasianellus,Tympanuchus phasianellus,9/24/2022,2473514,46824,46778,NA,code
@@ -528,6 +528,7 @@ AVIBASE-447A1BA5,Vireo philadelphicus,Vireo philadelphicus,10/1/2022,2487408,235
 AVIBASE-1BB9C864,Vireo plumbeus,Vireo plumbeus,10/1/2022,9353154,164951,164827,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=9353154&occurrence_status=present,manual
 AVIBASE-95DB0943,Vireo solitarius,Vireo solitarius,10/1/2022,2487456,1079156,1079140,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2487456&occurrence_status=present,manual
 AVIBASE-48DBE76D,Vireo vicinior,Vireo vicinior,9/24/2022,2487411,17438,17412,NA,code
+AVIBASE-7E327303,Woodpecker sp.,Melanerpes formicivorus,9/24/2022,2478133,1102189,1102117,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2478133&occurrence_status=present,manual
 AVIBASE-3E2D0C9B,Xanthocephalus xanthocephalus,Xanthocephalus xanthocephalus,10/1/2022,2484195,569351,569313,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2484195&occurrence_status=present,manual
 AVIBASE-BFBC73AF,Zenaida asiatica,Zenaida asiatica,10/1/2022,2495370,1967727,1967778,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2495370&occurrence_status=present,manual
 AVIBASE-00124D98,Zenaida macroura,Zenaida macroura,10/1/2022,2495347,17442293,17442428,https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2495347&occurrence_status=present,manual
