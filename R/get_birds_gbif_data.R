@@ -19,14 +19,21 @@ busycores<-20 # for parallell computing with mclapply your computer will use the
 # birdtraits
 dft<-read.csv(here("DATA/traitsdata/bird_traits_from_AVONET.csv"))
 dft<-dft[(!is.na(dft$Avibase.ID)),]#exclude Trochilid sp.
+length(unique(dft$Avibase.ID))
+length(unique(dft$spname))
 
-ddft0<-dft%>%distinct(Avibase.ID,.keep_all = T)# unique species
+# in data for a given Avibase.ID we have two spname recorded
+ddft0<-dft%>%distinct(spname,.keep_all = T)# unique species
+length(unique(ddft0$Avibase.ID))
+length(unique(ddft0$spname))
+
 ddft<-ddft0%>%dplyr::select(Avibase.ID,
                            spname, # occur in community data
                            Species=possible_sp # then we identified, see comments in ddft0
                            )
 
 splist<-ddft$Species
+length(unique(splist))
 
 ddft$gbif_dwnld_date<-"2022-09-24"
 ddft$gbif_TaxonKey<-NA # this is the usage key or taxon key or species key
@@ -55,6 +62,11 @@ for(i in c(1:length(splist))){
   }else{
     x$acceptedUsageKey<-x$usageKey
   }
+  if(x$rank!="SPECIES"){
+    x$species<-NA
+    x$speciesKey<-NA
+    x<-x%>%select(colnames(name_backbone_list))
+  }
   name_backbone_list<-rbind(name_backbone_list,x)
   print(i)
 }
@@ -66,11 +78,10 @@ write.csv(ddft, here("DATA/STI_related/birds_gbif_data/birds_occurrence_data_nee
 
 # read the manually filled in table
 ddft<-read.csv(here("DATA/STI_related/birds_gbif_data/birds_occurrence_data_needed_edited.csv"))
-tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual") # 31 species data 
-# are downloaded from GBIF website
+tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual") # 471 species we will get data by running below code
 
-tab_code<-ddft%>%filter(gbif_dwnld_type=="code")
-# for the rest 115 species we will get data by running below code
+tab_code<-ddft%>%filter(gbif_dwnld_type=="code") #64 species data 
+# are downloaded from GBIF website
 
 # Now we need to get the occurrence data through code 
 # for the 115 species appeared in the above table
@@ -109,7 +120,5 @@ totsp<-length(splist)
 res_all_sp<-mclapply(X=error_sp,FUN=res_single_sp,
                      splist=splist,
                      limit=limit,mc.cores=busycores)
-
-
 
 
