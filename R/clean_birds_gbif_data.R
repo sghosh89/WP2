@@ -13,11 +13,11 @@ ddft$cleaned_records<-NA
 
 tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual") #441 obs
 length(unique(tab_manual$Species))
-tab_coded<-ddft%>%filter(gbif_dwnld_type=="code") #72 obs
+tab_coded<-ddft%>%filter(gbif_dwnld_type=="code") 
 #------------------------------------------------------
 sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning_codedsp.txt"),append=TRUE, split=TRUE)
 # now do the same for coded species
-sp_coded<-tab_coded$Species # 72 species
+sp_coded<-tab_coded$Species # 73 species
 tot_sp_coded<-length(sp_coded)
 for(i in 1:tot_sp_coded){
   s<-sp_coded[i]

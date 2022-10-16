@@ -62,7 +62,7 @@ for(i in c(1:length(splist))){
   }else{
     x$acceptedUsageKey<-x$usageKey
   }
-  if(x$rank!="SPECIES"){
+  if(x$rank!="SPECIES" & x$rank=="GENUS"){
     x$species<-NA
     x$speciesKey<-NA
     x<-x%>%select(colnames(name_backbone_list))

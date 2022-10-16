@@ -1209,6 +1209,7 @@ source("./get_birds_tol_limit.R")
 # CODE AVAILABILITY
 Complete computer code written in R programming language for this project is at https://github.com/sghosh89/WP2.
 This Rmd file generates the summary table *stability_metric_and_env_all.csv* required for next step analysis and saves the csv file in `Results` folder.
+
 It also saves following 4 csv files in the `Results` folder:
 
 - *birds_splist_consistency_table.csv*, 
@@ -1216,6 +1217,10 @@ It also saves following 4 csv files in the `Results` folder:
 - *birds_splist_with_temp_sensitivity.csv*, 
 - *fish_splist_with_temp_sensitivity.csv*.
 
+It also saves following 2 csv files with tolerance limit for each fish and birds species in `DATA/STI_related/fish_gbif_data/cleaned/` and `DATA/STI_related/birds_gbif_data/cleaned/` path, respectively.
+
+ - *fish_occurrence_metadata_with_tolerance.csv*,
+ - *birds_occurrence_metadata_with_tolerance.csv*.
 
 ```{r, out.height = "500px", out.width='500px', echo=F}
 # example fig for html output
