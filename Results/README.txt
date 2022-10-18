@@ -39,14 +39,26 @@ skw_indep: skewness for the given community timeseries as if each species fluctu
 phi_skw: skewness ratio, skw_real/skw_indep
 iCV: inverse of community variability = mean(total community abundance or biomass timeseries)/std(total community abundance or biomass timeseries)
 iCValt:inverse of community variability, non-biased = median(total community abundance or biomass timeseries)/IQR(total community abundance or biomass timeseries)
-LONGITUDE: Longitude (we are providing to our best knowledge when we the exact lon-lat on plot level)
+LONGITUDE: Longitude (we are providing to our best knowledge when we have the exact lon-lat on plot level)
 LATITUDE: Latitude
 t_med: median of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community
-tmax_med: median of CHELSA-extracted annual maximum temperature timeseries for the study years included in the analysis for each community
-tmin_med: median of CHELSA-extracted annual minimum temperature timeseries for the study years included in the analysis for each community
 t_skw: skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community
-tmax_skw: skewness of CHELSA-extracted annual maximum temperature timeseries for the study years included in the analysis for each community
-tmin_skw: skewness of CHELSA-extracted annual minimum temperature timeseries for the study years included in the analysis for each community
-t_var: temperature variability for the community during the study period = median(annual temperature)/IQR(annual temperature distribution for the study period)
-trend_t_tau: trend of annual temperature timeseries (computed by Mann-Kendall test)
-trend_t_tau_sig: 1 for significant, 0 non-significant trend, based on p-value 0.05
+t_var: temperature variability for the community during the study period = IQR(annual temperature distribution for the study period)/abs(t_med)
+t_med_celcius: median of CHELSA-extracted annual temperature timeseries (t_med) in celcius scale
+t_skw_celcius: skewness of CHELSA-extracted annual temperature timeseries (t_skw) in celcius scale
+t_var_celcius: temperature variability for the community during the study period = IQR(annual temperature distribution for the study period)/abs(t_med_celcius)
+t.lm.slope: trend of CHELSA extracted annual temperature timeseries (computed by linear regression)
+t.lm.slope.sig: significance for trend of CHELSA extracted annual temperature timeseries (computed by linear regression): significant(=1) if p value <0.05
+t.sens.slope: trend of CHELSA extracted annual temperature timeseries (computed by non-parametric Sen's method)
+t.sens.slope.sig: significance for trend of CHELSA extracted annual temperature timeseries (computed by non-parametric Sen's method): significant(=1) if p value <0.05
+t.lm.slope.celcius: trend of CHELSA extracted annual temperature timeseries in celcius scale (computed by linear regression)
+t.lm.slope.sig.celcius: significance for trend of CHELSA extracted annual temperature timeseries in celcius scale (computed by linear regression): significant(=1) if p value <0.05
+t.sens.slope.celcius: trend of CHELSA extracted annual temperature timeseries in celcius scale (computed by non-parametric Sen's method)
+t.sens.slope.sig.celcius: significance for trend of CHELSA extracted annual temperature timeseries in celcius scale (computed by non-parametric Sen's method): significant(=1) if p value <0.05
+GiniSimpson: Diversity index (evenness), Gini 1912 & Simpson 1949 
+Simpson: Diversity index (evenness), Simpson 1949 & Magurran 2004
+Shannon: Diversity index (evenness), Shannon 1948
+Heip: Diversity index (evenness), Heip 1974 & Magurran 2004
+McIntosh: Diversity index (evenness), McIntosh 1967 & Pielou 1975
+SmithWilson: Diversity index (evenness), Smith & Wilson 1996 & Magurran 2004
+Pielou: Diversity index (evenness), Pielou 1975
