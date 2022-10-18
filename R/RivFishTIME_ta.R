@@ -2,6 +2,7 @@
 source("./tail_analysis.R")
 #----------------------------------
 library(tidyverse)
+library(dplyr)
 #---------------------------------------
 resloc<-"../Results/for_RivFishTIME/"
 if(!dir.exists(resloc)){
@@ -15,7 +16,7 @@ x_meta<-read.csv("../DATA/for_RivFishTIME/raw_data/RivFishTIME_accessed_08dec202
 z<-x %>% distinct(TimeSeriesID, .keep_all = TRUE)%>%dplyr::select(TimeSeriesID,UnitAbundance)
 x_meta<-inner_join(z,x_meta,by="TimeSeriesID")
 
-x_meta<-x_meta%>%filter(TimeSeriesID%in%good_TimeSeriesID_q3q4)%>%select(-X)
+x_meta<-x_meta%>%filter(TimeSeriesID%in%good_TimeSeriesID_q3q4)%>%dplyr::select(-X)
 write.csv(x_meta,"../DATA/for_RivFishTIME/wrangled_data/metadata_RF_good_TimeSeriesID_q3q4.csv",row.names = F)
 
 #---------------------------------------------
@@ -27,11 +28,11 @@ env_t<-read.csv("./../DATA/wrangled_env_data/tas_annualval_extracted_lonlat.csv"
 env_tmax<-read.csv("./../DATA/wrangled_env_data/tasmax_annualval_extracted_lonlat.csv")
 env_tmin<-read.csv("./../DATA/wrangled_env_data/tasmin_annualval_extracted_lonlat.csv")
 env_t$lonlat<-paste(env_t$CENT_LONG,env_t$CENT_LAT,sep="_")
-env_t<-env_t%>%select(-CENT_LONG, -CENT_LAT)%>%rename(t=meanval)
+env_t<-env_t%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(t=meanval)
 env_tmax$lonlat<-paste(env_tmax$CENT_LONG,env_tmax$CENT_LAT,sep="_")
-env_tmax<-env_tmax%>%select(-CENT_LONG, -CENT_LAT)%>%rename(tmax=meanval)
+env_tmax<-env_tmax%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmax=meanval)
 env_tmin$lonlat<-paste(env_tmin$CENT_LONG,env_tmin$CENT_LAT,sep="_")
-env_tmin<-env_tmin%>%select(-CENT_LONG, -CENT_LAT)%>%rename(tmin=meanval)
+env_tmin<-env_tmin%>%dplyr::select(-CENT_LONG, -CENT_LAT)%>%rename(tmin=meanval)
 env_t<-left_join(env_t,env_tmax,by=c("lonlat","yr"))
 env_t<-left_join(env_t,env_tmin,by=c("lonlat","yr"))
 
@@ -85,7 +86,7 @@ for(i in 1:length(good_TimeSeriesID_q3q4)){
   rownames(df)<-df$yr
   
   #-----------------------adding environmental variable in the matrix-----------------------------
-  tempdat<-x_meta%>%filter(TimeSeriesID%in%siteid)%>%filter(yr%in%rownames(df))%>%select(yr,t,tmax,tmin)
+  tempdat<-x_meta%>%filter(TimeSeriesID%in%siteid)%>%filter(yr%in%rownames(df))%>%dplyr::select(yr,t,tmax,tmin)
   tempdat$tmax_n<- -tempdat$tmax
   
   # check if all TRUE
@@ -95,7 +96,7 @@ for(i in 1:length(good_TimeSeriesID_q3q4)){
   df$tmax<-tempdat$tmax
   df$tmin<-tempdat$tmin
   df$tmax_n<-tempdat$tmax_n
-  df<-df%>%select(-yr)
+  df<-df%>%dplyr::select(-yr)
   
   saveRDS(df,paste(resloc_input,"input_mat_for_tailanal_with_env.RDS",sep="")) # dataframe with species timeseries along column
 

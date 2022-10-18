@@ -24,10 +24,10 @@ sb<-left_join(sb,df_allsplen_persite,by=c("newsite","STUDY_ID"))
 
 
 # temperature: low vs high in community and how traits like dispersal ability vary?
-q_T_taxa<-sb%>%summarise(q=quantile(t_med,c(0.25,0.75)))
+q_T_taxa<-sb%>%summarise(q=quantile(t_med_celcius,c(0.25,0.75)))
 
-lowT_taxa<-sb%>%filter(t_med<=unname(q_T_taxa[1,1]))
-highT_taxa<-sb%>%filter(t_med>=unname(q_T_taxa[2,1]))
+lowT_taxa<-sb%>%filter(t_med_celcius<=unname(q_T_taxa[1,1]))
+highT_taxa<-sb%>%filter(t_med_celcius>=unname(q_T_taxa[2,1]))
 lowT_taxa$type<-"Low T,<50%CI"
 highT_taxa$type<-"High T,>50%CI"
 

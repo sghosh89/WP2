@@ -1162,6 +1162,7 @@ source("./gather_all_summary_res.R")
 source(here("R/recheck_duplicatedsites.R"))
 ```
 
+<!--NOTE: following r chunk computes correlation between species abundance timeseries with temperature time series, it does not matter for the unit of temperature: Kelvin0.1 or celcius scale, having a linear relationship the correlation coeeficients will be exactly same, I checked that.-->
 ```{r get_consistency, echo=F, cache=T, message=F, cache.extra=list(mtime("../Results/stability_metric_and_env_all.csv"), mtime("get_sp_birds.R"),mtime("get_sp_fish.R"))}
 
 # I got the idea when discussing with Blake
