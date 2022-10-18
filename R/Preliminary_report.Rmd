@@ -894,7 +894,7 @@ knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"),
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa.
 
-```{r model_psem_with_meancentering, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
+```{r model_psem_with_meancentering, echo=F, cache=T, message=F,results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
 
 library(car)
 library(tidyverse)
@@ -911,10 +911,8 @@ call_model_psem<-function(taxa,data=sm_all,
   
   #------ check variation inflation factor for multi-collinearity  
   cat(paste(" VIF for model, taxa = ",taxa," ------- \n"))
-  vf<-car::vif(lmer(stability ~ R+VR+A+t.sens.slope.celcius+t_skw_celcius+t_var_celcius+(1|UID), data=mydat_scaled))
-  print(vf)
   vf<-car::vif(lmer(stability ~ R+E+VR+A+t.sens.slope.celcius+t_skw_celcius+t_var_celcius+(1|UID), data=mydat_scaled))
-  print(vf)
+  #print(vf) # checked always <3
   
   #------ want rescaling? 
   if(rescaling==T){
@@ -955,11 +953,11 @@ call_model_psem<-function(taxa,data=sm_all,
               SkewT = t_skw_celcius,
               VarT = t_var_celcius)
   # model without evenness (Celcius scale)
-  model_psem_c<-piecewiseSEM::psem(
-    lmer(VR ~ R+MedianT+TrendT+(1|UID),data=dat),
-    lmer(A ~ R+TrendT+SkewT+(1|UID),data=dat),
-    lmer(R~MedianT+VarT+TrendT+(1|UID),data=dat),
-    lmer(stability ~ (R*MedianT)+VR+A+TrendT+SkewT+VarT+(1|UID), data=dat))
+  #model_psem_c<-piecewiseSEM::psem(
+  #  lmer(VR ~ R+MedianT+TrendT+(1|UID),data=dat),
+  #  lmer(A ~ R+TrendT+SkewT+(1|UID),data=dat),
+  #  lmer(R~MedianT+VarT+TrendT+(1|UID),data=dat),
+  #  lmer(stability ~ (R*MedianT)+VR+A+TrendT+SkewT+VarT+(1|UID), data=dat))
   
   # model with evenness (Celcius scale)
   model_psem_c2<-piecewiseSEM::psem(
@@ -970,20 +968,24 @@ call_model_psem<-function(taxa,data=sm_all,
     lmer(stability ~ R+E+VR+A+(R:MedianT)+
            MedianT+VarT+TrendT+SkewT+(1|UID), data=dat))
   
-  op<-par(mfrow = c(1,2))
+  #op<-par(mfrow = c(1,2))
   
   # model without evenness (Celcius scale)
-  cc2<-coefs(model_psem_c,standardize = "scale")
-  plot_psem(n,taxa,cc2,layout="circle")
-  saveRDS(model_psem_c,paste(resloc,"model_psem_celcius_",taxa,".RDS",sep=""))
+  #cc2<-coefs(model_psem_c,standardize = "scale")
+  #plot_psem(n,taxa,cc2,layout="circle")
+  #saveRDS(model_psem_c,paste(resloc,"model_psem_celcius_",taxa,".RDS",sep=""))
   
   # model with evenness (Celcius scale)
   ccE2<-coefs(model_psem_c2,standardize = "scale")
   plot_psem(n,taxa,ccE2,layout="circle")
-  saveRDS(model_psem_c2,paste(resloc,"model_psem_with_evenness_celcius_",taxa,".RDS",sep=""))
+  pdf(here(paste(resloc,"plot_psem_with_evenness_celcius_",taxa,".pdf",sep="")),height=6,width=6)
+  plot_psem(n,taxa,ccE2,layout="circle")
+  dev.off()
+  
+  saveRDS(model_psem_c2,here(paste(resloc,"model_psem_with_evenness_celcius_",taxa,".RDS",sep="")))
   
   #print(summary(model_psem))
-  par(op)
+  #par(op)
 }
 
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
@@ -1000,7 +1002,7 @@ sm_all$TAXA<-as.factor(sm_all$TAXA)
 taxa<-"birds"
 rescaling<-T
 mean_centering<-TRUE
-resloc<-here("Results/res_Prelim_Report/")
+resloc<-"Results/res_Prelim_Report/"
 
 call_model_psem(taxa = taxa, data=sm_all,
                 rescaling = rescaling,  
@@ -1011,7 +1013,7 @@ call_model_psem(taxa = taxa, data=sm_all,
 taxa<-"fish"
 rescaling<-T
 mean_centering<-TRUE
-resloc<-here("Results/res_Prelim_Report/")
+resloc<-"Results/res_Prelim_Report/"
 
 call_model_psem(taxa = taxa, data=sm_all,
                 rescaling = rescaling,  
@@ -1019,7 +1021,7 @@ call_model_psem(taxa = taxa, data=sm_all,
                 resloc=resloc)
 ```
 
-```{r fish-skw-and-taildepsyn, echo=F}
+```{r fish-skw-and-taildepsyn, echo=F, results="hide"}
 library(here)
 library(dplyr)
 library(tidyverse)
@@ -1084,9 +1086,13 @@ g6<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
   #    variability (absolute), fish")+
   theme_bw()
 grid.arrange(g3,g4,g5,g6, ncol=2)
+
+pdf(here("Results/res_Prelim_Report/fish-skw-taildepsyn.pdf"), width = 8, height = 6) 
+grid.arrange(g3,g4,g5,g6, ncol=2)
+dev.off()
 ```
 
-```{r birds-skw-and-taildepsyn, echo=F}
+```{r birds-skw-and-taildepsyn, echo=F, results="hide"}
 library(here)
 library(dplyr)
 library(tidyverse)
@@ -1151,6 +1157,10 @@ g6<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
   #    variability (absolute), birds")+
   theme_bw()
 grid.arrange(g3,g4,g5,g6, ncol=2)
+
+pdf(here("Results/res_Prelim_Report/birds-skw-taildepsyn.pdf"), width = 8, height = 6) 
+grid.arrange(g3,g4,g5,g6, ncol=2)
+dev.off()
 ```
 
 
