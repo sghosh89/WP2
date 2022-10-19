@@ -135,6 +135,8 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance d
 
 *Species richness* at site $s$ was estimated as the number of total species ($nsp$) and dominant species that were present minimum 70% of the total years sampled ($R$).
 
+*Species evenness* at site $s$ was estimated as Smith-Wilson matrix.
+
 *Community variance ratio*: a measure of synchrony, scaled between 0 to 1 ([Loreau & Mazancourt](https://www.journals.uchicago.edu/doi/10.1086/589746)).
 
 *Community level total tail association from pairwise synchrony*: see BioDyn project, Figure 1.
@@ -145,7 +147,7 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance d
 
 *Temperature skew*: Skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
-*Temperature variability*: Temperature variability for the community during the study period = abs(median(annual temperature))/IQR(annual temperature distribution for the study period). [Note: in Celcius scale temperature t_med could be negative for some sites, so use absolute value always]
+*Temperature variability*: Temperature variability for the community during the study period = IQR(annual temperature distribution for the study period)/abs(median(annual temperature)). [Note: in Celcius scale temperature t_med could be negative for some sites, so use absolute value always]
 
 # Results
 
@@ -265,6 +267,14 @@ ggplot(data=sb, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
 
 ```{r plot-synchrony-temperature-birds-tempcat, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
 #---- synchrony versus temperature for birds ----
+ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method="lm",se=T,color="green",fill="darkolivegreen1")+
+  xlab("Temperature, t_med in (\u00B0C)")+
+  ylab("Synchrony, VR_LdM")+
+  ggtitle(taxa)+
+  theme_bw()
+
 ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
@@ -400,6 +410,14 @@ ggplot(data=sfi, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
 
 ```{r plot-synchrony-temperature-fish-tempcat, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
 #---- synchrony versus temperature for fish ----
+ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method="lm",se=T,color="blue",fill="cornflowerblue")+
+  xlab("Temperature, t_med in (\u00B0C)")+
+  ylab("Synchrony, VR_LdM")+
+  ggtitle(taxa)+
+  theme_bw()
+
 ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
