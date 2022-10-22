@@ -79,6 +79,9 @@ tempo_e<-tempo[id,]
 
 alldat<-rbind(tempo_ab,tempo_c,tempo_d,tempo_e)
 gp<-vector(mode = "list", length = nrow(alldat))
+titles<-c("No trend, no skewness", "No trend, no skewness, but higher MedianT",
+          "No trend, extreme cold (-ve skewness)","Increasing trend, no skewness",
+          "Increasing trend, heatwaves (+ve skewness)")
 # now plot t_med time series for these five communities
 for(i in 1:nrow(alldat)){
   
@@ -98,25 +101,32 @@ for(i in 1:nrow(alldat)){
   m$year<-as.integer(rownames(m))
   gp[[i]]<-ggplot(m,aes(x=year,y=t_in_celcius))+
     geom_point(col="gray")+
-    geom_line(col="gray")+
+    geom_line(col="gray")+ggtitle(titles[i])+
     geom_hline(yintercept = alldat$t_med_celcius[i],linetype = "dashed")+
     #geom_smooth(method="glm",fill="skyblue")+
-    xlab("Year")+ylab("Temperature in (\u00B0C)")+
-    annotate(geom = 'text', 
-             label = paste("lm.slope= ",round(alldat$t.lm.slope[i],4),
-                           " ,Sens'slope= ",round(alldat$t.sens.slope.celcius[i],4),
-                           " ,slope.sig = ",alldat$t.lm.slope.sig[i],
-                           ",\n skw= ",round(alldat$t_skw_celcius[i],4),sep=""), 
-             x = -Inf, y = Inf, hjust = -0.1, vjust = 1.2)+
-    theme_bw()
+    xlab("Year")+ylab("Temperature (\u00B0C)")+xlim(1997,2020)+
+    annotate(geom = 'text', color="darkblue",
+             label = paste(" TrendT= ",round(alldat$t.sens.slope.celcius[i],3),
+                           ", SkewT= ",round(alldat$t_skw_celcius[i],3),sep=""), 
+             x = -Inf, y = Inf, hjust = -0.1, vjust = 1.5)+
+    annotate("text",  x=Inf, y = Inf, label = LETTERS[i+1], vjust=1.2, hjust=1.2, size=7)+
+    theme_bw()+
+    theme(text = element_text(size = 14),axis.text = element_text(size = 14),
+          plot.title = element_text(size=17,color="darkblue"),
+          plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
+          panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 }
-resloc<-here("Results/some_assets")
+resloc<-here("Results/res_Prelim_Report")
 
-g0<-paste(resloc,"/realdata_temperature_timeseries_celcius.jpg",sep="")
-g1<-grid.arrange(gp[[1]],gp[[2]],gp[[3]],gp[[4]],gp[[5]],nrow=2)
-g<-arrangeGrob(g1)
-ggsave(g0, g,width = 40, height = 12, units = 'cm')
+#g0<-paste(resloc,"/realdata_temperature_timeseries_celcius.jpg",sep="")
+#g1<-grid.arrange(gp[[1]],gp[[2]],gp[[3]],gp[[4]],gp[[5]],nrow=2)
+#g<-arrangeGrob(g1)
+#ggsave(g0, g,width = 40, height = 12, units = 'cm')
 
+pdf(paste(resloc,"/realdata_temperature_timeseries_celcius.pdf",sep=""),
+    height=9, width=7)
+grid.arrange(gp[[1]],gp[[2]],gp[[3]],gp[[4]],gp[[5]],nrow=5) 
+dev.off()
 #==============================
 # make a similar intro fig timeseries example plot but with real data
 #rm(list=ls())

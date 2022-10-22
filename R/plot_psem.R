@@ -13,7 +13,7 @@ plot_psem<-function(n,taxa,cc,layout,red_edge=1,red_arr=2){
   right=10
   haut=20
   bas=0
-  cex=0.8
+  cex=1
   scale_arrow=0.2
   l=cc[,c("Predictor","Response","Std.Estimate","P.Value")]
   l[,3]=as.numeric(l[,3])

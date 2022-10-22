@@ -24,6 +24,7 @@ knitr::opts_chunk$set(echo = FALSE,
 library(broom)
 library(tidyverse)
 library(patchwork)
+library(gridExtra)
 library(here)
 source(here("R", "mtime.R"))
 ```
@@ -201,17 +202,18 @@ sm_all <- sm_all %>%
 library(dplyr)
 library(tidyverse)
 #----- stability vs richness rawdata plot for each taxa -----
-sm_all %>%
+g0<-sm_all %>%
   filter(TAXA%in%c("birds","fish")) %>%
   ggplot(aes(x=nsp,y=iCValt)) +
   geom_point(alpha=0.3) +
   geom_smooth(method="lm") +
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2') +
-  xlab("Richness") +
-  ylab("Community stability") +
+  ylab("Stability, log2 scale") +
+  xlab("Richness, log2 scale") +
   facet_wrap(~TAXA) +
   theme_bw()
+print(g0)
 ```
 
 ### Birds
@@ -231,7 +233,7 @@ sb <- sm_all %>%
 
 ```{r plot-stability-diversity-birds, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship for birds at different temperature levels")}
 #---- stability versus richness, by temperature category for birds -----
-ggplot(data=sb,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
+gb_stab1<-ggplot(data=sb,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
@@ -240,91 +242,99 @@ ggplot(data=sb,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
   xlab("Richness, log2 scale") +
   ggtitle(taxa) +
   theme_bw()
+print(gb_stab1)
 ```
 
 ```{r plot-stability-temperature-birds, echo=F, out.width = '75%',fig.cap=c("Stability-temperature relationship for bird communities at different richness levels")}
 #---- stability versus temperature, by richness category for birds -----
-ggplot(data=sb,aes(x=t_med_celcius, y=iCValt, col = richness_cat)) +
+gb_stab2<-ggplot(data=sb,aes(x=t_med_celcius, y=iCValt, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   ylab("Stability") +
-  xlab("Temperature, t_med in (\u00B0C)") +
+  xlab("Temperature, MedianT (\u00B0C)") +
   ggtitle(taxa) +
   theme_bw()
+print(gb_stab2)
 ```
 
 ```{r plot-stability-synchrony-birds, echo=F, out.width = '75%',fig.cap=c("Stability-synchrony relationship for birds at different temperature levels")}
 #---- stability versus synchrony, by temperature category for birds ----
-ggplot(data=sb, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
+gb_stab3<-ggplot(data=sb, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2')+
-  ylab("Stability, log2 scale")+xlab("Synchrony, VR_LdM, log2 scale")+
+  ylab("Stability, log2 scale")+xlab("Synchrony (Variance Ratio), log2 scale")+
   ggtitle(taxa)+
   theme_bw()
+print(gb_stab3)
 ```
 
 ```{r plot-synchrony-temperature-birds-tempcat, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
 #---- synchrony versus temperature for birds ----
-ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM)) +
+gb_syn1<-ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm",se=T,color="green",fill="darkolivegreen1")+
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("Synchrony, VR_LdM")+
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("Synchrony (Variance Ratio)")+ylim(0,1)+
   ggtitle(taxa)+
   theme_bw()
+print(gb_syn1)
 
-ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM, col = median_temperature_cat)) +
+gb_syn2ex<-ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("Synchrony, VR_LdM")+
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("Synchrony (Variance Ratio)")+ylim(0,1)+
   ggtitle(taxa)+
   theme_bw()
+#print(gb_syn2ex) This plot give an illusion of changing relationship what is actually not the case, see the mean and variability of each group - they are same.
 ```
 
 ```{r boxplot-synchrony-temperature-birds, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (boxplot)")}
 #----- do a boxplot for synchrony at low/high temp, birds -----
-ggplot(data=sb, aes(x=median_temperature_cat, y=phi_LdM)) +
+gb_syn3<-ggplot(data=sb, aes(x=median_temperature_cat, y=phi_LdM)) +
   geom_boxplot(alpha = 0.2) +
-  xlab("Temperature category, t_med")+
-  ylab("Synchrony, VR_LdM")+
+  xlab("Median Temperature category")+
+  ylab("Synchrony (Variance Ratio)")+ylim(0,1)+
   ggtitle(taxa)+
   theme_bw()
+print(gb_syn3)
 ```
 
 ```{r plot-synchrony-diversity-birds, echo=F, out.width = '75%',fig.cap=c("Synchrony richness relationship.")}
 #---- synchrony versus richness, by temperature category ----
-ggplot(data=sb,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
+gb_syn4<-ggplot(data=sb,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2') +
-  ylab("Synchrony, VR_LdM, log2 scale") +
+  ylab("Synchrony (Variance Ratio), log2 scale") +
   xlab("Richness, log2 scale") +
   ggtitle(taxa) +
   theme_bw()
+print(gb_syn4)
 ```
 
 ```{r plot-synchrony-temperature-birds, echo=F, out.width = '75%',fig.cap=c("Synchrony temperature relationship.")}
 #---- synchrony versus temperature, by richness category for birds ----
-ggplot(data=sb,aes(x=t_med_celcius, y=phi_LdM, col = richness_cat)) +
+gb_syn5<-ggplot(data=sb,aes(x=t_med_celcius, y=phi_LdM, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
-  ylab("Synchrony, VR_LdM") +
-  xlab("Temperature, t_med in (\u00B0C)") +
+  ylab("Synchrony (Variance Ratio), log2 scale") +
+  xlab("Temperature, MedianT (\u00B0C)") +
   ggtitle(taxa) +
   theme_bw()
+print(gb_syn5)
 ```
 
 ```{r plot-stability-tskw-birds, echo=F, out.width = '75%',fig.cap=c("Stability - temperature skew relationship.")}
-
-ggplot(data=sb,aes(x=t_skw, y=iCValt, col = richness_cat)) +
+# some extra plot
+gb_skwex<-ggplot(data=sb,aes(x=t_skw, y=iCValt, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   ylab("Stability") +
-  xlab("Temperature skew") +
+  xlab("Temperature skew, SkewT") +
   ggtitle(taxa) +
   theme_bw()
 ```
@@ -334,7 +344,7 @@ ggplot(data=sb,aes(x=t_skw, y=iCValt, col = richness_cat)) +
 **Model of bird stability:**
 ```{r anova_birds_stability}
 ## bird stability model
-bird_stab1 <- lm(log2(iCValt) ~ log2(nsp) * t_med_celcius, data = sb)
+bird_stab1 <- lm(iCValt ~ nsp * t_med_celcius, data = sb)
 par(mfrow = c(2,2))
 #plot(bird_stab1)
 anova_bird_stab1 <- tidy(bird_stab1)
@@ -344,7 +354,7 @@ anova_bird_stab1 <- tidy(bird_stab1)
 **Model of bird synchrony:**
 ```{r anova_birds_synchrony}
 ## bird stability model
-bird_stab2 <- lm(log2(phi_LdM) ~ log2(nsp) * t_med_celcius, data = sb)
+bird_stab2 <- lm(phi_LdM ~ nsp * t_med_celcius, data = sb)
 par(mfrow = c(2,2))
 #plot(bird_stab2)
 anova_bird_stab2 <- tidy(bird_stab2)
@@ -374,7 +384,7 @@ sfi <- sm_all %>%
 
 ```{r plot-stability-diversity-fish, echo=F, out.width = '75%',fig.cap=c("Stability-diversity relationship at different temperature levels")}
 #---- stability versus richness, by temperature category for fish -----
-ggplot(data=sfi,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
+gf_stab1<-ggplot(data=sfi,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
@@ -383,87 +393,94 @@ ggplot(data=sfi,aes(x=nsp,y=iCValt, col = median_temperature_cat)) +
   xlab("Richness, log2 scale") +
   ggtitle(taxa) +
   theme_bw()
+print(gf_stab1)
 ```
 
 ```{r plot-stability-temperature-fish, echo=F, out.width = '75%',fig.cap=c("Stability-temperature relationship at different richness levels")}
 #----- stability versus temperature, by richness category for fish ----
-ggplot(data=sfi,aes(x=t_med_celcius, y=iCValt, col = richness_cat)) +
+gf_stab2<-ggplot(data=sfi,aes(x=t_med_celcius, y=iCValt, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   ylab("Stability") +
-  xlab("Temperature, t_med in (\u00B0C)") +
+  xlab("Temperature, MedianT (\u00B0C)") +
   ggtitle(taxa) +
   theme_bw()
+print(gf_stab2)
 ```
 
 ```{r plot-stability-synchrony-fish, echo=F, out.width = '75%',fig.cap=c("Stability-synchrony relationship at different temperature levels")}
 #---- stability versus synchrony, by temperature category for fish ----
-ggplot(data=sfi, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat)) +
+gf_stab3<-ggplot(data=sfi, aes(x=phi_LdM, y=iCValt, col = median_temperature_cat))+
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2')+
-  ylab("Stability, log2 scale")+xlab("Synchrony, VR_LdM, log2 scale")+
+  ylab("Stability, log2 scale")+xlab("Synchrony (Variance Ratio), log2 scale")+
   ggtitle(taxa)+
   theme_bw()
+print(gf_stab3)
 ```
 
 ```{r plot-synchrony-temperature-fish-tempcat, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
 #---- synchrony versus temperature for fish ----
-ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM)) +
+gf_syn1<-ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm",se=T,color="blue",fill="cornflowerblue")+
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("Synchrony, VR_LdM")+
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("Synchrony (Variance Ratio)")+ylim(0,1)+
   ggtitle(taxa)+
   theme_bw()
+print(gf_syn1)
 
-ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM, col = median_temperature_cat)) +
+gf_syn2ex<-ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("Synchrony, VR_LdM")+
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("Synchrony (Variance Ratio)")+ylim(0,1)+
   ggtitle(taxa)+
   theme_bw()
 ```
 
 ```{r boxplot-synchrony-temperature-fish, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (boxplot)")}
 #----- boxplot for synchrony at low/high temp, fish -----
-ggplot(data=sfi, aes(x=median_temperature_cat, y=phi_LdM)) +
+gf_syn2<-ggplot(data=sfi, aes(x=median_temperature_cat, y=phi_LdM)) +
   geom_boxplot(alpha = 0.2) +
-  xlab("Temperature category (t_med)")+
-  ylab("Synchrony, VR_LdM")+
+  xlab("Median Temperature category")+
+  ylab("Synchrony (Variance Ratio)")+ylim(0,1)+
   ggtitle(taxa)+
   theme_bw()
+print(gf_syn2)
 ```
 
 ```{r plot-synchrony-richness-fish, echo=F, out.width = '75%',fig.cap=c("Synchrony richness relationship.")}
 #---- synchrony versus richness, by temperature category for fish ----
-ggplot(data=sfi,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
+gf_syn3<-ggplot(data=sfi,aes(x=nsp,y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2') +
-  ylab("Synchrony, VR_LdM, log2 scale") +
+  ylab("Synchrony (Variance Ratio), log2 scale") +
   xlab("Richness, log2 scale") +
   ggtitle(taxa) +
   theme_bw()
+print(gf_syn3)
 ```
 
 ```{r plot-synchrony-temperature-fish, echo=F, out.width = '75%',fig.cap=c("Synchrony temperature relationship.")}
 #---- synchrony versus temperature, by richness category for fish ----
-ggplot(data=sfi,aes(x=t_med_celcius, y=phi_LdM, col = richness_cat)) +
+gf_syn4<-ggplot(data=sfi,aes(x=t_med_celcius, y=phi_LdM, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
-  ylab("Synchrony, VR_LdM") +
-  xlab("Temperature, t_med in (\u00B0C)") +
+  ylab("Synchrony (Variance Ratio)") +ylim(0,1)+
+  xlab("Temperature, MedianT (\u00B0C)") +
   ggtitle(taxa) +
   theme_bw()
+print(gf_syn4)
 ```
 
 ```{r plot-stability-tskw-fish, echo=F, out.width = '75%',fig.cap=c("Stability - temperature skew relationship.")}
 
-ggplot(data=sfi,aes(x=t_skw, y=iCValt, col = richness_cat)) +
+gf_skwex<-ggplot(data=sfi,aes(x=t_skw, y=iCValt, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   ylab("Stability") +
@@ -505,7 +522,7 @@ Not sure, at present, how much can be explained by synchrony, but the statistics
 ```{r tskew-plot1, out.width = '75%', fig.cap=c("Distribution of temperature skewness, birds and fish together.")}
 sm_all_bf<-sm_all%>%filter(TAXA%in%c("birds","fish"))
 br <- c(min(sm_all_bf$t_skw_celcius),0,max(sm_all_bf$t_skw_celcius))
-sm_all_bf%>%
+gextra1<-sm_all_bf%>%
   ggplot( aes(x=t_skw_celcius, stat(density))) +
   ggtitle("birds and fish")+
   geom_text(
@@ -520,7 +537,7 @@ sm_all_bf%>%
 ```{r tskew-plot2, out.width = '75%', fig.cap=c("Distribution of temperature skewness, birds and fish separate. Fish communities generally experience more negatively skewed temperature fluctuations. In the fish SEM we see that t_skw directly affects stability, with more positive skew being associated with less stability. No evidence of association of t_skw and stability in birds.")}
 #----- skewness plot across taxa, fish gets more extremes but as taildep synchrony is not important driver for freshwater systems stability is directly affected by skewness there ----
 
-sm_all_bf%>%
+gextra2<-sm_all_bf%>%
   ggplot( aes(x=t_skw_celcius,y=..scaled..))+geom_density()+ylim(c(0, 1))+
   annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="blue")+
   annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="red")+
@@ -545,26 +562,24 @@ table(slope_sig_bf$REALM)/table(sm_all_bf$REALM) # 34% freshwater, and 25% terre
 
 ```{r trend-plot, out.width = '75%', fig.cap=c("Histogram plot for trends, both taxa.","Histogram plot for significant trends, both taxa.")}
 
-gp1<-sm_all_bf%>%
+gp_trend1<-sm_all_bf%>%
   ggplot( aes(x=t.sens.slope.celcius))+geom_histogram()+xlab("Sen's slope, all")+
   annotate("rect", xmin=min(sm_all_bf$t.sens.slope.celcius), xmax=0, ymin=0, ymax=Inf, alpha=0.15, fill="blue")+
   annotate("rect", xmin=0, xmax=max(sm_all_bf$t.sens.slope.celcius), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
   theme_classic()+facet_wrap(~TAXA)
-print(gp1)
+print(gp_trend1)
 
-gp2<-slope_sig_bf%>%
+gp_trend2<-slope_sig_bf%>%
   ggplot( aes(x=t.sens.slope.celcius))+geom_histogram()+xlab("Sen's slope, siginificant")+
   annotate("rect", xmin=min(slope_sig_bf$t.sens.slope.celcius), xmax=0, ymin=0, ymax=Inf, alpha=0.15, fill="blue")+
   annotate("rect", xmin=0, xmax=max(slope_sig_bf$t.sens.slope.celcius), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
   theme_classic()+facet_wrap(~TAXA)
-print(gp2)
 ```
 
 ```{r tvar-plot, out.width = '75%', fig.cap=c("Histogram plot for variability in temperature")}
-gp3c<-sm_all_bf%>%
+gextra3<-sm_all_bf%>%
   ggplot( aes(x=t_var_celcius))+geom_histogram()+
    theme_classic()+facet_wrap(~TAXA)
-print(gp3c)
 ```
 
 ## Explanations {#explanations}
@@ -780,8 +795,68 @@ So, I thought to make a plot of how community-level average response traits (ave
 library(tidyverse)
 library(ggbreak)
 library(dplyr)
+library(gridExtra)
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 #range(sm_all$t_med)
+
+#---- for birds -----
+taxa<-"birds"
+sfi<-sm_all%>%filter(TAXA==taxa)
+
+# all cor with temperature
+df<-read.csv(here("Results/birds_splist_with_temp_sensitivity.csv"))
+
+# consistency table
+dfc<-read.csv(here("Results/birds_splist_consistency_table.csv"))
+
+# first extract temperature-cor traits per community
+df<-df%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname)
+df2<-left_join(df,dfc,by="spname")
+df2<-df2%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname,avgcorval)
+
+df3<-df2%>%group_by(STUDY_ID,newsite)%>%
+  summarise(avgcortraitval=mean(avgcorval),
+            cortrait_sd=sd(avgcorval),
+            cortrait_var=sd(avgcorval)/abs(mean(avgcorval)))%>%ungroup()
+
+mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
+
+# Synchrony vs. temperature t_med
+gb_H11<-ggplot(data=mydat, aes(x=t_med_celcius, y=phi_LdM)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method="lm",se=T,color="green",fill="darkolivegreen1")+
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("Synchrony (Variance Ratio)")+ylim(0,1)+
+  #ggtitle(taxa)+
+  theme_bw()+
+    theme(text = element_text(size = 12),axis.text = element_text(size = 12),
+          plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
+          panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+
+# response traits (variability) vs. t_med plot
+gb_H12<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
+  #geom_hline(yintercept=0,linetype='dashed')+
+  scale_y_log10()+
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("Variability in species' response traits \n in community, log10 scale")+
+  theme_bw()+
+    theme(text = element_text(size = 12),axis.text = element_text(size = 12),
+          plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
+          panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+#print(gb_H12)
+
+# variance ratio vs. community-wide correlation traits variability
+gb_H13<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
+  scale_x_continuous(trans = 'log10') +
+  xlab("Variability in species' response traits \n in community, log10 scale")+
+  ylab("Synchrony (Variance Ratio)")+ylim(0,1)+
+  theme_bw()+
+    theme(text = element_text(size = 12),axis.text = element_text(size = 12),
+          plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
+          panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+#print(gb_H13)
 
 #---- for fish -----
 taxa<-"fish"
@@ -809,98 +884,67 @@ mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
 
 #df4<-df3%>%filter(cortrait_var<0)
 
-# response traits (avgvalue) vs. t_med plot
-g1<-ggplot(mydat,aes(x=t_med_celcius,y=avgcortraitval))+
-  geom_point(alpha=0.2)+
-  geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
-  geom_hline(yintercept=0,linetype='dashed')+
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("community-wide correlation traits (avg. value), fish")+
- theme_bw()
-#print(g1)
+# Synchrony vs. temperature t_med
+gf_H11<-ggplot(data=mydat, aes(x=t_med_celcius, y=phi_LdM)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method="lm",se=T,color="blue",fill="cornflowerblue")+
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("")+ylim(0,1)+
+  #ggtitle(taxa)+
+  theme_bw()+
+    theme(text = element_text(size = 12),axis.text = element_text(size = 12),
+          plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
+          panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 
 # response traits (variability) vs. t_med plot
-g1<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
+gf_H12<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
   geom_hline(yintercept=0,linetype='dashed')+
-  #scale_y_break(c(11.5,38,56, 129))+
-  #ylim(0,132)+
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("community-wide correlation traits \n
-       variability (absolute), fish")+
-  theme_bw()
-print(g1)
+  scale_y_continuous(trans = 'log10') +
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("")+
+  theme_bw()+
+    theme(text = element_text(size = 12),axis.text = element_text(size = 12),
+          plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
+          panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+#print(gf_H12)
 
 g1wbrk<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
   geom_hline(yintercept=0,linetype='dashed')+
   scale_y_break(c(11.5,38,42,50,56, 129))+
   ylim(0,132)+
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("community-wide correlation traits \n
-       variability (absolute), fish")+
- theme_bw()
-print(g1wbrk)
+  xlab("Temperature, MedianT (\u00B0C)")+
+  ylab("Variability in species' response traits \n in community")+
+ theme_bw()+
+    theme(text = element_text(size = 12),axis.text = element_text(size = 12),
+          plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
+          panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+#print(g1wbrk)
 
 # variance ratio vs. community-wide correlation traits variability
-gex<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
+gf_H13<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",color="blue",fill="cornflowerblue")+
   scale_x_continuous(trans = 'log10') +
   #scale_y_continuous(trans = 'log10')+
-  xlab("community-wide correlation traits variability (absolute), fish, log10 scale")+ylab("Synchrony, VR_LdM, fish")+
-  theme_bw()
-print(gex)
-#---- for birds -----
-taxa<-"birds"
-sfi<-sm_all%>%filter(TAXA==taxa)
+  xlab("Variability in species' response traits \n in community, log10 scale")+ylab("")+ylim(0,1)+
+  theme_bw()+
+    theme(text = element_text(size = 12),axis.text = element_text(size = 12),
+          plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
+          panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+#print(gf_H13)
 
-# all cor with temperature
-df<-read.csv(here("Results/birds_splist_with_temp_sensitivity.csv"))
+pdf(here("Results/res_Prelim_Report/birds-fish-medianT-overallsyn.pdf"), width = 7, height = 9) 
+gb_H11<-gb_H11+ annotate("text",  x=Inf, y = Inf, label = "A", vjust=1.5, hjust=1.5, size=8)
+gb_H12<-gb_H12+ annotate("text",  x=Inf, y = Inf, label = "B", vjust=1.5, hjust=1.5, size=8)
+gb_H13<-gb_H13+ annotate("text",  x=Inf, y = Inf, label = "C", vjust=1.5, hjust=1.5, size=8)
+gf_H11<-gf_H11+ annotate("text",  x=Inf, y = Inf, label = "D", vjust=1.5, hjust=1.5, size=8)
+gf_H12<-gf_H12+ annotate("text",  x=Inf, y = Inf, label = "E", vjust=1.5, hjust=1.5, size=8)
+gf_H13<-gf_H13+ annotate("text",  x=Inf, y = Inf, label = "F", vjust=1.5, hjust=1.5, size=8)
 
-# consistency table
-dfc<-read.csv(here("Results/birds_splist_consistency_table.csv"))
-
-# first extract temperature-cor traits per community
-df<-df%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname)
-df2<-left_join(df,dfc,by="spname")
-df2<-df2%>%dplyr::select(spearcor_with_t,STUDY_ID,newsite,spname,avgcorval)
-
-df3<-df2%>%group_by(STUDY_ID,newsite)%>%
-  summarise(avgcortraitval=mean(avgcorval),
-            cortrait_sd=sd(avgcorval),
-            cortrait_var=sd(avgcorval)/abs(mean(avgcorval)))%>%ungroup()
-
-mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
-
-# response traits vs. t_med plot
-g1<-ggplot(mydat,aes(x=t_med_celcius,y=avgcortraitval))+
-  geom_point(alpha=0.2)+
-  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
-  geom_hline(yintercept=0,linetype='dashed')+
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("community-wide correlation traits (avg. value), birds")+
-  theme_bw()
-#print(g1)
-
-# response traits (variability) vs. t_med plot
-g1<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
-  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
-  geom_hline(yintercept=0,linetype='dashed')+
-  #scale_y_log10()+
-  xlab("Temperature, t_med in (\u00B0C)")+
-  ylab("community-wide correlation traits \n variability (absolute), birds")+
-  theme_bw()
-print(g1)
-
-# variance ratio vs. community-wide correlation traits variability
-gexb<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
-  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
-  scale_x_continuous(trans = 'log10') +
-  #scale_y_continuous(trans = 'log10')+
-  xlab("community-wide correlation traits variability (absolute), birds, log10 scale")+
-  ylab("Synchrony, VR_LdM, birds")+
-  theme_bw()
-print(gexb)
+grid.arrange(gb_H11,gb_H12,gb_H13, 
+             gf_H11,gf_H12,gf_H13,ncol=2, as.table = FALSE)
+dev.off()
 ```
 
 Possible explanation:
@@ -1039,12 +1083,90 @@ call_model_psem(taxa = taxa, data=sm_all,
                 resloc=resloc)
 ```
 
-```{r fish-skw-and-taildepsyn, echo=F, results="hide"}
+```{r birds-fish-skw-and-taildepsyn, echo=F, results="hide"}
 library(here)
 library(dplyr)
 library(tidyverse)
 library(gridExtra)
 
+#--------- first for birds ---------
+birds_meta<-read.csv(here("DATA/STI_related/birds_gbif_data/cleaned/birds_occurrence_metadata_with_tolerance.csv"))
+birds_meta<-birds_meta%>%dplyr::select(Species,
+                                       maxTtol=maxTtol_celcius,
+                                       minTtol=minTtol_celcius)
+
+# now extract community wide value of tolerance limit variability
+df<-read.csv(here("Results/birds_splist_with_temp_sensitivity.csv"))
+df<-df%>%dplyr::select(STUDY_ID,newsite,spname)
+
+dfc<-read.csv(here("DATA/traitsdata/bird_traits_from_AVONET.csv"))
+dfc<-dfc%>%dplyr::select(spname,possible_sp)
+# first extract temperature-cor traits per community
+
+df2<-left_join(df,dfc,by=c("spname"))
+df3<-left_join(df2,birds_meta,by=c("possible_sp"="Species"))
+
+df4<-df3%>%group_by(STUDY_ID,newsite)%>%
+  summarise(avg_maxTtol=mean(maxTtol,na.rm=T),
+            avg_minTtol=mean(minTtol,na.rm=T),
+            maxTtol_var=sd(maxTtol,na.rm=T)/abs(mean(maxTtol,na.rm=T)),
+            minTtol_var=sd(minTtol,na.rm=T)/abs(mean(minTtol,na.rm=T)))%>%ungroup()
+#which(is.na(df4$avg_maxTtol))
+taxa<-"birds"
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+sfi<-sm_all%>%filter(TAXA==taxa)
+
+mydat<-left_join(sfi,df4,by=c("STUDY_ID","newsite"))
+# response traits (variability) vs. t_med plot
+
+mydat$A<-mydat$L+abs(mydat$U)
+range(mydat$A)
+g3b<-ggplot(mydat,aes(x=t_skw,y=minTtol_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
+  xlab("Temperature skewness, SkewT")+
+  ylab("Community-level variability \n in species' minimum \n thermal tolerance limit")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 7, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+
+g4b<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
+  xlab("Temperature skewness, SkewT")+
+  ylab("Community-level variability \n in species' maximum \n thermal tolerance limit")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 7, b = 5, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+
+g5b<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
+  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
+  xlab("Temperature skewness, SkewT")+
+  ylab("Tail-dependent \n synchrony, A")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 7, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+
+g6b<-ggplot(mydat,aes(y=A,x=minTtol_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
+  ylab("Tail-dependent \n synchrony, A")+
+  xlab("Community-level variability in species' minimum \n thermal tolerance limit")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 7, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+
+g7b<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
+  ylab("Tail-dependent \n synchrony, A")+
+  xlab("Community-level variability in species' maximum \n thermal tolerance limit")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 7, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+
+#------- now for fish -------
 fish_meta<-read.csv(here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata_with_tolerance.csv"))
 fish_meta<-fish_meta%>%dplyr::select(SpecCode,
                                      maxTtol=maxTtol_celcius,
@@ -1076,111 +1198,67 @@ mydat<-left_join(sfi,df4,by=c("STUDY_ID","newsite"))
 
 mydat$A<-mydat$L+abs(mydat$U)
 
-g3<-ggplot(mydat,aes(x=t_skw,y=minTtol_var))+geom_point(alpha=0.2)+
+g3f<-ggplot(mydat,aes(x=t_skw,y=minTtol_var))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="blue",fill="cornflowerblue")+
-  #xlab("t_skw")+
-  #ylab("community-wide min tolerance limit \n
-  #    variability (absolute), fish")+
-  theme_bw()
+  xlab("Temperature skewness, SkewT")+
+  ylab("")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 15, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 
-g4<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var))+geom_point(alpha=0.2)+
+g4f<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="blue",fill="cornflowerblue")+
-  #xlab("t_skw")+
-  #ylab("community-wide min tolerance limit \n
-  #    variability (absolute), fish")+
-  theme_bw()
+  xlab("Temperature skewness, SkewT")+
+  ylab("")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 15, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 
-g5<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
+g5f<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="blue",fill="cornflowerblue")+
-  #xlab("t_skw")+
-  #ylab("community-wide min tolerance limit \n
-  #    variability (absolute), fish")+
-  theme_bw()
+  xlab("Temperature skewness, SkewT")+
+  ylab("")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 15, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 
-g6<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
+g6f<-ggplot(mydat,aes(y=A,x=minTtol_var))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="blue",fill="cornflowerblue")+
-  #xlab("t_skw")+
-  #ylab("community-wide min tolerance limit \n
-  #    variability (absolute), fish")+
-  theme_bw()
-grid.arrange(g3,g4,g5,g6, ncol=2)
+  ylab("")+
+  xlab("Community-level variability in species' minimum \n thermal tolerance limit")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 15, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 
-pdf(here("Results/res_Prelim_Report/fish-skw-taildepsyn.pdf"), width = 8, height = 6) 
-grid.arrange(g3,g4,g5,g6, ncol=2)
+g7f<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
+  geom_smooth(method="loess",color="blue",fill="cornflowerblue")+
+  xlab("Community-level variability in species' maximum \n thermal tolerance limit")+
+  ylab("")+
+  theme_bw()+theme(text = element_text(size = 12),
+                   axis.text = element_text(size = 12),
+                   plot.margin = margin(t = 9, r = 15, b = 4, l = 12, unit = "pt"),
+                   panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+
+pdf(here("Results/res_Prelim_Report/birds-fish-skw-taildepsyn.pdf"), width = 10, height = 11.6) 
+g3b<-g3b+ annotate("text",  x=Inf, y = Inf, label = "A", vjust=1.5, hjust=1.5, size=10)
+g4b<-g4b+ annotate("text",  x=Inf, y = Inf, label = "B", vjust=1.5, hjust=1.5, size=10)
+g5b<-g5b+ annotate("text",  x=Inf, y = Inf, label = "C", vjust=1.5, hjust=1.5, size=10)
+g6b<-g6b+ annotate("text",  x=Inf, y = Inf, label = "D", vjust=1.5, hjust=1.5, size=10)
+g7b<-g7b+ annotate("text",  x=Inf, y = Inf, label = "E", vjust=1.5, hjust=1.5, size=10)
+g3f<-g3f+ annotate("text",  x=Inf, y = Inf, label = "F", vjust=1.5, hjust=1.5, size=10)
+g4f<-g4f+ annotate("text",  x=Inf, y = Inf, label = "G", vjust=1.5, hjust=1.5, size=10)
+g5f<-g5f+ annotate("text",  x=Inf, y = Inf, label = "H", vjust=1.5, hjust=1.5, size=10)
+g6f<-g6f+ annotate("text",  x=Inf, y = Inf, label = "I", vjust=1.5, hjust=1.5, size=10)
+g7f<-g7f+ annotate("text",  x=Inf, y = Inf, label = "J", vjust=1.5, hjust=1.5, size=10)
+
+grid.arrange(g3b,g4b,g5b,g6b, g7b, 
+             g3f,g4f,g5f,g6f, g7f,ncol=2, as.table = FALSE)
 dev.off()
 ```
-
-```{r birds-skw-and-taildepsyn, echo=F, results="hide"}
-library(here)
-library(dplyr)
-library(tidyverse)
-library(gridExtra)
-
-birds_meta<-read.csv(here("DATA/STI_related/birds_gbif_data/cleaned/birds_occurrence_metadata_with_tolerance.csv"))
-birds_meta<-birds_meta%>%dplyr::select(Species,
-                                       maxTtol=maxTtol_celcius,
-                                       minTtol=minTtol_celcius)
-
-# now extract community wide value of tolerance limit variability
-df<-read.csv(here("Results/birds_splist_with_temp_sensitivity.csv"))
-df<-df%>%dplyr::select(STUDY_ID,newsite,spname)
-
-dfc<-read.csv(here("DATA/traitsdata/bird_traits_from_AVONET.csv"))
-dfc<-dfc%>%dplyr::select(spname,possible_sp)
-# first extract temperature-cor traits per community
-
-df2<-left_join(df,dfc,by=c("spname"))
-df3<-left_join(df2,birds_meta,by=c("possible_sp"="Species"))
-
-df4<-df3%>%group_by(STUDY_ID,newsite)%>%
-  summarise(avg_maxTtol=mean(maxTtol,na.rm=T),
-            avg_minTtol=mean(minTtol,na.rm=T),
-            maxTtol_var=sd(maxTtol,na.rm=T)/abs(mean(maxTtol,na.rm=T)),
-            minTtol_var=sd(minTtol,na.rm=T)/abs(mean(minTtol,na.rm=T)))%>%ungroup()
-#which(is.na(df4$avg_maxTtol))
-taxa<-"birds"
-sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
-sfi<-sm_all%>%filter(TAXA==taxa)
-
-mydat<-left_join(sfi,df4,by=c("STUDY_ID","newsite"))
-# response traits (variability) vs. t_med plot
-
-mydat$A<-mydat$L+abs(mydat$U)
-
-g3<-ggplot(mydat,aes(x=t_skw,y=minTtol_var))+geom_point(alpha=0.2)+
-  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
-  #xlab("t_skw")+
-  #ylab("community-wide min tolerance limit \n
-  #    variability (absolute), birds")+
-  theme_bw()
-
-g4<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var))+geom_point(alpha=0.2)+
-  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
-  #xlab("t_skw")+
-  #ylab("community-wide min tolerance limit \n
-  #    variability (absolute), birds")+
-  theme_bw()
-
-g5<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
-  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
-  #xlab("t_skw")+
-  #ylab("community-wide min tolerance limit \n
-  #    variability (absolute), birds")+
-  theme_bw()
-
-g6<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
-  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
-  #xlab("t_skw")+
-  #ylab("community-wide min tolerance limit \n
-  #    variability (absolute), birds")+
-  theme_bw()
-grid.arrange(g3,g4,g5,g6, ncol=2)
-
-pdf(here("Results/res_Prelim_Report/birds-skw-taildepsyn.pdf"), width = 8, height = 6) 
-grid.arrange(g3,g4,g5,g6, ncol=2)
-dev.off()
-```
-
 
 <!--
 So, from the path analysis, what do we see for birds -
