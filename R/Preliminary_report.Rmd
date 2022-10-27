@@ -790,7 +790,7 @@ When I showed this to Blake, he was not convinced by the idea to split the data 
 
 So, I thought to make a plot of how community-level average response traits (average of standardised correlation between species abundance with t_med timeseries across sites) changes with increasing temperature (t_med)? For fish, it should decrease with increasing t_med, whereas for birds it should be a flat relationship.
 
-```{r plot_tempcor_traits, echo=F}
+```{r plot_tempcor_traits, echo=F, results="hide", message=F}
 # first for fish
 library(tidyverse)
 library(ggbreak)
@@ -956,7 +956,7 @@ knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"),
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa.
 
-```{r model_psem_with_meancentering, echo=F, cache=T, message=F,results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
+```{r model_psem_with_meancentering, echo=F, cache=T, message=F, results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
 
 library(car)
 library(tidyverse)
@@ -1039,12 +1039,13 @@ call_model_psem<-function(taxa,data=sm_all,
   
   # model with evenness (Celcius scale)
   ccE2<-coefs(model_psem_c2,standardize = "scale")
-  plot_psem(n,taxa,ccE2,layout="circle")
-  pdf(here(paste(resloc,"plot_psem_with_evenness_celcius_",taxa,".pdf",sep="")),height=6,width=6)
-  plot_psem(n,taxa,ccE2,layout="circle")
-  dev.off()
   
-  saveRDS(model_psem_c2,here(paste(resloc,"model_psem_with_evenness_celcius_",taxa,".RDS",sep="")))
+  #plot_psem(n,taxa,ccE2,layout="circle")
+  #pdf(here(paste(resloc,"plot_psem_",taxa,".pdf",sep="")),height=6,width=6)
+  plot_psem(n,taxa,ccE2,layout="circle")
+  #dev.off()
+  
+  saveRDS(model_psem_c2,here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
   
   #print(summary(model_psem))
   #par(op)
@@ -1060,27 +1061,41 @@ sm_all<-sm_all%>%dplyr::rename(
   E=SmithWilson)
 sm_all$TAXA<-as.factor(sm_all$TAXA)
 
-#----- call for birds -----
-taxa<-"birds"
 rescaling<-T
 mean_centering<-TRUE
 resloc<-"Results/res_Prelim_Report/"
 
-call_model_psem(taxa = taxa, data=sm_all,
+pdf(here(paste(resloc,"plot_psem.pdf",sep="")),height=6,width=12)
+op<-par(mfrow=c(1,2))
+
+#----- call for birds -----
+call_model_psem(taxa = "birds", data=sm_all,
                 rescaling = rescaling,  
                 mean_centering = mean_centering,
                 resloc=resloc)
 
 #----- call for fish -----
-taxa<-"fish"
-rescaling<-T
-mean_centering<-TRUE
-resloc<-"Results/res_Prelim_Report/"
-
-call_model_psem(taxa = taxa, data=sm_all,
+call_model_psem(taxa = "fish", data=sm_all,
                 rescaling = rescaling,  
                 mean_centering = mean_centering,
                 resloc=resloc)
+par(op)
+dev.off()
+```
+
+```{r out.height = "460px", out.width='800px'}
+knitr::include_graphics(here("Results/res_Prelim_Report/plot_psem.pdf"),rel_path = F)
+```
+
+```{r print-model-summary, echo=FALSE, cache=T, cache.extra=list(mtime(here("Results/res_Prelim_Report/model_psem_birds.RDS")), mtime(here("Results/res_Prelim_Report/model_psem_fish.RDS")))}
+# print summary of the models
+resloc<-"Results/res_Prelim_Report/"
+taxa<-"birds"
+psem_birds<-readRDS(here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+print(summary(psem_birds))
+taxa<-"fish"
+psem_fish<-readRDS(here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+print(summary(psem_fish))
 ```
 
 ```{r birds-fish-skw-and-taildepsyn, echo=F, results="hide"}

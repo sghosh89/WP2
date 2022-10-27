@@ -79,8 +79,10 @@ tempo_e<-tempo[id,]
 
 alldat<-rbind(tempo_ab,tempo_c,tempo_d,tempo_e)
 gp<-vector(mode = "list", length = nrow(alldat))
-titles<-c("No trend, no skewness", "No trend, no skewness, but higher MedianT",
-          "No trend, extreme cold (-ve skewness)","Increasing trend, no skewness",
+titles<-c("No trend, no skewness", 
+          "No trend, no skewness, but higher MedianT, lower VarT than B",
+          "No trend, extreme cold (-ve skewness)",
+          "Increasing trend, no skewness",
           "Increasing trend, heatwaves (+ve skewness)")
 # now plot t_med time series for these five communities
 for(i in 1:nrow(alldat)){
@@ -107,12 +109,13 @@ for(i in 1:nrow(alldat)){
     xlab("Year")+ylab("Temperature (\u00B0C)")+xlim(1997,2020)+
     annotate(geom = 'text', color="darkblue",
              label = paste(" TrendT= ",round(alldat$t.sens.slope.celcius[i],3),
-                           ", SkewT= ",round(alldat$t_skw_celcius[i],3),sep=""), 
+                           ", SkewT= ",round(alldat$t_skw_celcius[i],3),
+                           ", VarT= ",round(alldat$t_var_celcius[i],3),sep=""), 
              x = -Inf, y = Inf, hjust = -0.1, vjust = 1.5)+
     annotate("text",  x=Inf, y = Inf, label = LETTERS[i+1], vjust=1.2, hjust=1.2, size=7)+
     theme_bw()+
     theme(text = element_text(size = 14),axis.text = element_text(size = 14),
-          plot.title = element_text(size=17,color="darkblue"),
+          plot.title = element_text(size=15,color="darkblue"),
           plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
           panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 }

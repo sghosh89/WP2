@@ -21,7 +21,7 @@ plot_psem<-function(n,taxa,cc,layout,red_edge=1,red_arr=2){
   l$colo=ifelse(l$Std.Estimate>0,0,1)# first value of rgb: black=0, red=1
   #l$colo[which(l$Std.Estimate<0)]=1
   l$lty<-ifelse(l$P.Value<0.05,1,2)# sig=1, nonsig=2(dashed line)
-  l$colo<-ifelse(l$lty==2, rgb(l$colo,0,0,0.2),rgb(l$colo,0,0,1)) # now nonsig lines would be transperent
+  l$colo<-ifelse(l$lty==2, rgb(l$colo,0,0,0.5),rgb(l$colo,0,0,1)) # now nonsig lines would be transperent
   l$edgelabcex<-ifelse(l$P.Value<0.05,cex,0.0000001)
   
   g <- graph.data.frame(l, directed=T)
