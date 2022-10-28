@@ -832,6 +832,14 @@ gb_H11<-ggplot(data=mydat, aes(x=t_med_celcius, y=phi_LdM)) +
     theme(text = element_text(size = 12),axis.text = element_text(size = 12),
           plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
           panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
+ms<-summary(lm(formula = phi_LdM ~ t_med_celcius, data = mydat))
+sl<-ms$coefficients[2,1] #slope
+pval<-ms$coefficients[2,4] # pvalue
+#if(pval<0.05){
+#  gb_H11<-gb_H11+
+#    annotate("text",  x=Inf, y = -Inf, label = paste("s=",round(sl,3)),
+#             vjust=1.5, hjust=1.5, size=8)
+#}
 
 # response traits (variability) vs. t_med plot
 gb_H12<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
@@ -933,6 +941,7 @@ gf_H13<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
           plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
           panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 #print(gf_H13)
+
 
 pdf(here("Results/res_Prelim_Report/birds-fish-medianT-overallsyn.pdf"), width = 7, height = 9) 
 gb_H11<-gb_H11+ annotate("text",  x=Inf, y = Inf, label = "A", vjust=1.5, hjust=1.5, size=8)
@@ -1083,7 +1092,7 @@ par(op)
 dev.off()
 ```
 
-```{r out.height = "460px", out.width='800px'}
+```{r insert-pdf, out.height = "460px", out.width='800px'}
 knitr::include_graphics(here("Results/res_Prelim_Report/plot_psem.pdf"),rel_path = F)
 ```
 
@@ -1146,7 +1155,7 @@ g3b<-ggplot(mydat,aes(x=t_skw,y=minTtol_var))+geom_point(alpha=0.2)+
                    panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 
 g4b<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var))+geom_point(alpha=0.2)+
-  geom_smooth(method="lm",color="green",fill="darkolivegreen1")+
+  geom_smooth(method="loess",color="green",fill="darkolivegreen1")+
   xlab("Temperature skewness, SkewT")+
   ylab("Community-level variability \n in species' maximum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
