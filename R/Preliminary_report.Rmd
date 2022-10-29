@@ -1074,8 +1074,8 @@ rescaling<-T
 mean_centering<-TRUE
 resloc<-"Results/res_Prelim_Report/"
 
-pdf(here(paste(resloc,"plot_psem.pdf",sep="")),height=6,width=12)
-op<-par(mfrow=c(1,2))
+pdf(here(paste(resloc,"plot_psem.pdf",sep="")),height=12,width=6)
+op<-par(mfrow=c(2,1))
 
 #----- call for birds -----
 call_model_psem(taxa = "birds", data=sm_all,
