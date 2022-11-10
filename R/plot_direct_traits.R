@@ -53,6 +53,13 @@ gtb1<-sb%>%ggplot(aes(x=t_med_celcius,y=meanHWI)) +
   xlab("") +
   theme_bw()+ggtitle("Birds")
 #print(gtb1)
+ms<-summary(lm(formula = meanHWI ~ t_med_celcius, data = sb))
+sl<-ms$coefficients[2,1] #slope
+pval<-ms$coefficients[2,4] # pvalue
+#if(pval<0.05){
+#gtb1<-gtb1+
+#  annotate("text",  x=8, y = 50, label = paste("sl=",round(sl,2),", p=",round(pval,3),sep=""),
+#           vjust=0, hjust=0, size=4)
 
 gtb2<-sb%>%ggplot(aes(x=t.sens.slope.celcius,y=meanHWI)) +
   geom_point(alpha=0.2) +
@@ -60,7 +67,14 @@ gtb2<-sb%>%ggplot(aes(x=t.sens.slope.celcius,y=meanHWI)) +
   ylab("") +
   xlab("") +
   theme_bw()+ggtitle("Birds")
-#print(gtb2)
+ms<-summary(lm(formula = meanHWI ~ t.sens.slope.celcius, data = sb))
+sl<-ms$coefficients[2,1] #slope
+pval<-ms$coefficients[2,4] # pvalue
+#if(pval<0.05){
+#gtb2<-gtb2+
+#  annotate("text",  x=0, y = 50, label = paste("sl=",round(sl,2),", p=",round(pval,3),sep=""),
+#           vjust=0, hjust=0, size=4)
+
 
 gtb3<-sb%>%ggplot(aes(x=t_skw_celcius,y=meanHWI)) +
   geom_point(alpha=0.2) +
@@ -99,7 +113,14 @@ gtf1<-sb%>%ggplot(aes(x=t_med_celcius,y=meanLen)) +
   ylab("Community-level mean body length (cm)") +
   xlab("Temperature, MedianT (\u00B0C)") +
   theme_bw()+ggtitle("Fish")
-#print(gtf1)
+ms<-summary(lm(formula = meanLen ~ t_med_celcius, data = sb))
+sl<-ms$coefficients[2,1] #slope
+pval<-ms$coefficients[2,4] # pvalue
+#if(pval<0.05){
+#gtf1<-gtf1+
+#  annotate("text",  x=5, y = 10, label = paste("sl=",round(sl,2),", p=",round(pval,3),sep=""),
+#           vjust=0, hjust=0, size=4)
+
 
 
 gtf2<-sb%>%ggplot(aes(x=t.sens.slope.celcius,y=meanLen)) +
@@ -108,7 +129,14 @@ gtf2<-sb%>%ggplot(aes(x=t.sens.slope.celcius,y=meanLen)) +
   ylab("") +
   xlab("Temperature trend") +
   theme_bw()+ggtitle("Fish")
-#print(gtf2)
+ms<-summary(lm(formula = meanLen ~ t.sens.slope.celcius, data = sb))
+sl<-ms$coefficients[2,1] #slope
+pval<-ms$coefficients[2,4] # pvalue
+#if(pval<0.05){
+#gtf2<-gtf2+
+#  annotate("text",  x=0.05, y = 10, label = paste("sl=",round(sl,2),", p=",round(pval,3),sep=""),
+#           vjust=0, hjust=0, size=4)
+
 
 pdf(here("Results/res_Prelim_Report/plot_direct_trais.pdf"), width = 6, height = 6)
 grid.arrange(gtb1,gtb2,gtf1,gtf2,nrow=2)
