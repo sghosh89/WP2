@@ -288,7 +288,7 @@ dev.off()
 
 #-------------- plot direct traits ----------------
 
-source(here("R/plot_birdtraits.R"))
+source(here("R/plot_direct_traits.R"))
 
 #---------------------------------------------------
 
