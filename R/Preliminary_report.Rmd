@@ -1020,7 +1020,7 @@ call_model_psem<-function(taxa,data=sm_all,
   #------ check variation inflation factor for multi-collinearity  
   cat(paste(" VIF for model, taxa = ",taxa," ------- \n"))
   vf<-car::vif(lmer(stability ~ R+E+VR+A+t.sens.slope.celcius+t_skw_celcius+t_var_celcius+(1|UID), data=mydat_scaled))
-  #print(vf) # checked always <3
+  print(vf) # checked always <3
   
   #------ want rescaling? 
   if(rescaling==T){
@@ -1060,44 +1060,42 @@ call_model_psem<-function(taxa,data=sm_all,
               TrendT = t.sens.slope.celcius, 
               SkewT = t_skw_celcius,
               VarT = t_var_celcius)
-  # model without evenness (Celcius scale)
-  #model_psem_c<-piecewiseSEM::psem(
-  #  lmer(VR ~ R+MedianT+TrendT+(1|UID),data=dat),
-  #  lmer(A ~ R+TrendT+SkewT+(1|UID),data=dat),
+  
+  
+  # model with evenness (Celcius scale)
+  #model_psem_c2<-piecewiseSEM::psem(
+  #  lmer(VR ~ R+E+MedianT+TrendT+(1|UID),data=dat),
+  #  lmer(A ~ R+E+TrendT+SkewT+(1|UID),data=dat),
   #  lmer(R~MedianT+VarT+TrendT+(1|UID),data=dat),
-  #  lmer(stability ~ (R*MedianT)+VR+A+TrendT+SkewT+VarT+(1|UID), data=dat))
+  #  lmer(E~R+MedianT+TrendT+VarT+(1|UID),data=dat),
+  #  lmer(stability ~ R+E+VR+A+(R:MedianT)+
+  #         MedianT+VarT+TrendT+SkewT+(1|UID), data=dat))
   
-  # model with evenness (Celcius scale)
-  model_psem_c2<-piecewiseSEM::psem(
-    lmer(VR ~ R+E+MedianT+TrendT+(1|UID),data=dat),
-    lmer(A ~ R+E+TrendT+SkewT+(1|UID),data=dat),
-    lmer(R~MedianT+VarT+TrendT+(1|UID),data=dat),
+  model_psem_c2_goodfit<-piecewiseSEM::psem(
+    lmer(VR ~ R+E+MedianT+TrendT+SkewT+(1|UID),data=dat),
+    lmer(R~MedianT+TrendT+VarT+(1|UID),data=dat),
     lmer(E~R+MedianT+TrendT+VarT+(1|UID),data=dat),
+    lmer(A ~ R+E+VR+MedianT+TrendT+SkewT+(1|UID),data=dat),
     lmer(stability ~ R+E+VR+A+(R:MedianT)+
-           MedianT+VarT+TrendT+SkewT+(1|UID), data=dat))
+           MedianT+SkewT+TrendT+VarT+(1|UID), data=dat))
   
-  #op<-par(mfrow = c(1,2))
-  
-  # model without evenness (Celcius scale)
-  #cc2<-coefs(model_psem_c,standardize = "scale")
-  #plot_psem(n,taxa,cc2,layout="circle")
-  #saveRDS(model_psem_c,paste(resloc,"model_psem_celcius_",taxa,".RDS",sep=""))
   
   # model with evenness (Celcius scale)
-  ccE2<-coefs(model_psem_c2,standardize = "scale")
+  #ccE2<-coefs(model_psem_c2,standardize = "scale")
+  ccE2_goodfit<-coefs(model_psem_c2_goodfit,standardize = "scale")
   
-  #plot_psem(n,taxa,ccE2,layout="circle")
-  #pdf(here(paste(resloc,"plot_psem_",taxa,".pdf",sep="")),height=6,width=6)
-  plot_psem(n,taxa,ccE2,layout="circle")
-  #dev.off()
+  plot_psem(n,taxa,ccE2_goodfit,layout="circle")
   
-  saveRDS(model_psem_c2,here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
   
-  #print(summary(model_psem))
-  #par(op)
+  #saveRDS(model_psem_c2,here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+  saveRDS(model_psem_c2_goodfit,here(paste(resloc,"model_psem_goodfit_",taxa,".RDS",sep="")))
+  
+  #print(summary(model_psem_c2_goodfit))
+  
 }
 
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+#sm_all$t_skw_celcius<-abs(sm_all$t_skw_celcius)
 sm_all$UID<-paste(sm_all$source,sm_all$STUDY_ID,sep="_")
 sm_all$A<-sm_all$L+abs(sm_all$U) # total asymmetry
 sm_all<-sm_all%>%dplyr::rename(
@@ -1111,7 +1109,7 @@ rescaling<-T
 mean_centering<-TRUE
 resloc<-"Results/res_Prelim_Report/"
 
-pdf(here(paste(resloc,"plot_psem.pdf",sep="")),height=12,width=6)
+pdf(here(paste(resloc,"plot_psem_goodfit.pdf",sep="")),height=12,width=6)
 op<-par(mfrow=c(2,1))
 
 #----- call for birds -----
@@ -1130,17 +1128,17 @@ dev.off()
 ```
 
 ```{r insert-pdf, out.height = "460px", out.width='800px'}
-knitr::include_graphics(here("Results/res_Prelim_Report/plot_psem.pdf"),rel_path = F)
+knitr::include_graphics(here("Results/res_Prelim_Report/plot_psem_goodfit.pdf"),rel_path = F)
 ```
 
-```{r print-model-summary, echo=FALSE, cache=T, cache.extra=list(mtime(here("Results/res_Prelim_Report/model_psem_birds.RDS")), mtime(here("Results/res_Prelim_Report/model_psem_fish.RDS")))}
+```{r print-model-summary, echo=FALSE, cache=T, cache.extra=list(mtime(here("Results/res_Prelim_Report/model_psem_goodfit_birds.RDS")), mtime(here("Results/res_Prelim_Report/model_psem_goodfit_fish.RDS")))}
 # print summary of the models
 resloc<-"Results/res_Prelim_Report/"
 taxa<-"birds"
-psem_birds<-readRDS(here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+psem_birds<-readRDS(here(paste(resloc,"model_psem_goodfit_",taxa,".RDS",sep="")))
 print(summary(psem_birds))
 taxa<-"fish"
-psem_fish<-readRDS(here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+psem_fish<-readRDS(here(paste(resloc,"model_psem_goodfit_",taxa,".RDS",sep="")))
 print(summary(psem_fish))
 ```
 
