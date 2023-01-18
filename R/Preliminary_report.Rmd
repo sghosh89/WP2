@@ -1323,6 +1323,10 @@ dev.off()
 source(here("R/plot_suppmatfigs.R"))
 ```
 
+```{r plot-summarycoeffs, echo=F, results="hide"}
+source(here("R/summary_plot_coefficients.R"))
+```
+
 <!--
 So, from the path analysis, what do we see for birds -
 
