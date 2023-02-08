@@ -15,19 +15,26 @@ coef_fish<-coefs(psem_fish)
 mydatb1<-coef_birds%>%dplyr::select(Response, Predictor, Std.Estimate,  P.Value)%>%
   filter(Response!="stability")%>%
   mutate(Effect="Indirect")
+mydatb1_1<-mydatb1[c(1,2,9,13:15),] # among biotic drivers
+mydatb1_2<-mydatb1[c(3:8,10:12,16:18),] # effect of abiotic drivers on biotic drivers
+
 mydatb2<-coef_birds%>%dplyr::select(Response, Predictor, Std.Estimate,  P.Value)%>%
   filter(Response=="stability")%>%
   mutate(Effect="Direct")
-mydatb<-rbind(mydatb2,mydatb1)%>%
+mydatb<-rbind(mydatb2,mydatb1_1,mydatb1_2)%>%
   mutate(Taxa="Birds",seq=1:27)
 
 mydatf1<-coef_fish%>%dplyr::select(Response, Predictor, Std.Estimate,  P.Value)%>%
   filter(Response!="stability")%>%
   mutate(Effect="Indirect")
+mydatf1_1<-mydatf1[c(1,2,9,13:15),] # among biotic drivers
+mydatf1_2<-mydatf1[c(3:8,10:12,16:18),] # effect of abiotic drivers on biotic drivers
+
+
 mydatf2<-coef_fish%>%dplyr::select(Response, Predictor, Std.Estimate,  P.Value)%>%
   filter(Response=="stability")%>%
   mutate(Effect="Direct")
-mydatf<-rbind(mydatf2,mydatf1)%>%
+mydatf<-rbind(mydatf2,mydatf1_1,mydatf1_2)%>%
   mutate(Taxa="Fish",seq=1:27)
 
 mydat<-rbind(mydatb,mydatf)
