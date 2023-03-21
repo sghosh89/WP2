@@ -1201,7 +1201,7 @@ g4b<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var))+geom_point(alpha=0.2)+
 g5b<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="green",fill="greenyellow")+
   xlab("Temperature skewness, SkewT")+
-  ylab("Tail-dependent \n synchrony, A")+
+  ylab("Synchrony at \n the extremes, A")+
   theme_bw()+theme(text = element_text(size = 12),
                    axis.text = element_text(size = 12),
                    plot.margin = margin(t = 9, r = 7, b = 4, l = 12, unit = "pt"),
@@ -1209,7 +1209,7 @@ g5b<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
 
 g6b<-ggplot(mydat,aes(y=A,x=minTtol_var))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="green",fill="greenyellow")+
-  ylab("Tail-dependent \n synchrony, A")+
+  ylab("Synchrony at \n the extremes, A")+
   xlab("Community-level variability in species' minimum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
                    axis.text = element_text(size = 12),
@@ -1218,7 +1218,7 @@ g6b<-ggplot(mydat,aes(y=A,x=minTtol_var))+geom_point(alpha=0.2)+
 
 g7b<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="green",fill="greenyellow")+
-  ylab("Tail-dependent \n synchrony, A")+
+  ylab("Synchrony at \n the extremes, A")+
   xlab("Community-level variability in species' maximum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
                    axis.text = element_text(size = 12),
