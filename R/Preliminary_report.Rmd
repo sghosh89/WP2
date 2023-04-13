@@ -841,7 +841,7 @@ gb_H12<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
   #geom_hline(yintercept=0,linetype='dashed')+
   scale_y_log10()+
   xlab("Temperature, MedianT (\u00B0C)")+
-  ylab("Variability in species' response traits \n in community, log10 scale")+
+  ylab("Variability among species' response \n in community, log10 scale")+
   theme_bw()+
   theme(text = element_text(size = 12),axis.text = element_text(size = 12),
         plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
@@ -861,7 +861,7 @@ gb_H12
 gb_H13<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",color="green",fill="greenyellow")+
   scale_x_continuous(trans = 'log10') +
-  xlab("Variability in species' response traits \n in community, log10 scale")+
+  xlab("Variability among species' response \n in community, log10 scale")+
   ylab("Overall synchrony")+ylim(0,1)+
   theme_bw()+
   theme(text = element_text(size = 12),axis.text = element_text(size = 12),
@@ -952,7 +952,7 @@ g1wbrk<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
   scale_y_break(c(11.5,38,42,50,56, 129))+
   ylim(0,132)+
   xlab("Temperature, MedianT (\u00B0C)")+
-  ylab("Variability in species' response traits \n in community")+
+  ylab("Variability among species' response \n in community")+
   theme_bw()+
   theme(text = element_text(size = 12),axis.text = element_text(size = 12),
         plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
@@ -964,7 +964,7 @@ gf_H13<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",color="dodgerblue",fill="steelblue1")+
   scale_x_continuous(trans = 'log10') +
   #scale_y_continuous(trans = 'log10')+
-  xlab("Variability in species' response traits \n in community, log10 scale")+ylab("")+ylim(0,1)+
+  xlab("Variability among species' response \n in community, log10 scale")+ylab("")+ylim(0,1)+
   theme_bw()+
   theme(text = element_text(size = 12),axis.text = element_text(size = 12),
         plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
