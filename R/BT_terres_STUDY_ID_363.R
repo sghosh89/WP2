@@ -147,7 +147,7 @@ if(length(newsite)>1){
   input_tailanal<-input_tailanal%>%dplyr::select(-yr)
   
   saveRDS(input_tailanal,paste(resloc,"input_mat_for_tailanal_with_env.RDS",sep="")) # dataframe with species timeseries along column
-  
+  if(nrow(input_tailanal)>=20){
   #----------- tail analysis ----------------
   resloc2<-paste("../Results/for_BioTIME/Terrestrial_plotlevel/",site,"/",sep="")
   if(!dir.exists(resloc2)){
@@ -158,6 +158,8 @@ if(length(newsite)>1){
  
   
   res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp, resloc = resloc, nbin = 2)
-  
-newsite<-setdiff(newsite,newsite_bad)
+  }else{
+    newsite<-setdiff(newsite,newsite_bad)
+  }
+
 saveRDS(newsite,"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/363/newsite.RDS")

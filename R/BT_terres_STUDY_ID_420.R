@@ -3,7 +3,7 @@ source("./monthly_rarefy_BT.R")
 library(dplyr)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
-
+sp_threshold<-2
 # don't overwrite these four variables
 #metadata_BT<-readRDS("../DATA/for_BioTIME/BioTIME_public_private_metadata.RDS")
 #grid_terres<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/bt_terres_min20yr_rawdata.RDS")
@@ -33,7 +33,7 @@ tt<-tt%>%filter(n>=20)
 
 #update
 x_allsite<- x %>% filter(newsite %in% tt$newsite)
-newsite<-tt$newsite #only 2 sites 
+newsite<-tt$newsite #only 1 site 
 
 mylonlat<-data.frame(LONGITUDE=x_allsite$LONGITUDE,
                      LATITUDE=x_allsite$LATITUDE,
@@ -122,7 +122,7 @@ if(length(newsite)>1){
   rownames(xmat)<-year
   
   xmeta<-metadata_BT%>%filter(STUDY_ID==site)
-  xmeta$lonlat<-mylonlat$lonlat[k]
+  xmeta$lonlat<-mylonlat$lonlat
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   
