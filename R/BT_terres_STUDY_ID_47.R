@@ -23,7 +23,7 @@ if(!dir.exists(resloc)){
 site<-df$STUDY_ID
 x<-grid_terres%>%filter(STUDY_ID==site)
 x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_LAT",LATITUDE,"_LON",LONGITUDE,sep=""))
-newsite<-sort(unique(x$newsite))
+newsite<-sort(unique(x$newsite)) # 2sites
 
 # check if each newsite visited for >20 years?
 tt<-x%>%group_by(newsite)%>%summarise(n=n_distinct(YEAR))%>%ungroup()
@@ -33,7 +33,7 @@ tt<-tt%>%filter(n>=20)
 
 #update
 x_allsite<- x %>% filter(newsite %in% tt$newsite)
-newsite<-tt$newsite #only 2 sites 
+newsite<-tt$newsite #only 1 site 
 
 mylonlat<-data.frame(lonlat=paste(x_allsite$LONGITUDE,x_allsite$LATITUDE,sep="_"))
 mylonlat<-mylonlat%>%distinct(lonlat)
@@ -60,21 +60,33 @@ if(length(newsite)>1){
 }
 #------------------------------------------------------------
 newsite_bad<-c()
+# only 1 site
+if(length(newsite)>1){
+  x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_PLOT_",PLOT,sep=""))
+  newsite<-sort(unique(x$newsite))
+  
+  # check if each newsite visited for >20 years?
+  tt<-x%>%group_by(newsite)%>%summarise(n=n_distinct(YEAR))%>%ungroup()
+  
+  # include sites which are sampled > 20 years
+  tt<-tt%>%filter(n>=20)
+  x_allsite<- x %>% filter(newsite %in% tt$newsite)
+  newsite<-tt$newsite
+}else{
+  x<-grid_terres%>%filter(STUDY_ID==site)
+  newsite<-site
+  x_allsite<-x
+}
 
-#----------------------------
-for(k in 1:length(newsite)){
-  
-  x<-x_allsite%>%filter(newsite==newsite[k])
-  
-  # do not consider these unknown sp into analysis
-  x<-x%>%filter(Species%notin%c("Unknown","Unknown "))
-  
+# only 1 site
+# do not consider these unknown sp into analysis
+x<-x%>%filter(Species%notin%c("Unknown","Unknown "))
+
   t0<-x%>%group_by(YEAR)%>%summarise(nm=n_distinct(MONTH))%>%ungroup()
   #t1<-x%>%group_by(YEAR,MONTH)%>%summarise(nd=n_distinct(DAY))%>%ungroup()
   
   #---------- ok, after seeing t0, we need to rarefy --------------
   min_samp<-min(t0$nm) # min months sampled each year
-  cat("---------- min_samp = ",min_samp," , newsite = ",newsite[k]," ------------------- \n")
   need_rarefy<-length(unique(t0$nm))>1
   
   AB<-is.na(x$ABUNDANCE_TYPE)[1]
@@ -108,15 +120,13 @@ for(k in 1:length(newsite)){
   rownames(xmat)<-year
   
   xmeta<-metadata_BT%>%filter(STUDY_ID==site)
-  xmeta$lonlat<-mylonlat$lonlat[k]
+  xmeta$lonlat<-mylonlat$lonlat
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   
-  if(length(newsite)>1){
-    resloc<-paste("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/47/",newsite[k],"/",sep="")
-  }else{
+  
     resloc<-"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/47/"
-  }
+  
   
   saveRDS(input_sp,paste(resloc,"allspecies_timeseries_and_metadata.RDS",sep=""))
   
@@ -168,20 +178,17 @@ for(k in 1:length(newsite)){
     if(!dir.exists(resloc2)){
       dir.create(resloc2)
     }
-    if(length(newsite)>1){
-      resloc<-paste(resloc2,newsite[k],"/",sep="")
-    }else{
+   
       resloc<-resloc2
-    }
+   
     
     res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp, resloc = resloc, nbin = 2)
     
-    cat("---------- k = ",k,"-----------\n")
+    
   }else{
     cat("---------- number of years consistent with env stats is not sufficient -----------\n")
     newsite_bad<-c(newsite_bad,newsite)
   }
-}
 
 newsite<-setdiff(newsite,newsite_bad)
 saveRDS(newsite,"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/47/newsite.RDS")

@@ -9,7 +9,7 @@ library(tidyverse)
 #grid_terres<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/bt_terres_min20yr_rawdata.RDS")
 #terres_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/table_for_map.RDS")
 #env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
-
+sp_threshold<-2# atleast 2 sp
 df<-terres_tbl_for_map%>%filter(STUDY_ID==67)
 #df$newsite<-df$STUDY_ID # this is the same as there is single site
 
@@ -67,7 +67,8 @@ newsite_bad<-c()
 #----------------------------
 for(k in 1:length(newsite)){
   
-  x<-x_allsite%>%filter(newsite==newsite[k])
+  id<-which(x_allsite$newsite%in%newsite[k])
+  x<-x_allsite[id,]
   
   # do not consider these unknown sp into analysis
   x<-x%>%filter(Species%notin%c("Unknown","Unknown "))
@@ -77,7 +78,6 @@ for(k in 1:length(newsite)){
   
   #---------- ok, after seeing t0, we need to rarefy --------------
   min_samp<-min(t0$nm) # min months sampled each year
-  cat("---------- min_samp = ",min_samp," , newsite = ",newsite[k]," ------------------- \n")
   need_rarefy<-length(unique(t0$nm))>1
   
   AB<-is.na(x$ABUNDANCE_TYPE)[1]
@@ -130,7 +130,7 @@ for(k in 1:length(newsite)){
   presentyr<-unname(presentyr)
   commonspid<-which(presentyr>=0.7*nrow(m$spmat)) # common sp = present minimum 70% of sampled year
   
-  if(length(commonspid)>0){
+  if(length(commonspid)>sp_threshold){
     m1<-m$spmat[,commonspid]
     m1<-as.data.frame(m1)
     input_tailanal<-m1

@@ -37,8 +37,6 @@ if(length(newsite)>1){
   }
 }
 #------------------------------------------------------------
-newsite_bad<-c()
-
 
 if(length(newsite)>1){
   x<-x%>%mutate(newsite=paste("STUDY_ID_",site,"_PLOT_",PLOT,sep=""))
@@ -57,10 +55,9 @@ if(length(newsite)>1){
   x_allsite<-x
 }
 #----------------------------
-for(k in 1:length(newsite)){
-  
-  x<-x_allsite%>%filter(newsite==newsite[k])
-  
+
+# only 1 site is here
+ 
   # do not consider these unknown sp into analysis
   x<-x%>%filter(Species%notin%c("Unknown","Unknown "))
   
@@ -107,12 +104,8 @@ for(k in 1:length(newsite)){
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   
-  if(length(newsite)>1){
-    resloc<-paste("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/39/",newsite[k],"/",sep="")
-  }else{
-    resloc<-"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/39/"
-  }
-  
+  resloc<-"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/39/"
+ 
   saveRDS(input_sp,paste(resloc,"allspecies_timeseries_and_metadata.RDS",sep=""))
   
   #----------- saving input spmat for tailanal ---------------------
@@ -160,15 +153,8 @@ for(k in 1:length(newsite)){
   if(!dir.exists(resloc2)){
     dir.create(resloc2)
   }
-  if(length(newsite)>1){
-    resloc<-paste(resloc2,newsite[k],"/",sep="")
-  }else{
-    resloc<-resloc2
-  }
+  resloc<-resloc2
   
   res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp, resloc = resloc, nbin = 2)
-  
-  cat("---------- k = ",k,"-----------\n")
-}
-newsite<-setdiff(newsite,newsite_bad)
+
 saveRDS(newsite,"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/39/newsite.RDS")

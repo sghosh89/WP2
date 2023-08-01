@@ -8,7 +8,7 @@ library(dplyr)
 #grid_freshw<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/bt_freshw_min20yr_rawdata.RDS")
 #freshw_tbl_for_map<-readRDS("../DATA/for_BioTIME/wrangled_data/Freshwater_plotlevel/table_for_map.RDS")
 #env_BT_t<-read.csv("../DATA/for_BioTIME/wrangled_data/annual_tas_CHELSA_1979_2019_BioTIME_lonlat.csv")
-
+sp_threshold<-2
 df<-freshw_tbl_for_map%>%filter(STUDY_ID==478)# single sites
 df$newsite<-df$STUDY_ID # this is the same as there is single site
 #----------- create result folder for wrangle ddata -------------------------
@@ -60,7 +60,7 @@ presentyr<-apply(X=m$spmat,MARGIN=2,FUN=function(x){sum(x>0)})
 presentyr<-unname(presentyr)
 commonspid<-which(presentyr>=0.7*nrow(m$spmat)) # common sp = present minimum 70% of sampled year
 
-if(length(commonspid)>0){
+if(length(commonspid)>sp_threshold){# at least 2 species should present
   m1<-m$spmat[,commonspid]
   m1<-as.data.frame(m1)
   input_tailanal<-m1

@@ -56,11 +56,7 @@ if(length(newsite)>1){
   newsite<-site
   x_allsite<-x
 }
-#----------------------------
-for(k in 1:length(newsite)){
-  
-  x<-x_allsite%>%filter(newsite==newsite[k])
-  
+#-------------------only 1 site ---------
   # do not consider these unknown sp into analysis
   x<-x%>%filter(Species%notin%c("Unknown","Unknown "))
   
@@ -69,7 +65,6 @@ for(k in 1:length(newsite)){
   
   #---------- ok, after seeing t0, we need to rarefy --------------
   min_samp<-min(t0$nm) # min months sampled each year
-  cat("---------- min_samp = ",min_samp," , newsite = ",newsite[k]," ------------------- \n")
   need_rarefy<-length(unique(t0$nm))>1
   
   AB<-is.na(x$ABUNDANCE_TYPE)[1]
@@ -107,11 +102,9 @@ for(k in 1:length(newsite)){
   
   input_sp<-list(spmat=xmat,meta=xmeta)
   
-  if(length(newsite)>1){
-    resloc<-paste("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/63/",newsite[k],"/",sep="")
-  }else{
-    resloc<-"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/63/"
-  }
+  
+  resloc<-"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/63/"
+  
   
   saveRDS(input_sp,paste(resloc,"allspecies_timeseries_and_metadata.RDS",sep=""))
   
@@ -163,20 +156,16 @@ for(k in 1:length(newsite)){
     if(!dir.exists(resloc2)){
       dir.create(resloc2)
     }
-    if(length(newsite)>1){
-      resloc<-paste(resloc2,newsite[k],"/",sep="")
-    }else{
-      resloc<-resloc2
-    }
+    resloc<-resloc2
+   
     
     res<-tail_analysis(mat = input_tailanal, tot_target_sp=tot_target_sp, resloc = resloc, nbin = 2)
-    
-    cat("---------- k = ",k,"-----------\n")
+   
   }else{
     cat("---------- number of years consistent with env stats is not sufficient -----------\n")
     newsite_bad<-c(newsite_bad,newsite)
   }
-}
+
 
 newsite<-setdiff(newsite,newsite_bad)
 saveRDS(newsite,"../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/63/newsite.RDS")
