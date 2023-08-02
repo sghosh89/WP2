@@ -11,7 +11,7 @@ ddft$cleaned_records<-NA
 tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual")
 tab_coded<-ddft%>%filter(gbif_dwnld_type=="code")
 #----- Now clean and save the manually downloaded species in the same format as of automatically downloaded data -----
-sink(here("DATA/STI_related/fish_gbif_data/cleaned/issues_found_during_cleaning.txt"),append=TRUE, split=TRUE)
+#sink(here("DATA/STI_related/fish_gbif_data/cleaned/issues_found_during_cleaning.txt"),append=TRUE, split=TRUE)
 sp_manual<-tab_manual$Species # 31 species
 tot_sp_manual<-length(sp_manual)
 for(i in 1:tot_sp_manual){
@@ -50,7 +50,9 @@ for(i in 1:tot_sp_manual){
 }
 
 # now do the same for coded species
-sp_coded<-tab_coded$Species # 115 species
+sp_coded<-tab_coded$Species # 125 species
+#sp_coded<-tb$Species
+#ddft$cleaned_records<-NA
 tot_sp_coded<-length(sp_coded)
 for(i in 1:tot_sp_coded){
   s<-sp_coded[i]
@@ -82,6 +84,12 @@ for(i in 1:tot_sp_coded){
   ddft$cleaned_records[which(ddft$Species==s)]<-nrow(y)
   write.csv(y,here(paste("DATA/STI_related/fish_gbif_data/cleaned/",s,".csv",sep="")))
 }
-sink()
-write.csv(ddft,here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata.csv"),row.names = F)
+#sink()
+#write.csv(ddft,here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata.csv"),row.names = F)
 
+#old<-read.csv(here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata_old.csv"))
+#old<-old%>%dplyr::select(Species,cleaned_records)
+#ddft<-left_join(ddft,old,by="Species")
+#ddft$cleaned_records<-coalesce(ddft$cleaned_records.y,ddft$cleaned_records.x)
+#ddft<-ddft%>%dplyr::select(-cleaned_records.x,-cleaned_records.y)
+write.csv(ddft,here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata.csv"),row.names = F)

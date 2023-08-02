@@ -58,11 +58,11 @@ sum(occur$Freq==1) #37 sp occur only in one community
 df<-tab_spearcor_with_t %>% distinct(spname, newsite,.keep_all = TRUE)
 write.csv(df,"../Results/fish_splist_with_temp_sensitivity.csv",row.names = F)
 
-length(unique(df$spname)) # 157 unique fish sp in total
+length(unique(df$spname)) # 170 unique fish sp in total
 
 # now for sig correlation
 df_sig<-df%>%filter(is_sig==1)
-length(unique(df_sig$spname)) #75 unique sp with sig cor with temperature
+length(unique(df_sig$spname)) #79 unique sp with sig cor with temperature
 # now get the percentage of how consistent a positive or negative correlation is
 cons_tab_sig<-df_sig%>%group_by(spname)%>%
   summarise(poscor=sum(spearcor_with_t>0),

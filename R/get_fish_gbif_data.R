@@ -23,16 +23,19 @@ ddft<-ddft%>%dplyr::select(SpecCode,Species,Author,name_in_mydb)
 
 splist<-ddft$Species
 
-ddft$gbif_dwnld_date<-"2022-09-16"
+ddft$gbif_dwnld_date<-"2023-08-02"
 ddft$gbif_TaxonKey<-NA # this is the usage key or taxon key or species key
 ddft$maxrecords_in_gbif<-NA
 ddft$maxrecords_PRESENT_only<-NA
-name_backbone_list<-c()
+#name_backbone_list<-c()
 for(i in c(1:length(splist))){
   sp<-splist[i]
   x<-name_backbone(sp)
   ddft$gbif_TaxonKey[i]<-x$usageKey
-  y<-occ_count(taxonKey=x$usageKey, georeferenced=TRUE)
+  y<-occ_count(taxonKey=x$usageKey, 
+               #georeferenced=TRUE, 
+               hasGeospatialIssue =F,
+               hasCoordinate = T)
   ddft$maxrecords_in_gbif[i]<-y
   
   z<-occ_search(taxonKey = x$usageKey,
@@ -41,14 +44,36 @@ for(i in c(1:length(splist))){
              occurrenceStatus = "PRESENT",
              limit=0)$meta$count
   ddft$maxrecords_PRESENT_only[i]<-z
-  name_backbone_list<-rbind(name_backbone_list,x)
-  
+  #name_backbone_list<-rbind(name_backbone_list,x)
+  print(i)
 }
-write.csv(name_backbone_list, here("DATA/STI_related/fish_gbif_data/fish_data_name_backbone_table.csv"),row.names = F)
 
 ddft$comments<-NA # fill this column later manually
 ddft$gbif_dwnld_type<-ifelse(ddft$maxrecords_PRESENT_only>99999,"manual","code") # manual or coded
-write.csv(ddft, here("DATA/STI_related/fish_gbif_data/fish_occurrence_data_needed.csv"),row.names = F)
+
+#old<-read.csv(here("DATA/STI_related/fish_gbif_data/old/fish_occurrence_data_needed.csv"))
+#old<-old%>%dplyr::select(-c(Species, Author, gbif_TaxonKey, name_in_mydb, comments, gbif_dwnld_type))
+#ddft2<-left_join(ddft,old,by="SpecCode")
+#ddft2$gbif_dwnld_date.y<-coalesce(ddft2$gbif_dwnld_date.y,ddft2$gbif_dwnld_date.x)
+#ddft2$maxrecords_PRESENT_only.y<-coalesce(ddft2$maxrecords_PRESENT_only.y,ddft2$maxrecords_PRESENT_only.x)
+#ddft2$maxrecords_in_gbif.y<-coalesce(ddft2$maxrecords_in_gbif.y,ddft2$maxrecords_in_gbif.x)
+#ddft2<-ddft2%>%dplyr::select(SpecCode,Species,Author,name_in_mydb, 
+#                             gbif_dwnld_date=gbif_dwnld_date.y,
+#                             gbif_TaxonKey,
+#                             maxrecords_in_gbif=maxrecords_in_gbif.y,
+#                             maxrecords_PRESENT_only=maxrecords_PRESENT_only.y,
+#                             comments,gbif_dwnld_type)
+
+#write.csv(ddft2, here("DATA/STI_related/fish_gbif_data/fish_occurrence_data_needed.csv"),row.names = F)
+#write.csv(ddft, here("DATA/STI_related/fish_gbif_data/fish_occurrence_data_needed.csv"),row.names = F)
+#ddft<-read.csv(here("DATA/STI_related/fish_gbif_data/fish_occurrence_data_needed.csv"))
+#ddft2<-read.csv(here("DATA/STI_related/fish_gbif_data/old/fish_occurrence_data_needed_edited.csv"))
+#ddft2<-ddft2%>%dplyr::select(Species, comments)
+#ddft<-left_join(ddft,ddft2,by="Species")
+#ddft<-ddft%>%dplyr::select(SpecCode,Species,Author,name_in_mydb,gbif_dwnld_date,gbif_TaxonKey,
+#                    maxrecords_in_gbif,maxrecords_PRESENT_only,comments=comments.y,
+#                    gbif_dwnld_type)
+#write.csv(ddft, here("DATA/STI_related/fish_gbif_data/fish_occurrence_data_needed_edited.csv"),row.names = F)
 
 #x<-ddft%>%filter(maxrecords_in_gbif>99999)
 
@@ -61,10 +86,10 @@ tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual") # 31 species data
 # are downloaded from GBIF website
 
 tab_code<-ddft%>%filter(gbif_dwnld_type=="code")
-# for the rest 115 species we will get data by running below code
+# for the rest 125 species we will get data by running below code
 
 # Now we need to get the occurrence data through code 
-# for the 115 species appeared in the above table
+# for the 125 species appeared in the above table
 splist <- tab_code$Species
 
 totsp<-length(splist)
@@ -100,6 +125,29 @@ totsp<-length(splist)
 res_all_sp<-mclapply(X=c(1:totsp),FUN=res_single_sp,
                      splist=splist,
                      limit=limit,mc.cores=busycores)
+
+
+#tb<-tab_code%>%filter(gbif_dwnld_date=="2023-08-02")
+# download for 10 sp. 
+#for(i in 1:10){
+#  s<-tb$Species[i]
+#  sp_data <- rgbif::occ_data(scientificName=s,
+#                             limit=limit,# change this limit later, default=500, max=100000
+#                             hasCoordinate=TRUE, 
+#                             hasGeospatialIssue = FALSE)
+#  coords<-sp_data$data
+#  coords<-coords%>%dplyr::select(c(species,scientificName,decimalLongitude, decimalLatitude, 
+#                                   occurrenceStatus, 
+#                                   basisOfRecord,
+#                                   issues,
+#                                   year,month,day,countryCode))
+  
+#  coords<-coords%>%filter(occurrenceStatus=="PRESENT")# just to ensure
+  
+#  write.csv(coords, paste(here("DATA/STI_related/fish_gbif_data/fishrecords_from_GBIF_for_"),s,".csv",sep=""),row.names = F)
+#  print(i)
+#}
+
 
 
 
