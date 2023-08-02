@@ -30,8 +30,10 @@ resloc_input<-paste("../DATA/for_BioTIMEx/wrangled_data/",dataset_id,"/",sep="")
 
 #=========================================================================================
 
-for(i in 1:nrow(md_now)){
-  site<-md_now$newsite[i]
+usite<-md_now%>%distinct(newsite)
+
+for(i in 1:nrow(usite)){
+  site<-usite$newsite[i]
   input_tailanal<-readRDS(paste(resloc_input,dataset_id,"_",site,"_inputmatrix_tailanal.RDS",sep=""))
   tot_target_sp<-ncol(input_tailanal)
   saveRDS(tot_target_sp,paste(resloc_input,"tot_target_sp_newsite_",site,".RDS",sep="")) # nsp
