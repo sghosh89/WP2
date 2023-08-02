@@ -227,6 +227,8 @@ sm_insect<-readRDS("../Results/for_insectRoel/stability_metric_and_env.RDS")
 sm_insect$source<-"InsectRoel"
 sm_insect<-rename(sm_insect, LATITUDE = Latitude) 
 sm_insect<-rename(sm_insect, LONGITUDE = Longitude) 
+sm_insect<-sm_insect%>%filter(STUDY_ID%notin%c("478"))# because it is already included in BioTIME
+
 
 # rearrange
 sm_insect<-sm_insect%>%dplyr::select(c(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,
