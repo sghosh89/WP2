@@ -1070,6 +1070,7 @@ call_model_psem<-function(taxa,data=sm_all,
   #  lmer(E~R+MedianT+TrendT+VarT+(1|UID),data=dat),
   #  lmer(stability ~ R+E+VR+A+(R:MedianT)+
   #         MedianT+VarT+TrendT+SkewT+(1|UID), data=dat))
+  # when I ran above model for birds it was ok, but for fish the goodness of fit p value (Fisher's C)<0.001 - so not a good fit
   
   model_psem_c2_goodfit<-piecewiseSEM::psem(
     lmer(VR ~ R+E+MedianT+TrendT+SkewT+(1|UID),data=dat),
