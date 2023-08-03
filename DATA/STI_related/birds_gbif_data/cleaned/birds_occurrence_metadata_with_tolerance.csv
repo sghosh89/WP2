@@ -116,6 +116,7 @@
 "AVIBASE-1FFFEF4E","Charadrius montanus","Charadrius montanus","9/24/2022",2480292,17337,17325,NA,"code",15887,3169.6,2541.8,43.81,-18.97
 "AVIBASE-20BE9DF1","Charadrius morinellus","Charadrius morinellus","9/24/2022",2480281,59401,56691,NA,"code",46971,3168,2375.8,43.65,-35.57
 "AVIBASE-BCF9A19A","Charadrius vociferus","Charadrius vociferus","9/27/2022",2480320,6392564,6391957,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480320&occurrence_status=present","manual",2565215,3183,2420,45.15,-31.15
+"AVIBASE-43CAAEE3","Chlidonias leucopteru","Chlidonias leucopterus","8/2/2023",2481120,117072,117072,NA,"manual",20209,3197,2318.8,46.55,-41.27
 "AVIBASE-115AF02D","Chlidonias niger","Chlidonias niger","9/27/2022",2481119,522221,517236,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481119&occurrence_status=present","manual",220081,3189.4,2409.4,45.79,-32.21
 "AVIBASE-78509A5D","Chondestes grammacus","Chondestes grammacus","9/27/2022",2491651,691075,691014,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2491651&occurrence_status=present","manual",280260,3174.2,2465.8,44.27,-26.57
 "AVIBASE-9690689D","Chordeiles acutipennis","Chordeiles acutipennis","9/27/2022",2497052,102396,102355,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2497052&occurrence_status=present","manual",23772,3179,2627.8,44.75,-10.3699999999999
@@ -205,6 +206,7 @@
 "AVIBASE-23863F65","Gull sp.","Larus delawarensis","9/28/2022",2481134,7420547,7419935,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481134&occurrence_status=present","manual",3212581,3180.4,2428.8,44.89,-30.27
 "AVIBASE-A6905B3C","Gymnorhinus cyanocephalus","Gymnorhinus cyanocephalus","9/24/2022",5229498,73549,73529,NA,"code",71943,3160.6,2522,42.91,-20.95
 "AVIBASE-BD49DB46","Haematopus bachmani","Haematopus bachmani","9/28/2022",2480272,259085,259074,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480272&occurrence_status=present","manual",64119,3090.8,2601.2,35.9300000000001,-13.03
+"AVIBASE-C078081E","Haematopus moquini","Haematopus moquini","8/2/2023",2480263,44933,44933,NA,"code",20209,3051.4,2736.4,31.99,0.490000000000009
 "AVIBASE-981CE782","Haematopus palliatus","Haematopus palliatus","9/28/2022",2480273,443371,442789,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2480273&occurrence_status=present","manual",81234,3119,2632.6,38.75,-9.88999999999999
 "AVIBASE-AC1E519F","Haemorhous cassinii","Haemorhous cassinii","9/28/2022",8255548,295378,295144,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=8255548&occurrence_status=present","manual",230989,3173.6,2492.6,44.21,-23.89
 "AVIBASE-89431E9F","Haemorhous mexicanus","Haemorhous mexicanus","9/28/2022",8323485,11614408,11614259,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=8323485&occurrence_status=present","manual",5513583,3183,2473.4,45.15,-25.81
@@ -230,6 +232,7 @@
 "AVIBASE-F002188E","Larus argentatus","Larus argentatus","9/28/2022",2481139,9004124,8995822,NA,"manual",3227422,3172.2,2328,44.07,-40.35
 "AVIBASE-7FCE8A43","Larus californicus","Larus californicus","9/28/2022",2481146,1190344,1190293,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481146&occurrence_status=present","manual",433958,3181,2404,44.95,-32.75
 "AVIBASE-00DA9D91","Larus canus","Larus canus","9/28/2022",7982160,2255674,2248875,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=7982160&occurrence_status=present","manual",1415219,3187.2,2294,45.57,-43.75
+"AVIBASE-6EB497FA","Larus cirrocephalus","Larus cirrocephalus","8/2/2023",2481190,14921,14921,NA,"code",20209,3118.2,2716.8,38.67,-1.46999999999997
 "AVIBASE-E6536E4E","Larus dominicanus","Larus dominicanus","9/28/2022",2481173,460705,460546,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481173&occurrence_status=present","manual",234843,3091,2472.8,35.95,-25.8699999999999
 "AVIBASE-03AC32BA","Larus glaucescens","Larus glaucescens","9/28/2022",2481196,1042135,1041956,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481196&occurrence_status=present","manual",328006,3158,2426.4,42.65,-30.51
 "AVIBASE-5941F453","Larus hartlaubii","Larus hartlaubii","9/24/2022",2481148,14871,14871,NA,"code",6529,3050,2743.2,31.85,1.17000000000002
@@ -314,6 +317,7 @@
 "AVIBASE-5F571C8A","Patagioenas leucocephala","Patagioenas leucocephala","9/24/2022",2495310,81122,81113,NA,"code",45502,3071.4,2812.8,33.99,8.13000000000005
 "AVIBASE-866903B9","Pelecanus erythrorhynchos","Pelecanus erythrorhynchos","9/28/2022",5229155,1386233,1386203,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229155&occurrence_status=present","manual",602414,3171.4,2453.6,43.99,-27.79
 "AVIBASE-F59AB6B3","Pelecanus occidentalis","Pelecanus occidentalis","9/28/2022",5229158,1775955,1775336,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=5229158&occurrence_status=present","manual",392292,3162,2573,43.05,-15.85
+"AVIBASE-8BAFB01E","Pelecanus onocrotalus","Pelecanus onocrotalus","8/2/2023",2480350,79123,79123,NA,"code",20209,3195.8,2542.4,46.4300000000001,-18.91
 "AVIBASE-C013A20E","Perdix perdix","Perdix perdix","9/28/2022",2473958,495623,494062,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2473958&occurrence_status=present","manual",363321,3086.8,2478.8,35.53,-25.27
 "AVIBASE-69A6E32F","Perisoreus canadensis","Perisoreus canadensis","9/28/2022",2482436,301213,301053,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2482436&occurrence_status=present","manual",269402,3097.6,2389.8,36.61,-34.17
 "AVIBASE-79A1EDEC","Petrochelidon fulva","Petrochelidon fulva","9/28/2022",2489166,125648,125636,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2489166&occurrence_status=present","manual",54290,3152.8,2574,42.1300000000001,-15.75
@@ -324,6 +328,7 @@
 "AVIBASE-9D945327","Peucedramus taeniatus","Peucedramus taeniatus","9/24/2022",2492276,38924,38890,NA,"code",37156,3114.2,2623.4,38.27,-10.8099999999999
 "AVIBASE-BD929CBC","Phainopepla nitens","Phainopepla nitens","9/29/2022",2492885,398247,398190,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2492885&occurrence_status=present","manual",264617,3181.2,2594.8,44.97,-13.67
 "AVIBASE-3AC46C54","Phalacrocorax auritus","Phalacrocorax auritus","9/29/2022",2481875,6757122,6756570,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481875&occurrence_status=present","manual",2579212,3170.2,2454.6,43.87,-27.69
+"AVIBASE-AE61BF48","Phalacrocorax capensi","Phalacrocorax capensis","8/2/2023",2481899,51032,51032,NA,"code",20209,3057.2,2739.6,32.57,0.810000000000002
 "AVIBASE-A429B5B8","Phalacrocorax pelagicus","Phalacrocorax pelagicus","9/29/2022",2481870,426445,426423,"https://www.gbif.org/occurrence/download?has_coordinate=true&has_geospatial_issue=false&taxon_key=2481870&occurrence_status=present","manual",115209,3046.8,2444.8,31.53,-28.67
 "AVIBASE-987A703D","Phalacrocorax penicillatus","Phalacrocorax penicillatus","9/24/2022",2481892,4016,4001,NA,"code",660,3122.8,2718,39.1300000000001,-1.34999999999997
 "AVIBASE-D621FFC6","Phalaenoptilus nuttallii","Phalaenoptilus nuttallii","9/24/2022",2497062,68845,68808,NA,"code",66145,3179,2510.8,44.75,-22.07

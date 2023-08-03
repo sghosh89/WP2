@@ -25,7 +25,6 @@ rst_bio7 <- raster::raster(bio7_path)
 # ok, that means data are in K/10 scale
 
 birds_meta<-read.csv(here("DATA/STI_related/birds_gbif_data/cleaned/birds_occurrence_metadata_filledin.csv"))
-# 2 out of 146 species has <10 cleaned records
 
 birds_meta$maxTtol<-NA # max temp tolerance limit
 birds_meta$minTtol<-NA # min temp tolerance limit

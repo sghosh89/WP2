@@ -15,7 +15,7 @@ tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual") #441 obs
 length(unique(tab_manual$Species))
 tab_coded<-ddft%>%filter(gbif_dwnld_type=="code") 
 #------------------------------------------------------
-sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning_codedsp.txt"),append=TRUE, split=TRUE)
+#sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning_codedsp.txt"),append=TRUE, split=TRUE)
 # now do the same for coded species
 sp_coded<-tab_coded$Species # 73 species
 tot_sp_coded<-length(sp_coded)
@@ -48,13 +48,13 @@ for(i in 1:tot_sp_coded){
   y<-y[flags$.summary,]# cleaned data
   write.csv(y,here(paste("DATA/STI_related/birds_gbif_data/cleaned/",s,".csv",sep="")))
 }
-sink()
+#sink()
 
 tab_manual<-ddft%>%filter(gbif_dwnld_type=="manual")
 #----- Now clean and save the manually downloaded species in the same format as of automatically downloaded data -----
 sp_manual<-tab_manual$Species # 441 species
 tot_sp_manual<-length(sp_manual)
-sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning_manual.txt"),append=TRUE, split=TRUE)
+#sink(here("DATA/STI_related/birds_gbif_data/cleaned/issues_found_during_cleaning_manual.txt"),append=TRUE, split=TRUE)
 for(i in 1:tot_sp_manual){
   s<-sp_manual[i]
   filename<-here(paste("DATA/STI_related/birds_gbif_data/",s,".csv",sep=""))
@@ -90,7 +90,7 @@ for(i in 1:tot_sp_manual){
   y<-y[flags$.summary,]# cleaned data
   write.csv(y,here(paste("DATA/STI_related/birds_gbif_data/cleaned/",s,".csv",sep="")),row.names = F)
 }
-sink()
+#sink()
 
 for (i in 1:nrow(ddft)){
   s<-ddft$Species[i]

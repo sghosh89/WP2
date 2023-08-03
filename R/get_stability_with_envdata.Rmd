@@ -1224,7 +1224,7 @@ source("./get_fish_tol_limit.R")
 ```{r get_birds_tol_limit, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime("get_birds_tol_limit.R"),mtime(here("DATA/STI_related/birds_gbif_data/cleaned/birds_occurrence_metadata_filledin.csv")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio5_1981-2010_V.2.1.TIF")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio6_1981-2010_V.2.1.TIF")),mtime(here("DATA/CHELSA_v2/climatologies/1981_2010/CHELSA_bio7_1981-2010_V.2.1.TIF")))}
 
 # I did not run the get_fish_gbif_data.R file here to avoid long run time
-#source("./get_birds_tol_limit.R") 
+source("./get_birds_tol_limit.R") 
 ```
 
 
