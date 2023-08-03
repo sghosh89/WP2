@@ -51,7 +51,7 @@ gps<-ggplot(mydat, aes(x=seq, y=Std.Estimate, fill=Taxa)) +
   scale_color_manual(values=alpha(c("green3","dodgerblue"), 0.5))
 
 pdf(here("Results/res_Prelim_Report/summary_plot_coefficients.pdf"), width = 6, height = 4)
-gps
+print(gps)
 dev.off()
 
 

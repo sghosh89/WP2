@@ -590,7 +590,7 @@ So, from the exploratory plots we can see: at higher temperature positive stabil
 
 ```{r check_consistency, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("Results/birds_splist_consistency_table.csv")),mtime(here("Results/fish_splist_consistency_table.csv")),mtime(here("Results/birds_splist_with_temp_sensitivity.csv")),mtime(here("Results/fish_splist_with_temp_sensitivity.csv")))}
 
-sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv")) 
 
 #-------- plot for birds ----------------------------------------
 taxa<-"birds"
@@ -1005,7 +1005,7 @@ Now, we will do a path analysis for a simplistic mixed effect model to see the e
 ```{r model_psem_with_meancentering, echo=F, cache=T, message=F, results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
 
 library(car)
-library(tidyverse)
+library(tidyverse) 
 library(lme4)
 library(piecewiseSEM)
 source(here("R/plot_psem.R")) 
@@ -1132,6 +1132,7 @@ knitr::include_graphics(here("Results/res_Prelim_Report/plot_psem_goodfit.pdf"),
 ```
 
 ```{r print-model-summary, echo=FALSE, cache=T, cache.extra=list(mtime(here("Results/res_Prelim_Report/model_psem_goodfit_birds.RDS")), mtime(here("Results/res_Prelim_Report/model_psem_goodfit_fish.RDS")))}
+
 # print summary of the models
 resloc<-"Results/res_Prelim_Report/"
 taxa<-"birds"
@@ -1201,7 +1202,7 @@ g4b<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var))+geom_point(alpha=0.2)+
 g5b<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="green",fill="greenyellow")+
   xlab("Temperature skewness, SkewT")+
-  ylab("Synchrony at \n the extremes, A")+
+  ylab("Tail-dependent \n synchrony, A")+
   theme_bw()+theme(text = element_text(size = 12),
                    axis.text = element_text(size = 12),
                    plot.margin = margin(t = 9, r = 7, b = 4, l = 12, unit = "pt"),
@@ -1209,7 +1210,7 @@ g5b<-ggplot(mydat,aes(y=A,x=t_skw))+geom_point(alpha=0.2)+
 
 g6b<-ggplot(mydat,aes(y=A,x=minTtol_var))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="green",fill="greenyellow")+
-  ylab("Synchrony at \n the extremes, A")+
+  ylab("Tail-dependent \n synchrony, A")+
   xlab("Community-level variability in species' minimum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
                    axis.text = element_text(size = 12),
@@ -1218,7 +1219,7 @@ g6b<-ggplot(mydat,aes(y=A,x=minTtol_var))+geom_point(alpha=0.2)+
 
 g7b<-ggplot(mydat,aes(y=A,x=maxTtol_var))+geom_point(alpha=0.2)+
   geom_smooth(method="loess",color="green",fill="greenyellow")+
-  ylab("Synchrony at \n the extremes, A")+
+  ylab("Tail-dependent \n synchrony, A")+
   xlab("Community-level variability in species' maximum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
                    axis.text = element_text(size = 12),
