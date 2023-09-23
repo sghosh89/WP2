@@ -132,7 +132,8 @@ sm_BT_terres<-sm_BT_terres%>%dplyr::select(-c(LONGITUDE.x,LONGITUDE.y,LATITUDE.x
 
 id<-which(sm_BT_terres$STUDY_ID==420)
 mylonlat<-read.csv("../DATA/for_BioTIME/wrangled_data/Terrestrial_plotlevel/420/mylonlat.csv")
-mylonlat$newsite<-paste("STUDY_ID_420_LAT",mylonlat$LATITUDE,"_LON",mylonlat$LONGITUDE,sep="")
+#mylonlat$newsite<-paste("STUDY_ID_420_LAT",mylonlat$LATITUDE,"_LON",mylonlat$LONGITUDE,sep="")
+mylonlat$newsite<-"420"
 mylonlat<-mylonlat%>%dplyr::select(newsite,LONGITUDE,LATITUDE)
 sm_BT_terres<-left_join(sm_BT_terres,mylonlat,by="newsite")
 sm_BT_terres$LONGITUDE<-dplyr::coalesce(sm_BT_terres$LONGITUDE.x,sm_BT_terres$LONGITUDE.y)
