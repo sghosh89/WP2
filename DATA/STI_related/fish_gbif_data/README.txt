@@ -1,4 +1,5 @@
-Data folder for storing fish gbif occurence data downloaded from gbif site (https://www.gbif.org/)
+Data folder for storing fish gbif occurence data downloaded from gbif site (https://www.gbif.org/).
+fish_occurrence_data_needed_edited.csv file shows the fish species for which we downloaded the gbif occurrence data.
 Manually downloaded data for each species are saved as "x.csv", 
 and data downloaded using code (rgbif R-package) are saved as "fishrecords_from_GBIF_for_x.csv";
 where, x= species name.
