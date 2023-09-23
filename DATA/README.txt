@@ -11,8 +11,9 @@ We have downloaded the community timeseries data  from here:
 	for BBS, for_BioTIME, for_BioTIMEx, for_swisslake, for_RivFishTIME, for_zoop_2014, for_insectRoel2020
 
 	For our analysis, we considered annual abundance timeseries (1979-2019) for 
-	a total of 1,826 communities: birds (n=1,246) and fish (n=580). 
-	A metadata summary for these 1,826 communities	is provided as a csv file.
+	a total of 1,826 communities: birds (n=1,246) and fish (n=580). Data for other taxa were 
+	not sufficient enough to carry out the structural equation modeling. 
+	A metadata summary for those 1,826 communities	is provided as a csv file.
 
 
 For climate data: see folders "CHELSA_v2", "wrangled_env_data". 
