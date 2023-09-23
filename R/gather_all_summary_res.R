@@ -5,7 +5,7 @@ library(dplyr)
 #=====================================================================
 # gather stability metric summary for all data you have analyzed
 `%notin%` <- Negate(`%in%`)
-md<-read.csv("../DATA/metadata_summary.csv")
+md<-read.csv("../DATA/metadata_summary_with_citation.csv")
 
 #----------------------------- for BioTIME, freshwater -----------------------------------------------------
 df<-md%>%filter(source=="BioTIME" & REALM=="Freshwater")%>%filter(TAXA%in%c("fish","freshwater invertebrates"))

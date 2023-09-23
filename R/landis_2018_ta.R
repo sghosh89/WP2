@@ -6,7 +6,7 @@ library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 
 dataset_id<-"landis_2018"
-md<-read.csv("../DATA/metadata_summary.csv")
+md<-read.csv("../DATA/metadata_summary_with_citation.csv")
 md_now<-md%>%filter(STUDY_ID==dataset_id)
 
 resloc<-'../Results/for_BioTIMEx/'

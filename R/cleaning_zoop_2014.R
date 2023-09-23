@@ -446,7 +446,7 @@ saveRDS(good_LakeID,"../DATA/for_zoop_2014/wrangled_data/good_LakeID.RDS")
 
 #------------------------------------------------
 # extract the metadata for good_LakeID from the BioDyn proj summary metadata
-md<-read.csv("../DATA/metadata_summary.csv")
+md<-read.csv("../DATA/metadata_summary_with_citation.csv")
 md<-md%>%filter(source=="Zooplankton2014")%>%dplyr::select(source,STUDY_ID,newsite,REALM,TAXA,ORGANISMS,CENT_LAT,CENT_LONG)
 md$lonlat<-paste(md$CENT_LONG,md$CENT_LAT,sep="_")
 write.csv(md,"../DATA/for_zoop_2014/wrangled_data/zoop2014_starting_table.csv",row.names = F)

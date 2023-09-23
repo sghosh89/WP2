@@ -1,6 +1,6 @@
 library(tidyverse)
 library(dplyr)
-md<-read.csv("../DATA/metadata_summary.csv") # metadata from BioDyn project, >=20 datapoints
+md<-read.csv("../DATA/metadata_summary_with_citation.csv") # metadata from BioDyn project, >=20 datapoints
 md<-md%>%filter(source=="BioTIMEx")%>%filter(TAXA%in%c("birds","fish","freshwater invertebrates","terrestrial invertebrates"))
 # We need to analyse these studies
 unique(md$STUDY_ID) # 6 STUDY_IDs 
