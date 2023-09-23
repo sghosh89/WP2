@@ -7,7 +7,7 @@ We have downloaded the community timeseries data  from here:
 	freshwater realms [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8233591
 
 
-	The above dataset originally had 2,668 community timeseries data arranged into 7 subfolders:
+	The above dataset are arranged into 7 subfolders:
 	for BBS, for_BioTIME, for_BioTIMEx, for_swisslake, for_RivFishTIME, for_zoop_2014, for_insectRoel2020
 
 	For our analysis, we considered annual abundance timeseries (1979-2019) for 
