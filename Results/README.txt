@@ -1,6 +1,14 @@
 Results folder to hold results generated from the Rmd files you have in R/ folder
 
-We are also providing "stability_metric_and_env_all.csv" file (this is generated from R/suppmat.Rmd)
+5 csv files are provided here: all genarated from running "R/get_stability_with_envdata.Rmd"
+1) stability_metric_and_env_all.csv
+2) birds_splist_consistency_table.csv
+3) birds_splist_with_temp_sensitivity.csv
+4) fish_splist_consistency_table.csv
+5) fish_splist_with_temp_sensitivity.csv
+
+
+In particular, We are also providing details for "stability_metric_and_env_all.csv" file which is the main input for SEM modeling 
 
 Each row (observation) is considered as a community.
 #----------------
