@@ -1126,6 +1126,14 @@ call_model_psem(taxa = "fish", data=sm_all,
                 resloc=resloc)
 par(op)
 dev.off()
+
+pdf(here(paste(resloc,"plot_psem_goodfit_fish_subset.pdf",sep="")),height=6,width=6)
+sfi_A_non0<-sm_all%>%filter(TAXA=="fish")%>%filter(A!=0)
+call_model_psem(taxa = "fish", data=sfi_A_non0,
+                rescaling = rescaling,  
+                mean_centering = mean_centering,
+                resloc=resloc)
+dev.off()
 ```
 
 ```{r insert-pdf, out.height = "460px", out.width='800px'}
