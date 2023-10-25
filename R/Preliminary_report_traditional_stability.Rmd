@@ -27,6 +27,14 @@ library(patchwork)
 library(gridExtra)
 library(here)
 source(here("R", "mtime.R"))
+
+if(!dir.exists("Results/res_Prelim_Report")){
+  dir.create("Results/res_Prelim_Report")
+}
+
+if(!dir.exists("Results/res_Prelim_Report/traditional_stability_res/")){
+  dir.create("Results/res_Prelim_Report/traditional_stability_res/")
+}
 ```
 
 # Introduction
