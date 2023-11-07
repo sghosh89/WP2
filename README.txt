@@ -44,5 +44,5 @@
 ## Funding and acknowledgement:
 
 	SG and OP were supported by funding from the University of Zurich. 
-	BM was supported by funding from Eawag, SNF (grant no. 310030-207910), and ETH Board (blue-green biodiversity initiative). 
+	BM was supported by funding from Eawag, SNF (grant no. 310030-207910). 
 
