@@ -128,11 +128,11 @@ gTA<-ggplot(data = sbf, aes(y = TA, x = TAXA, fill = TAXA)) +
 
 # for abiotic drivers
 # median temp
-gMedianT<-ggplot(data = sbf, aes(y = t_med_celcius, x = TAXA, fill = TAXA)) +
+gMedianT<-ggplot(data = sbf, aes(y = t_med_celsius, x = TAXA, fill = TAXA)) +
   scale_fill_manual(values=alpha(c("green3","dodgerblue"), 1))+
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .4) + 
   #coord_flip()+
-  geom_point(aes(y = t_med_celcius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
+  geom_point(aes(y = t_med_celsius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
   ylab("Median Temperature (\u00B0C)")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "F", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
@@ -143,11 +143,11 @@ gMedianT<-ggplot(data = sbf, aes(y = t_med_celcius, x = TAXA, fill = TAXA)) +
   scale_color_manual(values=alpha(c("green3","dodgerblue"), 1))
 
 # temp variability
-gVarT<-ggplot(data = sbf, aes(y = t_var_celcius, x = TAXA, fill = TAXA)) +
+gVarT<-ggplot(data = sbf, aes(y = t_varIQR_celsius, x = TAXA, fill = TAXA)) +
   scale_fill_manual(values=alpha(c("green3","dodgerblue"), 1))+
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .4) + 
   #coord_flip()+
-  geom_point(aes(y = t_var_celcius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
+  geom_point(aes(y = t_varIQR_celsius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
   ylab("Temperature variability")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "G", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
@@ -158,11 +158,11 @@ gVarT<-ggplot(data = sbf, aes(y = t_var_celcius, x = TAXA, fill = TAXA)) +
   scale_color_manual(values=alpha(c("green3","dodgerblue"), 1))
 
 # temp trend
-gTrendT<-ggplot(data = sbf, aes(y = t.sens.slope.celcius, x = TAXA, fill = TAXA)) +
+gTrendT<-ggplot(data = sbf, aes(y = t.sens.slope.celsius, x = TAXA, fill = TAXA)) +
   scale_fill_manual(values=alpha(c("green3","dodgerblue"), 1))+
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .4) + 
   #coord_flip()+
-  geom_point(aes(y = t.sens.slope.celcius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
+  geom_point(aes(y = t.sens.slope.celsius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
   ylab("Temperature Trend")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "H", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
@@ -174,11 +174,11 @@ gTrendT<-ggplot(data = sbf, aes(y = t.sens.slope.celcius, x = TAXA, fill = TAXA)
 
 
 # temp skewness
-gSkewT<-ggplot(data = sbf, aes(y = t_skw_celcius, x = TAXA, fill = TAXA)) +
+gSkewT<-ggplot(data = sbf, aes(y = t_skw_celsius, x = TAXA, fill = TAXA)) +
   scale_fill_manual(values=alpha(c("green3","dodgerblue"), 1))+
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .4) + 
   #coord_flip()+
-  geom_point(aes(y = t_skw_celcius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
+  geom_point(aes(y = t_skw_celsius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
   ylab("Temperature skewness")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "I", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
@@ -202,18 +202,18 @@ dev.off()
 
 #========== temperature category ========
 q_T_birds <- sbirds %>%
-  summarise(q=quantile(t_med_celcius,c(0.5))) %>%
+  summarise(q=quantile(t_med_celsius,c(0.5))) %>%
   pull(q)
 
 q_T_fish <- sfish %>%
-  summarise(q=quantile(t_med_celcius,c(0.5))) %>%
+  summarise(q=quantile(t_med_celsius,c(0.5))) %>%
   pull(q)
 
 sbf <- sbf %>%
-  mutate(MedianT_level = case_when(TAXA == "birds" & t_med_celcius < q_T_birds[1] ~ "low T, <50%CI",
-                                   TAXA == "birds" & t_med_celcius >= q_T_birds[1] ~ "high T, >50%CI",
-                                   TAXA == "fish" & t_med_celcius < q_T_fish[1] ~ "low T, <50%CI",
-                                   TAXA == "fish" & t_med_celcius >= q_T_fish[1] ~ "high T, >50%CI")) %>%
+  mutate(MedianT_level = case_when(TAXA == "birds" & t_med_celsius < q_T_birds[1] ~ "low T, <50%CI",
+                                   TAXA == "birds" & t_med_celsius >= q_T_birds[1] ~ "high T, >50%CI",
+                                   TAXA == "fish" & t_med_celsius < q_T_fish[1] ~ "low T, <50%CI",
+                                   TAXA == "fish" & t_med_celsius >= q_T_fish[1] ~ "high T, >50%CI")) %>%
   mutate(MedianT_level = fct_relevel(MedianT_level, "low T, <50%CI", "high T, >50%CI"))
 
 
@@ -248,7 +248,7 @@ gb_interact1<-sbf%>%filter(TAXA=="birds")%>%ggplot(aes(x=nsp,y=iCV, col = Median
   theme_bw()+ggtitle("Birds")
 #print(gb_interact1)
 
-gb_interact2<-sbf%>%filter(TAXA=="birds")%>%ggplot(aes(x=t_med_celcius,y=iCV, col = Richness_level)) +
+gb_interact2<-sbf%>%filter(TAXA=="birds")%>%ggplot(aes(x=t_med_celsius,y=iCV, col = Richness_level)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) + annotate("text",  x=Inf, y = Inf, label = "B", vjust=1.5, hjust=1.5,size=7)+
   ylab("Stability") +
@@ -270,7 +270,7 @@ gf_interact1<-sbf%>%filter(TAXA=="fish")%>%ggplot(aes(x=nsp,y=iCV, col = MedianT
   theme_bw()+ggtitle("Fish")
 #print(gf_interact1)
 
-gf_interact2<-sbf%>%filter(TAXA=="fish")%>%ggplot(aes(x=t_med_celcius,y=iCV, col = Richness_level)) +
+gf_interact2<-sbf%>%filter(TAXA=="fish")%>%ggplot(aes(x=t_med_celsius,y=iCV, col = Richness_level)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) + annotate("text",  x=Inf, y = Inf, label = "D", vjust=1.5, hjust=1.5,size=7)+
   ylab("Stability") +

@@ -114,7 +114,7 @@ saveRDS(summary_table,"../Results/for_BBS/summary_table_detail_version.RDS")
 any(summary_table$nyr_used<20)
 ```
 
-```{r summary_stab_env_BBS,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BBS/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./BBS_summary_for_stabilitymetric_and_env.R"))}
+```{r summary_stab_env_BBS,cache=T, echo=F,message=F, results="hide", warning=F, cache.extra=list(seed,mtime("../Results/for_BBS/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./BBS_summary_for_stabilitymetric_and_env.R"))}
 
 set.seed(seed)
 source("./BBS_summary_for_stabilitymetric_and_env.R")
@@ -189,7 +189,7 @@ saveRDS(summary_table,"../Results/for_RivFishTIME/summary_table_detail_version.R
 # we will filter at the end when we collate all the data from different source
 ```
 
-```{r summary_stab_env_RF,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_RivFishTIME/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./RivFishTIME_summary_for_stabilitymetric_and_env.R"))}
+```{r summary_stab_env_RF,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,mtime("../Results/for_RivFishTIME/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./RivFishTIME_summary_for_stabilitymetric_and_env.R"))}
 
 set.seed(seed)
 source("./RivFishTIME_summary_for_stabilitymetric_and_env.R")
@@ -428,7 +428,7 @@ summary_table<-summary_table%>%mutate(f_nind=nind/nint,
 saveRDS(summary_table,"../Results/for_BioTIME/Freshwater_plotlevel/summary_table.RDS")
 ```
 
-```{r summary_stab_env_BT_freshw,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BioTIME/Freshwater_plotlevel/summary_table.RDS"),mtime("./get_stability_metric.R"),mtime("./BT_freshw_summary_for_stabilitymetric_and_env.R"))}
+```{r summary_stab_env_BT_freshw,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,mtime("../Results/for_BioTIME/Freshwater_plotlevel/summary_table.RDS"),mtime("./get_stability_metric.R"),mtime("./BT_freshw_summary_for_stabilitymetric_and_env.R"))}
 
 set.seed(seed)
 source("./BT_freshw_summary_for_stabilitymetric_and_env.R")
@@ -670,7 +670,7 @@ summary_table<-summary_table%>%mutate(f_nind=nind/nint,
 saveRDS(summary_table,"../Results/for_BioTIME/Terrestrial_plotlevel/summary_table.RDS")
 ```
 
-```{r summary_stab_env_BT_terres,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_BioTIME/Terrestrial_plotlevel/summary_table.RDS"),mtime("./get_stability_metric.R"),mtime("./BT_terres_summary_for_stabilitymetric_and_env.R"))}
+```{r summary_stab_env_BT_terres,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,mtime("../Results/for_BioTIME/Terrestrial_plotlevel/summary_table.RDS"),mtime("./get_stability_metric.R"),mtime("./BT_terres_summary_for_stabilitymetric_and_env.R"))}
 
 set.seed(seed)
 source("./BT_terres_summary_for_stabilitymetric_and_env.R")
@@ -750,7 +750,7 @@ summary_table$TAXA<-"Freshwater invertebrates"
 saveRDS(summary_table,"../Results/for_insectRoel/summary_table_detail_version.RDS")
 ```
 
-```{r summary_stab_env_insectRoel,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_insectRoel/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./insectRoel_summary_for_stabilitymetric_and_env.R"))}
+```{r summary_stab_env_insectRoel,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,mtime("../Results/for_insectRoel/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./insectRoel_summary_for_stabilitymetric_and_env.R"))}
 
 set.seed(seed) 
 source("./insectRoel_summary_for_stabilitymetric_and_env.R")
@@ -948,7 +948,7 @@ summary_table<-summary_table%>%mutate(f_nind=nind/nint,
 saveRDS(summary_table,"../Results/for_zoop_2014/summary_table_detail_version.RDS")
 ```
 
-```{r summary_stab_env_zoop2014,cache=T, echo=F,message=F, results="hide", cache.extra=list(seed,mtime("../Results/for_zoop_2014/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./zoop2014_summary_for_stabilitymetric_and_env.R"))}
+```{r summary_stab_env_zoop2014,cache=T, echo=F,message=F, results="hide",warning=F, cache.extra=list(seed,mtime("../Results/for_zoop_2014/summary_table_detail_version.RDS"),mtime("./get_stability_metric.R"),mtime("./zoop2014_summary_for_stabilitymetric_and_env.R"))}
 
 set.seed(seed) 
 source("./zoop2014_summary_for_stabilitymetric_and_env.R")
@@ -1227,7 +1227,32 @@ source("./get_fish_tol_limit.R")
 source("./get_birds_tol_limit.R") 
 ```
 
+```{r data_min30yr, echo=F, warning=F,message=F,results="hide"}
+library(here)
+library(tidyverse)
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+sm_all<-sm_all%>%filter(TAXA%in%c("birds","fish"))
+colnames(sm_all)
 
+#range(sm_all$startyr)
+#range(sm_all$endyr)
+#range(sm_all$nyr_used)
+
+sbf30<-sm_all%>%filter(nyr_used>=30)
+#hist(sbf30$nsp)
+#table(sbf30$source)
+#table(sbf30$TAXA)
+
+write.csv(sbf30,here("Results/stability_metric_and_env_all_nyr_min30.csv"),row.names=F)
+# 100 communities (7 for birds and 93 for fish) from BioTIME, BioTIMEx, RivFishTIME 
+# had min 30 yrs of data
+# 24 out of 100 (from BioTIMEx) had >=40 yrs of data
+```
+
+```{r get_sensitivity_tail, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime(here("R/sensitivity_tails.R")),mtime(here("Results/stability_metric_and_env_all_nyr_min30.csv")),mtime(here("R/tail_analysis.R")))}
+
+source(here("R/sensitivity_tails.R")) 
+```
 
 
 

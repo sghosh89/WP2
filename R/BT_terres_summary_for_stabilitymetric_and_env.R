@@ -5,8 +5,10 @@
 
 source("./get_stability_metric.R")
 library(tidyverse)
+library(tseries)
 library(trend)
 library(adiv)
+library(moments)
 
 # read summary results 
 r_BT_terres<-readRDS("../Results/for_BioTIME/Terrestrial_plotlevel/summary_table.RDS")
@@ -23,25 +25,31 @@ r_BT_terres$iCValt <-NA # inverse of CV alternative for skewed dist.: stability 
 
 # some env stats: median and skewness of annual t, tmax, tmin distribution for the study years
 r_BT_terres$t_med<-NA
-#r_BT_terres$tmax_med<-NA
-#r_BT_terres$tmin_med<-NA
 r_BT_terres$t_skw<-NA
-#r_BT_terres$tmax_skw<-NA
-#r_BT_terres$tmin_skw<-NA
+r_BT_terres$is.sig_t_skw<-NA
 r_BT_terres$t_var<-NA # variability of annual temperature
-r_BT_terres$t_med_celcius<-NA
-r_BT_terres$t_skw_celcius<-NA
-r_BT_terres$t_var_celcius<-NA
-# strength of linear trend estimated with parametric and non-parametric method
+r_BT_terres$t_varIQR<-NA
+r_BT_terres$t_kurt<-NA
+r_BT_terres$is.sig_t_kurt<-NA
 r_BT_terres$t.lm.slope<-NA
 r_BT_terres$t.lm.slope.sig<-NA
 r_BT_terres$t.sens.slope<-NA
 r_BT_terres$t.sens.slope.sig<-NA # based on 95%CI
+
+r_BT_terres$t_med_celcius<-NA
+r_BT_terres$t_skw_celcius<-NA
+r_BT_terres$is.sig_t_skw_celcius<-NA
+r_BT_terres$t_var_celcius<-NA
+r_BT_terres$t_varIQR_celcius<-NA
+r_BT_terres$t_kurt_celcius<-NA
+r_BT_terres$is.sig_t_kurt_celcius<-NA
+# strength of linear trend estimated with parametric and non-parametric method
 r_BT_terres$t.lm.slope.celcius<-NA
 r_BT_terres$t.lm.slope.sig.celcius<-NA
 r_BT_terres$t.sens.slope.celcius<-NA
 r_BT_terres$t.sens.slope.sig.celcius<-NA # based on 95%CI
-
+r_BT_terres$is.stationary.adf<-NA
+r_BT_terres$is.trend.stationary.kpss<-NA
 # some diversity index calculation (https://search.r-project.org/CRAN/refmans/adiv/html/specieseve.html)
 r_BT_terres$GiniSimpson<-NA
 r_BT_terres$Simpson<-NA
@@ -69,15 +77,36 @@ for(i in 1:nrow(r_BT_terres)){
   
   # Everything in K/10 scale
   r_BT_terres$t_med[i]<-median(m$t)
-  r_BT_terres$t_skw[i]<-myskns(m$t)
-  r_BT_terres$t_var[i]<-IQR(m$t,type=7)/abs(median(m$t))
+  r_BT_terres$t_var[i]<-IQR(m$t,type=7)/median(m$t)
+  r_BT_terres$t_varIQR[i]<-IQR(m$t,type=7)
+  #r_BT_terres$t_skw[i]<-myskns(m$t)
+  ans_skw<-agostino.test(x=m$t)
+  r_BT_terres$t_skw[i]<-unname(ans_skw$statistic[1])
+  r_BT_terres$is.sig_t_skw[i]<-ifelse(ans_skw$p.value<0.05,1,0)
+  #r_BT_terres$t_kurt[i]<-moments::kurtosis(m$t)
+  ans_kurt<-anscombe.test(x=m$t)
+  r_BT_terres$t_kurt[i]<-unname(ans_kurt$statistic[1])
+  r_BT_terres$is.sig_t_kurt[i]<-ifelse(ans_kurt$p.value<0.05,1,0)
   #--------------------------
   # Now everything in celcius scale
   r_BT_terres$t_med_celcius[i]<-median(m$t_in_celcius)
-  r_BT_terres$t_skw_celcius[i]<-myskns(m$t_in_celcius)
   r_BT_terres$t_var_celcius[i]<-IQR(m$t_in_celcius,type=7)/abs(median(m$t_in_celcius))
-  # note celcius scale temp can be negative, so take abs value for t_var_celcius
+  r_BT_terres$t_varIQR_celcius[i]<-IQR(m$t_in_celcius,type=7)
+  #r_BT_terres$t_skw_celcius[i]<-myskns(m$t_in_celcius)
+  ans_skw_celcius<-agostino.test(x=m$t_in_celcius)
+  r_BT_terres$t_skw_celcius[i]<-unname(ans_skw_celcius$statistic[1])
+  r_BT_terres$is.sig_t_skw_celcius[i]<-ifelse(ans_skw_celcius$p.value<0.05,1,0)
+  #r_BT_terres$t_kurt_celcius[i]<-moments::kurtosis(m$t_in_celcius)
+  ans_kurt_celcius<-anscombe.test(x=m$t_in_celcius)
+  r_BT_terres$t_kurt_celcius[i]<-unname(ans_kurt_celcius$statistic[1])
+  r_BT_terres$is.sig_t_kurt_celcius[i]<-ifelse(ans_kurt_celcius$p.value<0.05,1,0)
+  options(warn=-1)
+  resstat<-tseries::adf.test(x=m$t_in_celcius)# H0= timeseries is non-stationary
+  r_BT_terres$is.stationary.adf[i]<-ifelse(resstat$p.value<0.05,1,0)# if p<0.05 then it is stationary
+  resstat<-tseries::kpss.test(x=m$t_in_celcius,null="Trend")# H0= timeseries is trend-stationary
+  r_BT_terres$is.trend.stationary.kpss[i]<-ifelse(resstat$p.value<0.05,1,0)
   #----------------------------
+  
   
   m2<-m
   m2$year<-as.integer(rownames(m2))

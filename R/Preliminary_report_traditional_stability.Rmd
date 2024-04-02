@@ -28,12 +28,12 @@ library(gridExtra)
 library(here)
 source(here("R", "mtime.R"))
 
-if(!dir.exists("Results/res_Prelim_Report")){
-  dir.create("Results/res_Prelim_Report")
+if(!dir.exists(here("Results/res_Prelim_Report/"))){
+  dir.create(here("Results/res_Prelim_Report/"))
 }
 
-if(!dir.exists("Results/res_Prelim_Report/traditional_stability_res/")){
-  dir.create("Results/res_Prelim_Report/traditional_stability_res/")
+if(!dir.exists(here("Results/res_Prelim_Report/traditional_stability_res/"))){
+  dir.create(here("Results/res_Prelim_Report/traditional_stability_res/"))
 }
 ```
 
@@ -56,11 +56,6 @@ str(sm_all) # total communities within 1979-2019 timespan, we selected only 4 ta
 ```
 
 # Methods
-
-```{r drawing-figure, echo=FALSE, fig.cap="Temperature timeseries figure", out.width = '100%', fig.align='center'}
-knitr::include_graphics(here("Results/some_assets/drawing.jpg"),
-                        rel_path = FALSE)
-```
 
 ```{r realdata-timeseries, echo=FALSE, fig.cap="Temperature timeseries figure with real data", out.width = '100%', fig.align='center'}
 knitr::include_graphics(here("Results/some_assets/realdata_temperature_timeseries_celcius.jpg"),rel_path = FALSE)
@@ -88,7 +83,7 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance d
 
 *Temperature skew*: Skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
-*Temperature variability*: Temperature variability for the community during the study period = IQR(annual temperature distribution for the study period)/abs(median(annual temperature)). [Note: in Celcius scale temperature t_med could be negative for some sites, so use absolute value always]
+*Temperature variability*: Temperature variability for the community during the study period = IQR(annual temperature distribution for the study period). 
 
 # Results
 
@@ -100,19 +95,19 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance d
 ## Also do the same for number of species
 q_T_birds <- sm_all %>%
   filter(TAXA=="birds") %>%
-  summarise(q=quantile(t_med_celcius,c(0.25,0.75))) %>%
+  summarise(q=quantile(t_med_celsius,c(0.25,0.75))) %>%
   pull(q)
 q_T_fish <- sm_all %>%
   filter(TAXA=="fish") %>%
-  summarise(q=quantile(t_med_celcius,c(0.25,0.75))) %>%
+  summarise(q=quantile(t_med_celsius,c(0.25,0.75))) %>%
   pull(q)
 sm_all <- sm_all %>%
-  mutate(median_temperature_cat = case_when(TAXA == "birds" & t_med_celcius < q_T_birds[1] ~ "low T, <50%CI",
-                                          TAXA == "birds" & t_med_celcius > q_T_birds[2] ~ "high T, >50%CI",
-                                          TAXA == "birds" & t_med_celcius <= q_T_birds[2] & t_med >= q_T_birds[1] ~ "mid T, in 50%CI",
-                                          TAXA == "fish" & t_med_celcius < q_T_fish[1] ~ "low T, <50%CI",
-                                          TAXA == "fish" & t_med_celcius > q_T_fish[2] ~ "high T, >50%CI",
-                                          TAXA == "fish" & t_med_celcius <= q_T_fish[2] & t_med >= q_T_fish[1] ~ "mid T, in 50%CI")) %>%
+  mutate(median_temperature_cat = case_when(TAXA == "birds" & t_med_celsius < q_T_birds[1] ~ "low T, <50%CI",
+                                          TAXA == "birds" & t_med_celsius > q_T_birds[2] ~ "high T, >50%CI",
+                                          TAXA == "birds" & t_med_celsius <= q_T_birds[2] & t_med >= q_T_birds[1] ~ "mid T, in 50%CI",
+                                          TAXA == "fish" & t_med_celsius < q_T_fish[1] ~ "low T, <50%CI",
+                                          TAXA == "fish" & t_med_celsius > q_T_fish[2] ~ "high T, >50%CI",
+                                          TAXA == "fish" & t_med_celsius <= q_T_fish[2] & t_med >= q_T_fish[1] ~ "mid T, in 50%CI")) %>%
   mutate(median_temperature_cat = fct_relevel(median_temperature_cat, "low T, <50%CI", "mid T, in 50%CI", "high T, >50%CI"))
 
 
@@ -187,7 +182,7 @@ print(gb_stab1)
 
 ```{r plot-stability-temperature-birds, echo=F, out.width = '75%',fig.cap=c("Stability-temperature relationship for bird communities at different richness levels")}
 #---- stability versus temperature, by richness category for birds -----
-gb_stab2<-ggplot(data=sb,aes(x=t_med_celcius, y=iCV, col = richness_cat)) +
+gb_stab2<-ggplot(data=sb,aes(x=t_med_celsius, y=iCV, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   ylab("Stability") +
@@ -212,7 +207,7 @@ print(gb_stab3)
 
 ```{r plot-synchrony-temperature-birds-tempcat, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
 #---- synchrony versus temperature for birds ----
-gb_syn1<-ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM)) +
+gb_syn1<-ggplot(data=sb, aes(x=t_med_celsius, y=phi_LdM)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm",se=T,color="green",fill="darkolivegreen1")+
   xlab("Temperature, MedianT (\u00B0C)")+
@@ -221,7 +216,7 @@ gb_syn1<-ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM)) +
   theme_bw()
 print(gb_syn1)
 
-gb_syn2ex<-ggplot(data=sb, aes(x=t_med_celcius, y=phi_LdM, col = median_temperature_cat)) +
+gb_syn2ex<-ggplot(data=sb, aes(x=t_med_celsius, y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
   xlab("Temperature, MedianT (\u00B0C)")+
@@ -258,7 +253,7 @@ print(gb_syn4)
 
 ```{r plot-synchrony-temperature-birds, echo=F, out.width = '75%',fig.cap=c("Synchrony temperature relationship.")}
 #---- synchrony versus temperature, by richness category for birds ----
-gb_syn5<-ggplot(data=sb,aes(x=t_med_celcius, y=phi_LdM, col = richness_cat)) +
+gb_syn5<-ggplot(data=sb,aes(x=t_med_celsius, y=phi_LdM, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   ylab("Synchrony (Variance Ratio), log2 scale") +
@@ -277,6 +272,38 @@ gb_skwex<-ggplot(data=sb,aes(x=t_skw, y=iCV, col = richness_cat)) +
   xlab("Temperature skew, SkewT") +
   ggtitle(taxa) +
   theme_bw()
+
+gskwb<-ggplot(data=sb,aes(x=t_skw)) +
+  geom_histogram() +
+  ylab("Stability") +
+  xlab("Temperature skew, SkewT in Kelvin") +
+  ggtitle(taxa) +
+  theme_bw()
+print(gskwb)
+
+gskwb<-ggplot(data=sb,aes(x=t_skw_celsius)) +
+  geom_histogram() +
+  ylab("Stability") +
+  xlab("Temperature skew, SkewT in Celcius") +
+  ggtitle(taxa) +
+  theme_bw()
+print(gskwb)
+
+gkurtb<-ggplot(data=sb,aes(x=t_kurt)) +
+  geom_histogram() +
+  ylab("Stability") +
+  xlab("Temperature kurtosis, KurtT in Kelvin") +
+  ggtitle(taxa) +
+  theme_bw()
+print(gkurtb)
+
+gkurtb<-ggplot(data=sb,aes(x=t_kurt_celsius)) +
+  geom_histogram() +
+  ylab("Stability") +
+  xlab("Temperature kurtosis, KurtT in Celcius") +
+  ggtitle(taxa) +
+  theme_bw()
+print(gkurtb)
 ```
 
 #### Basic statistics for birds
@@ -284,7 +311,7 @@ gb_skwex<-ggplot(data=sb,aes(x=t_skw, y=iCV, col = richness_cat)) +
 **Model of bird stability:**
 ```{r anova_birds_stability}
 ## bird stability model
-bird_stab1 <- lm(iCV ~ nsp * t_med_celcius, data = sb)
+bird_stab1 <- lm(iCV ~ nsp * t_med_celsius, data = sb)
 par(mfrow = c(2,2))
 #plot(bird_stab1)
 anova_bird_stab1 <- tidy(bird_stab1)
@@ -294,7 +321,7 @@ anova_bird_stab1 <- tidy(bird_stab1)
 **Model of bird synchrony:**
 ```{r anova_birds_synchrony}
 ## bird stability model
-bird_stab2 <- lm(phi_LdM ~ nsp * t_med_celcius, data = sb)
+bird_stab2 <- lm(phi_LdM ~ nsp * t_med_celsius, data = sb)
 par(mfrow = c(2,2))
 #plot(bird_stab2)
 anova_bird_stab2 <- tidy(bird_stab2)
@@ -338,7 +365,7 @@ print(gf_stab1)
 
 ```{r plot-stability-temperature-fish, echo=F, out.width = '75%',fig.cap=c("Stability-temperature relationship at different richness levels")}
 #----- stability versus temperature, by richness category for fish ----
-gf_stab2<-ggplot(data=sfi,aes(x=t_med_celcius, y=iCV, col = richness_cat)) +
+gf_stab2<-ggplot(data=sfi,aes(x=t_med_celsius, y=iCV, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   ylab("Stability") +
@@ -363,7 +390,7 @@ print(gf_stab3)
 
 ```{r plot-synchrony-temperature-fish-tempcat, echo=F, out.width = '75%',fig.cap=c("Synchrony-temperature relationship (scatterplot)")}
 #---- synchrony versus temperature for fish ----
-gf_syn1<-ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM)) +
+gf_syn1<-ggplot(data=sfi, aes(x=t_med_celsius, y=phi_LdM)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm",se=T,color="blue",fill="dodgerblue")+
   xlab("Temperature, MedianT (\u00B0C)")+
@@ -372,7 +399,7 @@ gf_syn1<-ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM)) +
   theme_bw()
 print(gf_syn1)
 
-gf_syn2ex<-ggplot(data=sfi, aes(x=t_med_celcius, y=phi_LdM, col = median_temperature_cat)) +
+gf_syn2ex<-ggplot(data=sfi, aes(x=t_med_celsius, y=phi_LdM, col = median_temperature_cat)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm", se=T) +
   xlab("Temperature, MedianT (\u00B0C)")+
@@ -408,7 +435,7 @@ print(gf_syn3)
 
 ```{r plot-synchrony-temperature-fish, echo=F, out.width = '75%',fig.cap=c("Synchrony temperature relationship.")}
 #---- synchrony versus temperature, by richness category for fish ----
-gf_syn4<-ggplot(data=sfi,aes(x=t_med_celcius, y=phi_LdM, col = richness_cat)) +
+gf_syn4<-ggplot(data=sfi,aes(x=t_med_celsius, y=phi_LdM, col = richness_cat)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", se=T) +
   ylab("Synchrony (Variance Ratio)") +ylim(0,1)+
@@ -427,6 +454,38 @@ gf_skwex<-ggplot(data=sfi,aes(x=t_skw, y=iCV, col = richness_cat)) +
   xlab("Temperature skew") +
   ggtitle(taxa) +
   theme_bw()
+
+gskwf<-ggplot(data=sfi,aes(x=t_skw)) +
+  geom_histogram() +
+  ylab("Stability") +
+  xlab("Temperature skew, SkewT in Kelvin") +
+  ggtitle(taxa) +
+  theme_bw()
+print(gskwb)
+
+gskwf<-ggplot(data=sfi,aes(x=t_skw_celsius)) +
+  geom_histogram() +
+  ylab("Stability") +
+  xlab("Temperature skew, SkewT in Celcius") +
+  ggtitle(taxa) +
+  theme_bw()
+print(gskwf)
+
+gkurtf<-ggplot(data=sfi,aes(x=t_kurt)) +
+  geom_histogram() +
+  ylab("Stability") +
+  xlab("Temperature kurtosis, KurtT in Kelvin") +
+  ggtitle(taxa) +
+  theme_bw()
+print(gkurtf)
+
+gkurtf<-ggplot(data=sfi,aes(x=t_kurt_celsius)) +
+  geom_histogram() +
+  ylab("Stability") +
+  xlab("Temperature kurtosis, KurtT in Celcius") +
+  ggtitle(taxa) +
+  theme_bw()
+print(gkurtf)
 ```
 
 #### Fish basic statistics
@@ -434,7 +493,7 @@ gf_skwex<-ggplot(data=sfi,aes(x=t_skw, y=iCV, col = richness_cat)) +
 **Model of fish stability:**
 ```{r anova_fish_stability}
 ## fish stability model
-fish_stab1 <- lm(log2(iCV) ~ log2(nsp) * t_med_celcius, data = sfi)
+fish_stab1 <- lm(log2(iCV) ~ log2(nsp) * t_med_celsius, data = sfi)
 par(mfrow = c(2,2))
 #plot(fish_stab1)
 anova_fish_stab1 <- tidy(fish_stab1)
@@ -444,7 +503,7 @@ anova_fish_stab1 <- tidy(fish_stab1)
 **Model of fish synchrony:**
 ```{r anova_fish_synchrony}
 ## bird stability model
-fish_stab2 <- lm(log2(phi_LdM) ~ log2(nsp) * t_med_celcius, data = sfi)
+fish_stab2 <- lm(log2(phi_LdM) ~ log2(nsp) * t_med_celsius, data = sfi)
 par(mfrow = c(2,2))
 #plot(fish_stab2)
 anova_fish_stab2 <- tidy(fish_stab2)
@@ -457,16 +516,16 @@ No significant interaction between richness and temperature for fish.
 
 ```{r tskew-plot1, out.width = '75%', fig.cap=c("Distribution of temperature skewness, birds and fish together.")}
 sm_all_bf<-sm_all%>%filter(TAXA%in%c("birds","fish"))
-br <- c(min(sm_all_bf$t_skw_celcius),0,max(sm_all_bf$t_skw_celcius))
+br <- c(min(sm_all_bf$t_skw_celsius),0,max(sm_all_bf$t_skw_celsius))
 gextra1<-sm_all_bf%>%
-  ggplot( aes(x=t_skw_celcius, stat(density))) +
+  ggplot( aes(x=t_skw_celsius, stat(density))) +
   ggtitle("birds and fish")+
   geom_text(
     aes(label = round(stat(count) / sum((count)), 3)),
     stat = 'bin', vjust = -0.5, breaks = br
   )+ ylim(c(0, 1))+geom_density()+
-  annotate("rect", xmin=min(sm_all_bf$t_skw_celcius), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="blue")+
-  annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw_celcius), ymin=0, ymax=1, alpha=0.15, fill="red")+
+  annotate("rect", xmin=min(sm_all_bf$t_skw_celsius), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw_celsius), ymin=0, ymax=1, alpha=0.15, fill="red")+
   theme_classic()
 ```
 
@@ -474,7 +533,7 @@ gextra1<-sm_all_bf%>%
 #----- skewness plot across taxa, fish gets more extremes but as taildep synchrony is not important driver for freshwater systems stability is directly affected by skewness there ----
 
 gextra2<-sm_all_bf%>%
-  ggplot( aes(x=t_skw_celcius,y=..scaled..))+geom_density()+ylim(c(0, 1))+
+  ggplot( aes(x=t_skw_celsius,y=..scaled..))+geom_density()+ylim(c(0, 1))+
   annotate("rect", xmin=min(sm_all_bf$t_skw), xmax=0, ymin=0, ymax=1, alpha=0.15, fill="blue")+
   annotate("rect", xmin=0, xmax=max(sm_all_bf$t_skw), ymin=0, ymax=1, alpha=0.15, fill="red")+
   theme_classic()+facet_wrap(~TAXA)
@@ -484,11 +543,11 @@ gextra2<-sm_all_bf%>%
 # simulated data trend plot: see test_trend_bothway.R
 
 # Now you can plot them from real data
-slope_sig_bf<-sm_all_bf%>%filter(t.sens.slope.sig.celcius==1)
-plot(x=sm_all_bf$t.sens.slope.celcius,y=sm_all_bf$t.lm.slope.celcius,col=rgb(0,0,0,0.05),
+slope_sig_bf<-sm_all_bf%>%filter(t.sens.slope.sig.celsius==1)
+plot(x=sm_all_bf$t.sens.slope.celsius,y=sm_all_bf$t.lm.slope.celsius,col=rgb(0,0,0,0.05),
      pch=19,xlab="Sen's slope",ylab="lm.slope")
 slope_sig_bf$col<-ifelse(slope_sig_bf$REALM=="Freshwater","blue","green")
-points(x=slope_sig_bf$t.sens.slope.celcius,y=slope_sig_bf$t.lm.slope.celcius,col=slope_sig_bf$col)
+points(x=slope_sig_bf$t.sens.slope.celsius,y=slope_sig_bf$t.lm.slope.celsius,col=slope_sig_bf$col)
 abline(h=0,col="black",lty=2)
 abline(v=0,col="black",lty=2)
 table(slope_sig_bf$REALM)/table(sm_all_bf$REALM) # 34% freshwater, and 25% terrestrial sig trend
@@ -499,23 +558,42 @@ table(slope_sig_bf$REALM)/table(sm_all_bf$REALM) # 34% freshwater, and 25% terre
 ```{r trend-plot, out.width = '75%', fig.cap=c("Histogram plot for trends, both taxa.","Histogram plot for significant trends, both taxa.")}
 
 gp_trend1<-sm_all_bf%>%
-  ggplot( aes(x=t.sens.slope.celcius))+geom_histogram()+xlab("Sen's slope, all")+
-  annotate("rect", xmin=min(sm_all_bf$t.sens.slope.celcius), xmax=0, ymin=0, ymax=Inf, alpha=0.15, fill="blue")+
-  annotate("rect", xmin=0, xmax=max(sm_all_bf$t.sens.slope.celcius), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
+  ggplot( aes(x=t.sens.slope.celsius))+geom_histogram()+xlab("Sen's slope, all")+
+  annotate("rect", xmin=min(sm_all_bf$t.sens.slope.celsius), xmax=0, ymin=0, ymax=Inf, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=0, xmax=max(sm_all_bf$t.sens.slope.celsius), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
   theme_classic()+facet_wrap(~TAXA)
 print(gp_trend1)
 
 gp_trend2<-slope_sig_bf%>%
-  ggplot( aes(x=t.sens.slope.celcius))+geom_histogram()+xlab("Sen's slope, siginificant")+
-  annotate("rect", xmin=min(slope_sig_bf$t.sens.slope.celcius), xmax=0, ymin=0, ymax=Inf, alpha=0.15, fill="blue")+
-  annotate("rect", xmin=0, xmax=max(slope_sig_bf$t.sens.slope.celcius), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
+  ggplot( aes(x=t.sens.slope.celsius))+geom_histogram()+xlab("Sen's slope, siginificant")+
+  annotate("rect", xmin=min(slope_sig_bf$t.sens.slope.celsius), xmax=0, ymin=0, ymax=Inf, alpha=0.15, fill="blue")+
+  annotate("rect", xmin=0, xmax=max(slope_sig_bf$t.sens.slope.celsius), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
   theme_classic()+facet_wrap(~TAXA)
 ```
 
 ```{r tvar-plot, out.width = '75%', fig.cap=c("Histogram plot for variability in temperature")}
 gextra3<-sm_all_bf%>%
-  ggplot( aes(x=t_var_celcius))+geom_histogram()+
-   theme_classic()+facet_wrap(~TAXA)
+  ggplot( aes(x=t_varIQR_celsius))+geom_histogram()+
+   theme_classic()+facet_wrap(~TAXA)+xlab("t_var, Celcius")
+
+gextra4<-sm_all_bf%>%
+  ggplot( aes(x=t_varIQR_celsius))+geom_histogram()+
+   theme_classic()+facet_wrap(~TAXA)+xlab("t_IQR, Celcius")
+
+print(gextra3)
+print(gextra4)
+
+#Kelvin scale
+gextra5<-sm_all_bf%>%
+  ggplot( aes(x=t_var))+geom_histogram()+
+   theme_classic()+facet_wrap(~TAXA)+xlab("t_var, Kelvin")
+
+gextra6<-sm_all_bf%>%
+  ggplot( aes(x=t_varIQR))+geom_histogram()+
+   theme_classic()+facet_wrap(~TAXA)+xlab("t_IQR, Kelvin")
+
+print(gextra5)
+print(gextra6)
 ```
 
 ## Explanations {#explanations}
@@ -671,7 +749,7 @@ library(tidyverse)
 library(leaflet)
 
 plot_temp_on_map<-function(sm_all,t,taxa,scaleup){
-  dat<-sm_all%>%filter(TAXA==taxa)%>%dplyr::select(STUDY_ID,newsite,nsp,LATITUDE,LONGITUDE,t_med_celcius,t_skw)
+  dat<-sm_all%>%filter(TAXA==taxa)%>%dplyr::select(STUDY_ID,newsite,nsp,LATITUDE,LONGITUDE,t_med_celsius,t_skw)
 
   # first cut the continuous variable into bins
   # these bins are now factors
@@ -700,11 +778,11 @@ plot_temp_on_map<-function(sm_all,t,taxa,scaleup){
 
 taxa<-"birds"
 scaleup=1
-plot_temp_on_map(sm_all,t="t_med_celcius",taxa,scaleup)
+plot_temp_on_map(sm_all,t="t_med_celsius",taxa,scaleup)
 
 taxa<-"fish"
 scaleup=3
-plot_temp_on_map(sm_all,t="t_med_celcius",taxa,scaleup)
+plot_temp_on_map(sm_all,t="t_med_celsius",taxa,scaleup)
 #plot_temp_on_map(sm_all,t="t_skw",taxa,scaleup)
 ```
 
@@ -720,7 +798,7 @@ When I showed this to Blake, he was not convinced by the idea to split the data 
 So, I thought to make a plot of how community-level average response traits (average of standardised correlation between species abundance with t_med timeseries across sites) changes with increasing temperature (t_med)? For fish, it should decrease with increasing t_med, whereas for birds it should be a flat relationship.
 
 ```{r plot_tempcor_traits, echo=F, results="hide", message=F}
-source(here("R/plot_to_test_H1.R"))
+source(here("R/plot_to_test_H1.R")) 
 ```
 
 Possible explanation:
@@ -732,82 +810,21 @@ knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"),
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa.
 
-```{r model_psem_with_meancentering, echo=F, cache=T, message=F, results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("R/plot_psem.R")))}
+```{r model_psem_Tcelsius_Tskw_TvarIQR, echo=F, cache=T, message=F, results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")),mtime(here("R/call_model_psem.R")),mtime(here("R/plot_psem.R")))}
 
 library(car)
 library(tidyverse) 
 library(lme4)
 library(piecewiseSEM)
+library(performance)
 source(here("R/plot_psem.R")) 
-
-call_model_psem<-function(taxa,data=sm_all,
-                          rescaling=T,
-                          mean_centering=T,resloc){
-  
-  sm_all_eachtaxa<-data%>%filter(TAXA==taxa)
-  mydat_scaled<-sm_all_eachtaxa
-  
-  #------ check variation inflation factor for multi-collinearity  
-  cat(paste(" VIF for model, taxa = ",taxa," ------- \n"))
-  vf<-car::vif(lme4::lmer(stability ~ R+E+VR+A+t.sens.slope.celcius+t_skw_celcius+t_var_celcius+(1|UID), data=mydat_scaled))
-  print(vf) # checked always <3
-  
-  #------ want rescaling? 
-  if(rescaling==T){
-    mydat_scaled$stability<-as.numeric(scale(mydat_scaled$stability,
-                                             center=mean_centering,scale=T))
-    mydat_scaled$R<-as.numeric(scale(mydat_scaled$R,
-                                     center=mean_centering,scale=T))
-    mydat_scaled$VR<- as.numeric(scale(mydat_scaled$VR,
-                                       center=mean_centering,scale=T))
-    mydat_scaled$A<- as.numeric(scale(mydat_scaled$A,
-                                      center=mean_centering,scale=T))
-    
-    mydat_scaled$t_med<-as.numeric(scale(mydat_scaled$t_med,
-                                         center=mean_centering,scale=T))
-    mydat_scaled$t_skw<-as.numeric(scale(mydat_scaled$t_skw,
-                                         center=mean_centering,scale=T))
-    mydat_scaled$t_var<-as.numeric(scale(mydat_scaled$t_var,
-                                         center=mean_centering,scale=T))
-    mydat_scaled$t.sens.slope<-as.numeric(scale(mydat_scaled$t.sens.slope,
-                                                center=mean_centering,scale=T))
-    mydat_scaled$E<-as.numeric(scale(mydat_scaled$E,
-                                     center=mean_centering,scale=T))
-    
-    mydat_scaled$t_med_celcius<-as.numeric(scale(mydat_scaled$t_med_celcius,
-                                                 center=mean_centering,scale=T))
-    mydat_scaled$t_skw_celcius<-as.numeric(scale(mydat_scaled$t_skw_celcius,
-                                                 center=mean_centering,scale=T))
-    mydat_scaled$t_var_celcius<-as.numeric(scale(mydat_scaled$t_var_celcius,
-                                                 center=mean_centering,scale=T))
-    mydat_scaled$t.sens.slope.celcius<-as.numeric(scale(mydat_scaled$t.sens.slope.celcius,
-                                                        center=mean_centering,scale=T))
-  }
-  dat<-mydat_scaled
-  n<-nrow(dat)
-  
-  dat<-rename(dat, MedianT = t_med_celcius, 
-              TrendT = t.sens.slope.celcius, 
-              SkewT = t_skw_celcius,
-              VarT = t_var_celcius)
-  
-  model_psem_c2_goodfit<-piecewiseSEM::psem(
-    lmer(VR ~ R+E+MedianT+VarT+TrendT+SkewT+(1|UID),data=dat),
-    lmer(R~MedianT+VarT+TrendT+(1|UID),data=dat),
-    lmer(E~R+MedianT+VarT+TrendT+(1|UID),data=dat),
-    lmer(A ~ R+E+VR+MedianT+TrendT+SkewT+(1|UID),data=dat),
-    lmer(stability ~ R+E+VR+A+(R:MedianT)+
-           MedianT+VarT+TrendT+SkewT+(1|UID), data=dat))
-  
-  ccE2_goodfit<-coefs(model_psem_c2_goodfit,standardize = "scale")
-  
-  plot_psem(n,taxa,ccE2_goodfit,layout="circle")
-  
-  return(model_psem_c2_goodfit)
-  #saveRDS(model_psem_c2_goodfit,here(paste(resloc,"model_psem_goodfit_",taxa,".RDS",sep="")))
-}
+source(here("R/call_model_psem.R"))
 
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+
+#sm_all$t.sens.slope.sig.celsius[which(sm_all$t.sens.slope.sig.celsius==0)]<-0
+#sm_all$t_skw_celsius[which(sm_all$is.sig_t_skw_celsius==0)]<-0
+#sm_all$t_kurt_celsius[which(sm_all$is.sig_t_kurt_celsius==0)]<-3
 
 sm_all$UID<-paste(sm_all$source,sm_all$STUDY_ID,sep="_")
 sm_all$A<-sm_all$L+abs(sm_all$U) # total asymmetry
@@ -820,63 +837,185 @@ sm_all$TAXA<-as.factor(sm_all$TAXA)
 
 rescaling<-T
 mean_centering<-TRUE
-resloc<-"Results/res_Prelim_Report/traditional_stability_res/"
 
-pdf(here(paste(resloc,"plot_psem_goodfit.pdf",sep="")),height=12,width=6)
+Textreme<-"skw"
+Tvar<-"IQR"
+Tscale<-"Celsius"
+
+resloc<-here(paste("Results/res_Prelim_Report/traditional_stability_res/Tscale_",Tscale,"_Tvar_",Tvar,"_Textreme_",Textreme,"/",sep=""))
+
+taxa<-"birds"
+
+if(!dir.exists(paste(resloc))){
+  dir.create(resloc)
+}
+#sink(here(paste(resloc,"mod_summary.txt",sep="")),
+#     append=TRUE, split=TRUE)
+
+pdf((paste(resloc,"/plot_psem_goodfit.pdf",sep="")),height=12,width=6)
 op<-par(mfrow=c(2,1))
 
 #----- call for birds -----
-taxa<-"birds"
-ans1<-call_model_psem(taxa = taxa, data=sm_all,
-                rescaling = rescaling,  
-                mean_centering = mean_centering,
-                resloc=resloc)
-saveRDS(ans1,here(paste(resloc,"model_psem_goodfit_",taxa,".RDS",sep="")))
-#----- call for fish -----
-taxa<-"fish"
-ans1<-call_model_psem(taxa = taxa, data=sm_all,
-                rescaling = rescaling,  
-                mean_centering = mean_centering,
-                resloc=resloc)
-saveRDS(ans1,here(paste(resloc,"model_psem_goodfit_",taxa,".RDS",sep="")))
+resb<-call_model_psem(taxa = taxa, data=sm_all,
+                      rescaling = rescaling,  
+                      mean_centering = mean_centering,
+                      resloc=resloc,
+                      Textreme=Textreme,Tvar=Tvar,Tscale=Tscale)
+saveRDS(resb,here(paste(resloc,"/model_psem_",taxa,".RDS",sep="")))
 
+#----- call for fish -----
+cat("=========== now for fish ===============\n")
+
+taxa<-"fish"
+resf<-call_model_psem(taxa = taxa, data=sm_all,
+                      rescaling = rescaling,  
+                      mean_centering = mean_centering,
+                      resloc=resloc,
+                      Textreme=Textreme,Tvar=Tvar,Tscale=Tscale)
+saveRDS(resf,here(paste(resloc,"/model_psem_",taxa,".RDS",sep="")))
 par(op)
 dev.off()
+#sink()
 
-
-pdf(here(paste(resloc,"plot_psem_goodfit_fish_subset.pdf",sep="")),height=6,width=6)
+pdf(here(paste(resloc,"/plot_psem_goodfit_fish_subset.pdf",sep="")),height=6,width=6)
 sfi_A_non0<-sm_all%>%filter(TAXA=="fish")%>%filter(A!=0)
 taxa<-"fish"
-ans1<-call_model_psem(taxa = taxa, data=sfi_A_non0,
-                rescaling = rescaling,  
-                mean_centering = mean_centering,
-                resloc=resloc)
+resf_subset<-call_model_psem(taxa = taxa, data=sfi_A_non0,
+                      rescaling = rescaling,  
+                      mean_centering = mean_centering,
+                      resloc=resloc,
+                      Textreme=Textreme,Tvar=Tvar,Tscale=Tscale)
+saveRDS(resf_subset,here(paste(resloc,"/model_psem_subset_",taxa,".RDS",sep="")))
 dev.off()
 ```
 
-```{r psem_fish_subset, echo=F}
-print(summary(ans1))
-```
-
-
 ```{r insert-pdf, out.height = "460px", out.width='800px'}
-knitr::include_graphics(here("Results/res_Prelim_Report/traditional_stability_res/plot_psem_goodfit.pdf"),rel_path = F)
+knitr::include_graphics(here("Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_skw/plot_psem_goodfit.pdf"),rel_path = F)
 ```
 
-```{r print-model-summary, echo=FALSE, cache=T, cache.extra=list(mtime(here("Results/res_Prelim_Report/traditional_stability_res/model_psem_goodfit_birds.RDS")), mtime(here("Results/res_Prelim_Report/traditional_stability_res/model_psem_goodfit_fish.RDS")))}
+```{r print-model-summary, echo=FALSE, cache=T, cache.extra=list(mtime(here("Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_skw/model_psem_birds.RDS")), mtime(here("Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_skw/model_psem_fish.RDS")),mtime(here("Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_skw/model_psem_subset_fish.RDS")))}
 
-# print summary of the models
-resloc<-"Results/res_Prelim_Report/traditional_stability_res/"
+cat("============ model summary for birds ===========\n")
+resloc<-"Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_skw/"
 taxa<-"birds"
-psem_birds<-readRDS(here(paste(resloc,"model_psem_goodfit_",taxa,".RDS",sep="")))
-print(summary(psem_birds))
+psem_birds<-readRDS(here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+print(psem_birds$pf_collinearity)
+print(summary(psem_birds$model_psem))
+
+cat("============ model summary for fish ===========\n")
 taxa<-"fish"
-psem_fish<-readRDS(here(paste(resloc,"model_psem_goodfit_",taxa,".RDS",sep="")))
-print(summary(psem_fish))
+psem_fish<-readRDS(here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+print(psem_fish$pf_collinearity)
+print(summary(psem_fish$model_psem))
+
+cat("============ model summary for fish subset ===========\n")
+psem_fish<-readRDS(here(paste(resloc,"model_psem_subset_",taxa,".RDS",sep="")))
+print(psem_fish$pf_collinearity)
+print(summary(psem_fish$model_psem))
+```
+
+```{r model_psem_Tcelsius_Tkurt_TvarIQR, echo=F, cache=T, message=F, results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")),mtime(here("R/call_model_psem.R")),mtime(here("R/plot_psem.R")))}
+
+library(car)
+library(tidyverse) 
+library(lme4)
+library(piecewiseSEM)
+library(performance)
+source(here("R/plot_psem.R")) 
+source(here("R/call_model_psem.R"))
+
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+
+#sm_all$t.sens.slope.sig.celsius[which(sm_all$t.sens.slope.sig.celsius==0)]<-0
+#sm_all$t_skw_celsius[which(sm_all$is.sig_t_skw_celsius==0)]<-0
+#sm_all$t_kurt_celsius[which(sm_all$is.sig_t_kurt_celsius==0)]<-3
+
+sm_all$UID<-paste(sm_all$source,sm_all$STUDY_ID,sep="_")
+sm_all$A<-sm_all$L+abs(sm_all$U) # total asymmetry
+sm_all<-sm_all%>%dplyr::rename(
+  stability=iCV,
+  VR=phi_LdM,
+  R=nsp,
+  E=SmithWilson)
+sm_all$TAXA<-as.factor(sm_all$TAXA)
+
+rescaling<-T
+mean_centering<-TRUE
+
+Textreme<-"kurt"
+Tvar<-"IQR"
+Tscale<-"Celsius"
+
+resloc<-here(paste("Results/res_Prelim_Report/traditional_stability_res/Tscale_",Tscale,"_Tvar_",Tvar,"_Textreme_",Textreme,"/",sep=""))
+
+taxa<-"birds"
+
+if(!dir.exists(paste(resloc))){
+  dir.create(resloc)
+}
+#sink(here(paste(resloc,"mod_summary.txt",sep="")),
+#     append=TRUE, split=TRUE)
+
+pdf((paste(resloc,"/plot_psem_goodfit.pdf",sep="")),height=12,width=6)
+op<-par(mfrow=c(2,1))
+
+#----- call for birds -----
+resb<-call_model_psem(taxa = taxa, data=sm_all,
+                      rescaling = rescaling,  
+                      mean_centering = mean_centering,
+                      resloc=resloc,
+                      Textreme=Textreme,Tvar=Tvar,Tscale=Tscale)
+saveRDS(resb,here(paste(resloc,"/model_psem_",taxa,".RDS",sep="")))
+
+#----- call for fish -----
+cat("=========== now for fish ===============\n")
+
+taxa<-"fish"
+resf<-call_model_psem(taxa = taxa, data=sm_all,
+                      rescaling = rescaling,  
+                      mean_centering = mean_centering,
+                      resloc=resloc,
+                      Textreme=Textreme,Tvar=Tvar,Tscale=Tscale)
+saveRDS(resf,here(paste(resloc,"/model_psem_",taxa,".RDS",sep="")))
+par(op)
+dev.off()
+#sink()
+
+pdf(here(paste(resloc,"/plot_psem_goodfit_fish_subset.pdf",sep="")),height=6,width=6)
+sfi_A_non0<-sm_all%>%filter(TAXA=="fish")%>%filter(A!=0)
+taxa<-"fish"
+resf_subset<-call_model_psem(taxa = taxa, data=sfi_A_non0,
+                      rescaling = rescaling,  
+                      mean_centering = mean_centering,
+                      resloc=resloc,
+                      Textreme=Textreme,Tvar=Tvar,Tscale=Tscale)
+saveRDS(resf_subset,here(paste(resloc,"/model_psem_subset_",taxa,".RDS",sep="")))
+dev.off()
+```
+
+```{r print-model-summary-kurt, echo=FALSE, cache=T, cache.extra=list(mtime(here("Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_kurt/model_psem_birds.RDS")), mtime(here("Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_kurt/model_psem_fish.RDS")),mtime(here("Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_kurt/model_psem_subset_fish.RDS")))}
+
+cat("============ model summary for birds ===========\n")
+resloc<-"Results/res_Prelim_Report/traditional_stability_res/Tscale_Celsius_Tvar_IQR_Textreme_kurt/"
+taxa<-"birds"
+psem_birds<-readRDS(here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+print(psem_birds$pf_collinearity)
+print(summary(psem_birds$model_psem))
+
+cat("============ model summary for fish ===========\n")
+taxa<-"fish"
+psem_fish<-readRDS(here(paste(resloc,"model_psem_",taxa,".RDS",sep="")))
+print(psem_fish$pf_collinearity)
+print(summary(psem_fish$model_psem))
+
+cat("============ model summary for fish subset ===========\n")
+psem_fish<-readRDS(here(paste(resloc,"model_psem_subset_",taxa,".RDS",sep="")))
+print(psem_fish$pf_collinearity)
+print(summary(psem_fish$model_psem))
 ```
 
 ```{r birds-fish-skw-and-taildepsyn, echo=F, results="hide"}
-source(here("R/plot_to_test_H2.R"))
+source(here("R/plot_to_test_H2.R")) 
 ```
 
 ```{r plot-suppmatfigs, echo=F, results="hide"}
@@ -885,6 +1024,10 @@ source(here("R/plot_suppmatfigs_traditional_stability.R"))
 
 ```{r plot-summarycoeffs, echo=F, results="hide"}
 source(here("R/summary_plot_coefficients_traditional_stability.R"))
+```
+
+```{r plot-sensitivity-tails, echo=F, results="hide"}
+source(here("R/plot_sensitivity_tails.R"))
 ```
 
 <!--
@@ -900,46 +1043,6 @@ and for fish -
 - increasing $t_{med}$ increases richness, and more asynchrony (-ve effect on VR), which is also consistent with more variable traits for the fish species.
 - for fish, skewness has direct negative effect on stability, not indirect effect through tail-dep synchrony as it is not important driver for freshwater as we found from BioDyn. Increasing temperature trend increases tail-dependent synchrony.
 -->
-
-```{r plot-stability-taildepsyn, echo=F}
-#----- stability vs tail-dep synchrony raw plot for each taxa -----
-library(ggpubr)
-# with all data
-sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
-mydat<-sm_all
-mydat$A<-mydat$L + abs(mydat$U)
-g0<-mydat %>%
-  filter(TAXA%in%c("birds","fish")) %>%
-  ggplot(aes(x=A,y=iCV)) +
-  geom_point(alpha=0.3) +
-  geom_smooth(method="lm") +
-  ylab("Stability") +
-  xlab("tail-dep synchrony") +
-  facet_wrap(~TAXA) +
-  theme_bw()+
-  stat_cor(aes(label = paste(..r.label..,..rr.label.., ..p.label.., sep = "*`,`~")),
-           label.x = -0.7, label.y = 20,col="black")+
-  stat_regline_equation(label.x = -0.7, label.y = 18)
-print(g0)
-
-sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
-mydat<-sm_all
-mydat$A<-mydat$L + abs(mydat$U)
-g0<-mydat %>%
-  filter(TAXA%in%c("birds","fish")) %>%
-  ggplot(aes(x=log10(A),y=log10(iCV))) +
-  geom_point(alpha=0.3) +
-  geom_smooth(method="lm") +
-  #scale_x_continuous(trans = 'log10') +
-  #scale_y_continuous(trans = 'log10') +
-  ylab("Stability") +
-  xlab("tail-dep synchrony") +
-  facet_wrap(~TAXA) +
-  theme_bw()
-print(g0)
-
-```
-
 
 
 # Discussion

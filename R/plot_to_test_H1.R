@@ -31,7 +31,7 @@ df3<-df2%>%group_by(STUDY_ID,newsite)%>%
 mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
 
 # Synchrony vs. temperature t_med
-gb_H11<-ggplot(data=mydat, aes(x=t_med_celcius, y=phi_LdM)) +
+gb_H11<-ggplot(data=mydat, aes(x=t_med_celsius, y=phi_LdM)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm",se=T,color="green",fill="greenyellow")+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.9)+
@@ -44,7 +44,7 @@ gb_H11<-ggplot(data=mydat, aes(x=t_med_celcius, y=phi_LdM)) +
         plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
         panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 #gb_H11
-#ms<-summary(lm(formula = phi_LdM ~ t_med_celcius, data = mydat))
+#ms<-summary(lm(formula = phi_LdM ~ t_med_celsius, data = mydat))
 #sl<-ms$coefficients[2,1] #slope
 #pval<-ms$coefficients[2,4] # pvalue
 #if(pval<0.05){
@@ -55,7 +55,7 @@ gb_H11<-ggplot(data=mydat, aes(x=t_med_celcius, y=phi_LdM)) +
 
 
 # response traits (variability) vs. t_med plot
-gb_H12<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
+gb_H12<-ggplot(mydat,aes(x=t_med_celsius,y=cortrait_var))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",se=T,color="green",fill="greenyellow")+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.8)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.9)+
@@ -67,7 +67,7 @@ gb_H12<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
         plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
         panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 #gb_H12
-#ms<-summary(lm(formula = log10(cortrait_var) ~ t_med_celcius, data = mydat))
+#ms<-summary(lm(formula = log10(cortrait_var) ~ t_med_celsius, data = mydat))
 #sl<-ms$coefficients[2,1] #slope
 #pval<-ms$coefficients[2,4] # pvalue
 #if(pval<0.05){
@@ -126,7 +126,7 @@ mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
 #df4<-df3%>%filter(cortrait_var<0)
 
 # Synchrony vs. temperature t_med
-gf_H11<-ggplot(data=mydat, aes(x=t_med_celcius, y=phi_LdM)) +
+gf_H11<-ggplot(data=mydat, aes(x=t_med_celsius, y=phi_LdM)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm",se=T,color="dodgerblue",fill="steelblue1")+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.06)+
@@ -142,7 +142,7 @@ gf_H11<-ggplot(data=mydat, aes(x=t_med_celcius, y=phi_LdM)) +
 #gf_H11
 
 # response traits (variability) vs. t_med plot
-gf_H12<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
+gf_H12<-ggplot(mydat,aes(x=t_med_celsius,y=cortrait_var))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",se=T,color="dodgerblue",fill="steelblue1")+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.8)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.9)+
@@ -155,7 +155,7 @@ gf_H12<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
         panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 #gf_H12
 
-g1wbrk<-ggplot(mydat,aes(x=t_med_celcius,y=cortrait_var))+geom_point(alpha=0.2)+
+g1wbrk<-ggplot(mydat,aes(x=t_med_celsius,y=cortrait_var))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",color="dodgerblue",fill="steelblue1")+
   geom_hline(yintercept=0,linetype='dashed')+
   scale_y_break(c(11.5,38,42,50,56, 129))+
