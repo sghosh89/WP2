@@ -2,7 +2,8 @@ library(here)
 library(tidyverse)
 library(dplyr)
 library(gridExtra)
-
+library(PupillometryR)
+library(ggpubr)
 
 #--------- first map communities for birds and fish on the global map --------------
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
@@ -284,11 +285,86 @@ pdf(here("Results/res_Prelim_Report/traditional_stability_res/stability_diversit
 grid.arrange(gb_interact1, gb_interact2,gf_interact1, gf_interact2, nrow=2)
 dev.off()
 
-#-------------- plot direct traits ----------------
+#-------------- plot sensitivity test for tail threshold ----------------
 
-#source(here("R/plot_direct_traits.R"))
+source(here("R/plot_sensitivity_tails.R"))
 
-#---------------------------------------------------
+#-------------- plot all sp vs dominant sp comparison ----------------
+library(ggpubr)
+tab_rad_summary<-readRDS(here("Results/tab_rad_summary.RDS"))
+
+gp1<-ggplot(tab_rad_summary,aes(x=iCV_allsp,y=iCV))+geom_point(alpha=0.2)+
+  geom_smooth(method="lm", se=F, fill="blue") +
+  stat_cor(aes(label = paste(..r.label..,..rr.label.., ..p.label.., sep = "*`,`~")),
+           label.x = 0.3, label.y = 20,col="blue")+
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 21)) + 
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 21))+
+  xlab("Community stability considering all species")+
+  ylab("Community stability considering common species")+
+  theme_bw()+theme(panel.grid.major = element_blank(),
+                   panel.grid.minor = element_blank())+
+  geom_abline(intercept=0, slope=1, linetype="dashed", col="green")+ coord_fixed()
+
+gp1e<-ggplot(data=tab_rad_summary, aes(x=max_accumfreq_commonsp, group=TAXA, fill=TAXA)) +
+  geom_density(adjust=1.5) +
+  theme_bw() +
+  facet_wrap(~TAXA) +
+  theme(
+    legend.position="none",
+    panel.spacing = unit(0.1, "lines"),
+    axis.ticks.x=element_blank()
+  )
+
+gp2<-ggplot(data = tab_rad_summary, aes(y = max_accumfreq_commonsp, x = TAXA, fill = TAXA)) +
+  scale_fill_manual(values=alpha(c("green3","dodgerblue"), 1))+
+  geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .4) + 
+  #coord_flip()+
+  geom_point(aes(y = max_accumfreq_commonsp, color = TAXA), 
+             position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
+  geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
+  ylab("Max. accumulated frequency for common species \n(i.e., contribution by the common species \n to the total community-abundance)")+
+  xlab("TAXA")+ 
+  theme_bw()+
+  theme(
+    #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
+    panel.background=element_rect(fill="white", colour="white"), 
+    legend.position="none",text=element_text(size=11))+
+  scale_color_manual(values=alpha(c("green3","dodgerblue"), 1))
+
+resloc<-here("Results/res_Prelim_Report/traditional_stability_res/")
+pdf((paste(resloc,"/plot_allsp_vs_dominantsp.pdf",sep="")),height=4,width=8)
+gridExtra::grid.arrange(gp1, gp2, nrow=1)
+dev.off()
+
+#------------------ plot method fig: tail-dep synchrony -----------------------------
+
+library(here)
+library(tidyverse)
+library(VineCopula)
+set.seed(seed=101)
+x<-BiCopSim(N=40, family=3, par=5)
+xx<-as.data.frame(x)
+gp<-ggplot(data=xx, aes(x=V1,y=V2))+geom_point(alpha=0.5)+
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 1)) + 
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 1))+
+  #geom_abline(intercept=0, slope=1, col="gray80")+
+  theme_bw()+theme(panel.grid.major = element_blank(),
+                   panel.grid.minor = element_blank())+
+  geom_abline(intercept=1, slope=-1, linetype="solid")+
+  geom_abline(intercept=2/3, slope=-1, col="blue", linetype="dashed")+
+  geom_abline(intercept=4/3, slope=-1, col="blue", linetype="dashed")+
+  geom_abline(intercept=0.5, slope=-1, col="red", linetype="dotted")+
+  geom_abline(intercept=1.5, slope=-1, col="red", linetype="dotted")+
+  ggtitle("Copula plot")+
+  xlab("Species i, normalized ranked abundance")+ 
+  ylab("Species j, normalized ranked abundance")+ coord_fixed()
+
+resloc<-here("Results/res_Prelim_Report/traditional_stability_res/")
+
+pdf((paste(resloc,"/method_taildepsyn_plot.pdf",sep="")),height=5,width=5)
+gp
+dev.off()
+
 
 
 

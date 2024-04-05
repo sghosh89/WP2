@@ -1026,10 +1026,6 @@ source(here("R/plot_suppmatfigs_traditional_stability.R"))
 source(here("R/summary_plot_coefficients_traditional_stability.R"))
 ```
 
-```{r plot-sensitivity-tails, echo=F, results="hide"}
-source(here("R/plot_sensitivity_tails.R"))
-```
-
 <!--
 So, from the path analysis, what do we see for birds -
 

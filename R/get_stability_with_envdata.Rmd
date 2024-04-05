@@ -1254,7 +1254,10 @@ write.csv(sbf30,here("Results/stability_metric_and_env_all_nyr_min30.csv"),row.n
 source(here("R/sensitivity_tails.R")) 
 ```
 
+```{r allsp-vs-dominantsp, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime(here("R/allsp_vs_dominantsp.R")),mtime(here("Results/stability_metric_and_env_all.csv")),mtime(here("R/get_stability_metric.R")))}
 
+source(here("R/allsp_vs_dominantsp.R")) 
+```
 
 # CODE AVAILABILITY
 Complete computer code written in R programming language for this project is at https://github.com/sghosh89/WP2.
