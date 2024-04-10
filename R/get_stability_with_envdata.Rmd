@@ -1227,6 +1227,12 @@ source("./get_fish_tol_limit.R")
 source("./get_birds_tol_limit.R") 
 ```
 
+```{r summary_gbif_data_distribution, echo=F, cache=T, warning=F,message=F,results="hide", cache.extra=list(mtime(here("summary_gbif_data_distribution.R")),mtime(here("DATA/STI_related/fish_gbif_data/cleaned/fish_occurrence_metadata.csv")),mtime(here("DATA/STI_related/birds_gbif_data/cleaned/birds_occurrence_metadata.csv")))}
+
+library(here)
+source(here("R/summary_gbif_data_distribution.R")) 
+```
+
 ```{r data_min30yr, echo=F, warning=F,message=F,results="hide"}
 library(here)
 library(tidyverse)

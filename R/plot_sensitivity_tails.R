@@ -72,8 +72,8 @@ g1<-ggplot(sbf30,aes(x=A,y=A_nbin3))+geom_point(alpha=0.3,col="blue")+
   stat_cor(aes(label = paste(..r.label..,..rr.label.., ..p.label.., sep = "*`,`~")),
            label.x = 0.1, label.y = 4.6,col="blue")+
   stat_regline_equation(label.x = 0.1, label.y = 5,col="blue")+
-  xlab("Community-level tail-dependent synchrony, A \n for nbin=2")+
-  ylab("Community-level tail-dependent synchrony, A \n for nbin=3")+
+  xlab("Community-level tail-dependent synchrony, A \n (LT for <50% and UT for >50% of joint distribution)")+
+  ylab("Community-level tail-dependent synchrony, A \n (LT for <33.3% and UT for >66.7% of joint distribution)")+
   ggtitle(label="100 communities with minimum 30 years of data")
 
 #========= now for nbin=4 =========================
@@ -132,13 +132,13 @@ g2<-ggplot(sbf40,aes(x=A,y=A_nbin3))+geom_point(col="blue",alpha=0.3)+
   stat_cor(data=sbf40, aes(x=A,y=A_nbin4,label = paste(..r.label..,..rr.label.., ..p.label.., sep = "*`,`~")),
            label.x = 0.1, label.y = 1.6,col="red")+
   stat_regline_equation(data=sbf40, aes(x=A,y=A_nbin4),label.x = 0.1, label.y = 1.7,col="red")+
-  xlab("Community-level tail-dependent synchrony, A \n for nbin=2")+
-  ylab("Community-level tail-dependent synchrony, A \n for nbin=3 and nbin=4")+
+  xlab("Community-level tail-dependent synchrony, A \n (LT for <50% and UT for >50% of joint distribution)")+
+  ylab("Community-level tail-dependent synchrony, A \n (LT for <33.3% and UT for >66.7% of joint distribution), \n (LT for <25% and UT for >75% of joint distribution)")+
   ggtitle(label="24 communities with minimum 40 years of data")
 #g2
 
-resloc<-here("Results/res_Prelim_Report")
-pdf((paste(resloc,"/plot_sensitivity_tails.pdf",sep="")),height=4,width=9)
+resloc<-here("Results/res_Prelim_Report/traditional_stability_res")
+pdf((paste(resloc,"/plot_sensitivity_tails.pdf",sep="")),height=4,width=10)
 grid.arrange(g1,g2,nrow=1)
 dev.off()
 
