@@ -1014,6 +1014,146 @@ print(psem_fish$pf_collinearity)
 print(summary(psem_fish$model_psem))
 ```
 
+```{r model_psem_Tcelsius_Tskw_TvarIQR_stationary_notrend, echo=F, cache=T, message=F, results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")),mtime(here("R/call_model_psem_stationary.R")),mtime(here("R/plot_psem.R")))}
+
+library(car)
+library(tidyverse) 
+library(lme4)
+library(piecewiseSEM)
+library(performance)
+source(here("R/plot_psem.R")) 
+source(here("R/call_model_psem_stationary.R"))
+
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+
+sm_bf<-sm_all%>%filter(TAXA%in%c("birds","fish"))
+
+# stationary in time: based on Sen's slopes
+sm_bf_notrend<-sm_bf%>%filter(t.sens.slope.sig.celsius==0)
+resloc<-here("Results/res_Prelim_Report/traditional_stability_res/Stationary_notrend")
+if(!dir.exists(paste(resloc))){
+  dir.create(resloc)
+}
+#sm_bf_notrend<-sm_bf%>%filter(is.trend.stationary.adf==0)
+#sm_bf_notrend<-sm_bf%>%filter(is.trend.stationary.kpss==1)
+# 21 communities not stationary in adf test but with trend stationary
+table(sm_bf_notrend$TAXA)
+
+# Now do a psem with data that are stationary in time, 
+# you should not expect any significant effect due to trend here
+# and all similar effects due to other temperature components 
+
+sm_bf_notrend$UID<-paste(sm_bf_notrend$source,sm_bf_notrend$STUDY_ID,sep="_")
+sm_bf_notrend$A<-sm_bf_notrend$L+abs(sm_bf_notrend$U) # total asymmetry
+sm_bf_notrend<-sm_bf_notrend%>%dplyr::rename(
+  stability=iCV,
+  VR=phi_LdM,
+  R=nsp,
+  E=SmithWilson)
+sm_bf_notrend$TAXA<-as.factor(sm_bf_notrend$TAXA)
+
+rescaling<-T
+mean_centering<-TRUE
+
+taxa<-"birds"
+
+#sink(here(paste(resloc,"mod_summary.txt",sep="")),
+#     append=TRUE, split=TRUE)
+
+pdf((paste(resloc,"/plot_psem_goodfit.pdf",sep="")),height=12,width=6)
+op<-par(mfrow=c(2,1))
+
+#----- call for birds -----
+resb<-call_model_psem_stationary(taxa = taxa, data=sm_bf_notrend,
+                                 rescaling = rescaling,  
+                                 mean_centering = mean_centering,
+                                 resloc=resloc)
+saveRDS(resb,here(paste(resloc,"/model_psem_",taxa,".RDS",sep="")))
+
+#----- call for fish -----
+cat("=========== now for fish ===============\n")
+
+taxa<-"fish"
+resf<-call_model_psem_stationary(taxa = taxa, data=sm_bf_notrend,
+                                 rescaling = rescaling,  
+                                 mean_centering = mean_centering,
+                                 resloc=resloc)
+saveRDS(resf,here(paste(resloc,"/model_psem_",taxa,".RDS",sep="")))
+par(op)
+dev.off()
+```
+
+```{r model_psem_Tcelsius_Tskw_TvarIQR_stationary_adf, echo=F, cache=T, message=F, results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")),mtime(here("R/call_model_psem_stationary.R")),mtime(here("R/plot_psem.R")))}
+
+library(car)
+library(tidyverse) 
+library(lme4)
+library(piecewiseSEM)
+library(performance)
+source(here("R/plot_psem.R")) 
+source(here("R/call_model_psem_stationary.R"))
+
+sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
+
+sm_bf<-sm_all%>%filter(TAXA%in%c("birds","fish"))
+
+# stationary in time: based on adf test
+sm_bf_notrend<-sm_bf%>%filter(is.stationary.adf==1)
+resloc<-here("Results/res_Prelim_Report/traditional_stability_res/Stationary_adf")
+if(!dir.exists(paste(resloc))){
+  dir.create(resloc)
+}
+#sm_bf_notrend<-sm_bf%>%filter(is.trend.stationary.adf==0)
+#sm_bf_notrend<-sm_bf%>%filter(is.trend.stationary.kpss==1)
+# 21 communities not stationary in adf test but with trend stationary
+table(sm_bf_notrend$TAXA)
+
+# Now do a psem with data that are stationary in time, 
+# you should not expect any significant effect due to trend here
+# and all similar effects due to other temperature components 
+
+sm_bf_notrend$UID<-paste(sm_bf_notrend$source,sm_bf_notrend$STUDY_ID,sep="_")
+sm_bf_notrend$A<-sm_bf_notrend$L+abs(sm_bf_notrend$U) # total asymmetry
+sm_bf_notrend<-sm_bf_notrend%>%dplyr::rename(
+  stability=iCV,
+  VR=phi_LdM,
+  R=nsp,
+  E=SmithWilson)
+sm_bf_notrend$TAXA<-as.factor(sm_bf_notrend$TAXA)
+
+rescaling<-T
+mean_centering<-TRUE
+
+taxa<-"birds"
+
+
+#sink(here(paste(resloc,"mod_summary.txt",sep="")),
+#     append=TRUE, split=TRUE)
+
+pdf((paste(resloc,"/plot_psem_goodfit.pdf",sep="")),height=12,width=6)
+op<-par(mfrow=c(2,1))
+
+#----- call for birds -----
+resb<-call_model_psem_stationary(taxa = taxa, data=sm_bf_notrend,
+                                 rescaling = rescaling,  
+                                 mean_centering = mean_centering,
+                                 resloc=resloc)
+saveRDS(resb,here(paste(resloc,"/model_psem_",taxa,".RDS",sep="")))
+
+#----- call for fish -----
+cat("=========== now for fish ===============\n")
+
+taxa<-"fish"
+resf<-call_model_psem_stationary(taxa = taxa, data=sm_bf_notrend,
+                                 rescaling = rescaling,  
+                                 mean_centering = mean_centering,
+                                 resloc=resloc)
+saveRDS(resf,here(paste(resloc,"/model_psem_",taxa,".RDS",sep="")))
+par(op)
+dev.off()
+```
+
+
 ```{r birds-fish-skw-and-taildepsyn, echo=F, results="hide"}
 source(here("R/plot_to_test_H2.R")) 
 ```
