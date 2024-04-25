@@ -1,5 +1,5 @@
 ---
-title: Preliminary report with traditional stability, Effect of climatic extremes on community stability and its drivers
+title: Preliminary report - Temperature and biodiversity influence community stability differently in birds and fishes
 author: "Shyamolina Ghosh, Owen Petchey"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
@@ -36,8 +36,6 @@ if(!dir.exists(here("Results/res_Prelim_Report/traditional_stability_res/"))){
   dir.create(here("Results/res_Prelim_Report/traditional_stability_res/"))
 }
 ```
-
-# Introduction
 
 # Data
 
@@ -87,6 +85,7 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance d
 
 # Results
 
+<!--
 ## Community stability exploration
 
 ```{r categorize-data}
@@ -809,6 +808,7 @@ knitr::include_graphics(here("Results/some_assets/responsetraits.jpg"),
 ```
 
 Now, we will do a path analysis for a simplistic mixed effect model to see the environmental effects on community stability for both taxa.
+-->
 
 ```{r model_psem_Tcelsius_Tskw_TvarIQR, echo=F, cache=T, message=F, results="hide", cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")),mtime(here("R/call_model_psem.R")),mtime(here("R/plot_psem.R")))}
 
@@ -1181,4 +1181,3 @@ and for fish -
 -->
 
 
-# Discussion

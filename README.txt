@@ -1,6 +1,6 @@
 ## Repository for analysis: 
 
-	Temperature change and biodiversity influence community stability differently in birds and fishes
+	Temperature and biodiversity influence community stability differently in birds and fishes
 
 ## Authors: Shyamolina Ghosh(1)*, Blake Matthews(2), Owen Petchey(1)
   
