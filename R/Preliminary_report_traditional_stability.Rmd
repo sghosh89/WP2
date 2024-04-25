@@ -55,9 +55,11 @@ str(sm_all) # total communities within 1979-2019 timespan, we selected only 4 ta
 
 # Methods
 
+<!--
 ```{r realdata-timeseries, echo=FALSE, fig.cap="Temperature timeseries figure with real data", out.width = '100%', fig.align='center'}
 knitr::include_graphics(here("Results/some_assets/realdata_temperature_timeseries_celcius.jpg"),rel_path = FALSE)
 ```
+-->
 
 ## Variables estimated and modelled
 
@@ -73,7 +75,7 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance d
 
 *Community variance ratio*: a measure of synchrony, scaled between 0 to 1 ([Loreau & Mazancourt](https://www.journals.uchicago.edu/doi/10.1086/589746)).
 
-*Community level total tail association from pairwise synchrony*: see BioDyn project, Figure 1.
+*Community level total tail association from pairwise synchrony*: see [BioDyn project](https://doi.org/10.22541/au.169287307.74379399/v1), Figure 1.
 
 *Temperature median*: Median of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
@@ -82,6 +84,23 @@ Let $N_{i,t,s}$ be the abundance (sometimes it was biomass data when abundance d
 *Temperature skew*: Skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community.
 
 *Temperature variability*: Temperature variability for the community during the study period = IQR(annual temperature distribution for the study period). 
+
+```{r trend-plot-compare, out.width = '75%', fig.cap="Distribution of temperature trend estimated by non-parametric Sen's slope, and parametric linear fit slope. Colored points are significant Sen's slope (green: birds, blue: fish)."}
+# simulated data trend plot: see test_trend_bothway.R
+
+# Now you can plot them from real data
+sm_all_bf<-sm_all%>%filter(TAXA%in%c("birds","fish"))
+slope_sig_bf<-sm_all_bf%>%filter(t.sens.slope.sig.celsius==1)
+plot(x=sm_all_bf$t.sens.slope.celsius,y=sm_all_bf$t.lm.slope.celsius,col=rgb(0,0,0,0.05),
+     pch=19,xlab="Sen's slope",ylab="lm.slope")
+slope_sig_bf$col<-ifelse(slope_sig_bf$REALM=="Freshwater","blue","green")
+points(x=slope_sig_bf$t.sens.slope.celsius,y=slope_sig_bf$t.lm.slope.celsius,col=slope_sig_bf$col)
+abline(h=0,col="black",lty=2)
+abline(v=0,col="black",lty=2)
+#table(slope_sig_bf$REALM)/table(sm_all_bf$REALM) # 34% freshwater, and 25% terrestrial sig trend
+# at least from primary visualization, 
+# I can see slopes when > 0.25 has higher chance to be significant
+```
 
 # Results
 
@@ -538,22 +557,6 @@ gextra2<-sm_all_bf%>%
   theme_classic()+facet_wrap(~TAXA)
 ```
 
-```{r trend-plot-compare, out.width = '75%', fig.cap="Distribution of temperature trend estimated by non-parametric Sen's slope, and parametric linear fit slope. Colored points are significant Sen's slope (green: birds, blue: fish)."}
-# simulated data trend plot: see test_trend_bothway.R
-
-# Now you can plot them from real data
-slope_sig_bf<-sm_all_bf%>%filter(t.sens.slope.sig.celsius==1)
-plot(x=sm_all_bf$t.sens.slope.celsius,y=sm_all_bf$t.lm.slope.celsius,col=rgb(0,0,0,0.05),
-     pch=19,xlab="Sen's slope",ylab="lm.slope")
-slope_sig_bf$col<-ifelse(slope_sig_bf$REALM=="Freshwater","blue","green")
-points(x=slope_sig_bf$t.sens.slope.celsius,y=slope_sig_bf$t.lm.slope.celsius,col=slope_sig_bf$col)
-abline(h=0,col="black",lty=2)
-abline(v=0,col="black",lty=2)
-table(slope_sig_bf$REALM)/table(sm_all_bf$REALM) # 34% freshwater, and 25% terrestrial sig trend
-# at least from primary visualization, 
-# I can see slopes when > 0.25 has higher chance to be significant
-```
-
 ```{r trend-plot, out.width = '75%', fig.cap=c("Histogram plot for trends, both taxa.","Histogram plot for significant trends, both taxa.")}
 
 gp_trend1<-sm_all_bf%>%
@@ -569,6 +572,7 @@ gp_trend2<-slope_sig_bf%>%
   annotate("rect", xmin=0, xmax=max(slope_sig_bf$t.sens.slope.celsius), ymin=0, ymax=Inf, alpha=0.15, fill="red")+
   theme_classic()+facet_wrap(~TAXA)
 ```
+
 
 ```{r tvar-plot, out.width = '75%', fig.cap=c("Histogram plot for variability in temperature")}
 gextra3<-sm_all_bf%>%
@@ -600,6 +604,7 @@ print(gextra6)
 So, from the exploratory plots we can see: at higher temperature positive stability-diversity relationship becomes stronger for birds but for fish it becomes weaker. Also fish becomes more asynchronous with increasing temperature. So, why does that happen? to find this we could explore how much the bird species and fish species are consistent to temperature change across all communities.
 
 **The cue is:** if fish species are not much consistent in their response to warming and vary across sites, that means you cannot make a conclusion that they would become similar with changing temperature. On another note, bird species should be more consistent towards warming if their is no change in their synchrony level across communities. Another possibility could be with changing temperature you might loose some species (its not just number of individuals, it will selectively prefer few species with better fitness), and then the communities will be dominated by few species with similar traits (so increasing synchrony). we will test this below.
+
 
 ```{r check_consistency, echo=F, cache=T, message=F, cache.extra=list(mtime(here("Results/stability_metric_and_env_all.csv")), mtime(here("Results/birds_splist_consistency_table.csv")),mtime(here("Results/fish_splist_consistency_table.csv")),mtime(here("Results/birds_splist_with_temp_sensitivity.csv")),mtime(here("Results/fish_splist_with_temp_sensitivity.csv")))}
 
@@ -785,6 +790,7 @@ plot_temp_on_map(sm_all,t="t_med_celsius",taxa,scaleup)
 #plot_temp_on_map(sm_all,t="t_skw",taxa,scaleup)
 ```
 
+
 From the above plots, we can see birds are showing consistent response-distribution across all temperature change, i.e., in either end of temperature spectrum (low or high end). That's why the synchrony level remains similar for birds.
 But for fish, warming increases the richness (addition of new species), and as fish species now become more variable in response to temperature sensitivity (trait-variation), they show more asynchrony compared to low temperature scenario where only few species exists (see smaller circle size on the map for lowT,<50%CI) and show similar traits (so more synchrony).
 **Note:** when I show this to Frank, he commented on how much robust is the pattern for fish at low T as there are only few species existed across 145 sites - so it also depends on how we considered the lowT-highT communities. I set beyond 50% CI of temperature range as low/high. Even if I decrease that to 30% CI, still very few species found in low T sites (15 sp across 203 sites: 80% >0, 20% <0 line).  
@@ -795,11 +801,13 @@ From below figures: at high T, birds have slightly less dispersal ability (lower
 When I showed this to Blake, he was not convinced by the idea to split the data into two: low/high based on t_med (to him this temperature difference is more on latitudinal differences as shown in the map), and same species can exist in both communities - so why changing t_med should change the synchrony level for fish? and getting different bodysize fish from low/high t_med (fewer big fish in lowT and many smaller fish in highT) is not explaining why big fish should be more synchronous - is it because of fewer species (richness) or because bigger fish abundance change needs more time - not on annual scale?
 
 So, I thought to make a plot of how community-level average response traits (average of standardised correlation between species abundance with t_med timeseries across sites) changes with increasing temperature (t_med)? For fish, it should decrease with increasing t_med, whereas for birds it should be a flat relationship.
+-->
 
 ```{r plot_tempcor_traits, echo=F, results="hide", message=F}
 source(here("R/plot_to_test_H1.R")) 
 ```
 
+<!--
 Possible explanation:
 
 ```{r response-scematicfig, echo=FALSE, fig.cap="Response variation with temperature", out.width = '100%', fig.align='center'}
