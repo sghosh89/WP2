@@ -44,10 +44,11 @@ mydat$gr<-as.factor(mydat$gr)
 
 g3b<-ggplot(mydat,aes(x=t_skw,y=minTtol_var,col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
-  geom_smooth(method="lm", se=F)+
+  geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.8)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.8)+
   scale_color_manual(values=c("green2","green4"))+
+  scale_fill_manual(values=c("green2","green4"))+
   xlab("Temperature skewness, SkewT")+
   ylab("Community-level variability \n in species' minimum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -59,10 +60,11 @@ g3b
 
 g4b<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var,col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
-  geom_smooth(method="lm", se=F)+
+  geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.8)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.8)+
   scale_color_manual(values=c("green2","green4"))+
+  scale_fill_manual(values=c("green2","green4"))+
   xlab("Temperature skewness, SkewT")+
   ylab("Community-level variability \n in species' maximum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -74,10 +76,11 @@ g4b
 
 g5b<-ggplot(mydat,aes(y=A,x=t_skw, col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
-  geom_smooth(method="lm", se=F)+
+  geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.95)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.95)+
   scale_color_manual(values=c("green2","green4"))+
+  scale_fill_manual(values=c("green2","green4"))+
   xlab("Temperature skewness, SkewT")+
   ylab("Tail-dependent \n synchrony, A")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -102,11 +105,11 @@ g6bl<-ggplot(mydat,aes(y=A,x=minTtol_var))+
                    plot.margin = margin(t = 9, r = 7, b = 4, l = 12, unit = "pt"),
                    panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
 
-g6bl
+#g6bl
 
 g6b<-ggplot(mydat,aes(y=A,x=minTtol_var))+
   geom_point(alpha=0.2)+
-  geom_smooth(method="loess", se=T,color="green",fill="greenyellow")+
+  geom_smooth(method="loess", se=T,color="green",fill="greenyellow", alpha=0.3)+
   ylab("Tail-dependent \n synchrony, A")+
   xlab("Community-level variability in species' minimum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -127,12 +130,12 @@ g7bl<-ggplot(mydat,aes(y=A,x=maxTtol_var))+
                    axis.text = element_text(size = 12),
                    plot.margin = margin(t = 9, r = 7, b = 4, l = 12, unit = "pt"),
                    panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
-g7bl
+#g7bl
 
 g7b<-ggplot(mydat,aes(y=A,x=maxTtol_var))+
   #scale_y_log10()+
   geom_point(alpha=0.2)+
-  geom_smooth(method="loess", se=T,color="green",fill="greenyellow")+
+  geom_smooth(method="loess", se=T,color="green",fill="greenyellow", alpha=0.3)+
   ylab("Tail-dependent \n synchrony, A")+
   xlab("Community-level variability in species' maximum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -178,10 +181,11 @@ mydat$gr<-as.factor(mydat$gr)
 
 g3f<-ggplot(mydat,aes(x=t_skw,y=minTtol_var,col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
-  geom_smooth(method="lm", se=F)+
+  geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.9)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.9)+
   scale_color_manual(values=c("skyblue2","navy"))+
+  scale_fill_manual(values=c("skyblue2","navy"))+
   xlab("Temperature skewness, SkewT")+
   ylab("Community-level variability \n in species' minimum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -194,10 +198,11 @@ g3f
 
 g4f<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var,col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
-  geom_smooth(method="lm", se=F)+
+  geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.9)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.9)+
   scale_color_manual(values=c("skyblue2","navy"))+
+  scale_fill_manual(values=c("skyblue2","navy"))+
   xlab("Temperature skewness, SkewT")+
   ylab("Community-level variability \n in species' maximum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -209,10 +214,11 @@ g4f
 
 g5f<-ggplot(mydat,aes(y=A,x=t_skw, col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
-  geom_smooth(method="lm", se=F)+
+  geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
   stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.85)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.85)+
   scale_color_manual(values=c("skyblue2","navy"))+
+  scale_fill_manual(values=c("skyblue2","navy"))+
   xlab("Temperature skewness, SkewT")+
   ylab("Tail-dependent \n synchrony, A")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -241,7 +247,8 @@ g6fl
 g6f<-ggplot(mydat,aes(y=A,x=minTtol_var))+
   #scale_y_log10()+
   geom_point(alpha=0.2)+
-  geom_smooth(method="loess", se=T,color="dodgerblue",fill="steelblue1")+
+  geom_smooth(method="loess", se=T,color="dodgerblue",fill="steelblue1", alpha=0.3)+
+  #geom_smooth(method="loess", se=T,color="dodgerblue",fill="steelblue1")+
   ylab("Tail-dependent \n synchrony, A")+
   xlab("Community-level variability in species' minimum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
@@ -267,7 +274,7 @@ g7fl
 g7f<-ggplot(mydat,aes(y=A,x=maxTtol_var))+
   #scale_y_log10()+
   geom_point(alpha=0.2)+
-  geom_smooth(method="loess", se=T,color="dodgerblue",fill="steelblue1")+
+  geom_smooth(method="loess", se=T,color="dodgerblue",fill="steelblue1", alpha=0.3)+
   ylab("Tail-dependent \n synchrony, A")+
   xlab("Community-level variability in species' maximum \n thermal tolerance limit")+
   theme_bw()+theme(text = element_text(size = 12),
