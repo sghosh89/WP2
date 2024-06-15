@@ -7,6 +7,12 @@ Results folder to hold results generated from the Rmd files you have in R/ folde
 4) fish_splist_consistency_table.csv
 5) fish_splist_with_temp_sensitivity.csv
 
+The above five files serve as the starting point of the analysis presented in the manuscript. 
+You can consider them as the "minimum dataset" that are necessary to interpret, verify and 
+extend the research in the manuscript. 
+All codes and steps are documented in the R-markdown file "R/Preliminary_report_traditional_stability.Rmd" 
+that uses the minimum dataset to get the final results for the manuscript.
+
 
 In particular, We are also providing details for "stability_metric_and_env_all.csv" file which is the main input for SEM modeling 
 

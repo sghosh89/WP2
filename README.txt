@@ -26,20 +26,24 @@
 	For any reproducibility issue, you may contact S. Ghosh at ghoshshyamolina89@gmail.com 
 
 ## How to compile the code? 
-  - 1. First, run R/get_stability_with_envdata.Rmd.
+  - (i) First, run R/get_stability_with_envdata.Rmd.
         It will save following 5 csv files in the Results folder:
-          stability_metric_and_env_all.csv,
-          birds_splist_consistency_table.csv,
-          fish_splist_consistency_table.csv,
-          birds_splist_with_temp_sensitivity.csv,
-          fish_splist_with_temp_sensitivity.csv.
+          1. stability_metric_and_env_all.csv,
+          2. birds_splist_consistency_table.csv,
+          3. fish_splist_consistency_table.csv,
+          4. birds_splist_with_temp_sensitivity.csv,
+          5. fish_splist_with_temp_sensitivity.csv.
        It will also save following 2 csv files with tolerance limit for each fish and birds species in "DATA/STI_related/fish_gbif_data/cleaned/" 
        and "DATA/STI_related/birds_gbif_data/cleaned/" path, respectively.
             fish_occurrence_metadata_with_tolerance.csv,
             birds_occurrence_metadata_with_tolerance.csv.
-  - 2. We already provided those csv files in respective folders, so that you can skip step 1
-  - 3. you can get preliminary reports with further analysis from running
-      R/Preliminary_report_traditional_stability.Rmd
+
+	*** NOTE *** The five csv files (numbered as 1 to 5 above) serve as the the starting point of the analysis presented in the manuscript.
+	You can consider them as the "minimum dataset" that are necessary to interpret, verify and extend the research in the manuscript. 
+
+  - (ii) We already provided those csv files in respective folders, so that you can skip step (i)
+  - (iii) you can get preliminary reports with further analysis from running
+      R/Preliminary_report_traditional_stability.Rmd with the "minimum dataset" as mentioned in step (i).
       
 ## Funding and acknowledgement:
 
