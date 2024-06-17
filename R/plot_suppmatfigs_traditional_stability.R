@@ -69,7 +69,7 @@ gts1<-sbf %>%
 
 gts2<-ggplot(data=sbf, aes(x=nyr_used, fill=TAXA))+geom_histogram(bins=10)+
   facet_grid(~TAXA)+xlab("Time series length (in years)")+
-  annotate("text",  x=Inf, y = Inf, label = "A", vjust=1.5, hjust=1.5,size=7)+
+  annotate("text",  x=Inf, y = Inf, label = "a", vjust=1.5, hjust=1.5,size=7)+
   theme_classic()+
   theme(strip.background = element_blank(),
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -84,7 +84,7 @@ gs<-ggplot(data = sbf, aes(y = iCV, x = TAXA, fill = TAXA)) +
   #coord_flip()+
   geom_point(aes(y = iCValt, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
-  ylab("Stability")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "B", vjust=1.5, hjust=1.5,size=7)+
+  ylab("Stability")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "b", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -100,7 +100,7 @@ gR<-ggplot(data = sbf, aes(y = nsp, x = TAXA, fill = TAXA)) +
   #coord_flip()+
   geom_point(aes(y = nsp, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
-  ylab("Richness")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "C", vjust=1.5, hjust=1.5,size=7)+
+  ylab("Richness")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "c", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -115,7 +115,7 @@ gE<-ggplot(data = sbf, aes(y = SmithWilson, x = TAXA, fill = TAXA)) +
   #coord_flip()+
   geom_point(aes(y = SmithWilson, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
-  ylab("Evenness")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "D", vjust=1.5, hjust=1.5,size=7)+
+  ylab("Evenness")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "d", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -130,7 +130,7 @@ gVR<-ggplot(data = sbf, aes(y = phi_LdM, x = TAXA, fill = TAXA)) +
   #coord_flip()+
   geom_point(aes(y = phi_LdM, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
-  ylab("Overall synchrony")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "E", vjust=1.5, hjust=1.5,size=7)+
+  ylab("Overall synchrony")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "e", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -146,7 +146,7 @@ gTA<-ggplot(data = sbf, aes(y = TA, x = TAXA, fill = TAXA)) +
   #coord_flip()+
   geom_point(aes(y = TA, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
-  ylab("Tail-dependent synchrony")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "F", vjust=1.5, hjust=1.5,size=7)+
+  ylab("Tail-dependent synchrony")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "f", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -162,7 +162,7 @@ gMedianT<-ggplot(data = sbf, aes(y = t_med_celsius, x = TAXA, fill = TAXA)) +
   #coord_flip()+
   geom_point(aes(y = t_med_celsius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
-  ylab("Median Temperature (\u00B0C)")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "G", vjust=1.5, hjust=1.5,size=7)+
+  ylab("Median Temperature (\u00B0C)")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "g", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -177,7 +177,7 @@ gVarT<-ggplot(data = sbf, aes(y = t_varIQR_celsius, x = TAXA, fill = TAXA)) +
   #coord_flip()+
   geom_point(aes(y = t_varIQR_celsius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
-  ylab("Temperature variability")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "H", vjust=1.5, hjust=1.5,size=7)+
+  ylab("Temperature variability")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "h", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -192,7 +192,7 @@ gTrendT<-ggplot(data = sbf, aes(y = t.sens.slope.celsius, x = TAXA, fill = TAXA)
   #coord_flip()+
   geom_point(aes(y = t.sens.slope.celsius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
-  ylab("Temperature Trend")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "I", vjust=1.5, hjust=1.5,size=7)+
+  ylab("Temperature Trend")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "i", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -209,7 +209,7 @@ gSkewT<-ggplot(data = sbf, aes(y = t_skw_celsius, x = TAXA, fill = TAXA)) +
   geom_point(aes(y = t_skw_celsius, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
   ylab("Temperature skewness")+xlab("")+ 
-  annotate("text",  x=Inf, y = Inf, label = "J", vjust=1.5, hjust=1.5,size=7)+
+  annotate("text",  x=Inf, y = Inf, label = "j", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+
   theme(
     #panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -271,7 +271,7 @@ gb_interact1<-sbf%>%filter(TAXA=="birds")%>%ggplot(aes(x=nsp,y=iCV, col = Median
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2') +
   ylab("Stability, log2 scale") +
-  xlab("Richness, log2 scale") + annotate("text",  x=Inf, y = Inf, label = "A", vjust=1.5, hjust=1.5,size=7)+
+  xlab("Richness, log2 scale") + annotate("text",  x=Inf, y = Inf, label = "a", vjust=1.5, hjust=1.5,size=7)+
   scale_color_manual(values=c("blue", "red"))+
   scale_fill_manual(values=c("blue", "red"))+
   theme_bw()+ggtitle("Birds")
@@ -279,7 +279,7 @@ gb_interact1<-sbf%>%filter(TAXA=="birds")%>%ggplot(aes(x=nsp,y=iCV, col = Median
 
 gb_interact2<-sbf%>%filter(TAXA=="birds")%>%ggplot(aes(x=t_med_celsius,y=iCV, col = Richness_level)) +
   geom_point(alpha=0.2) +
-  geom_smooth(method="lm", se=T) + annotate("text",  x=Inf, y = Inf, label = "B", vjust=1.5, hjust=1.5,size=7)+
+  geom_smooth(method="lm", se=T) + annotate("text",  x=Inf, y = Inf, label = "b", vjust=1.5, hjust=1.5,size=7)+
   ylab("Stability") +
   xlab("Temperature, MedianT (\u00B0C)") +
   scale_color_manual(values=c("orange","magenta"))+
@@ -293,7 +293,7 @@ gf_interact1<-sbf%>%filter(TAXA=="fish")%>%ggplot(aes(x=nsp,y=iCV, col = MedianT
   scale_x_continuous(trans = 'log2') +
   scale_y_continuous(trans = 'log2') +
   ylab("Stability, log2 scale") +
-  xlab("Richness, log2 scale") + annotate("text",  x=Inf, y = Inf, label = "C", vjust=1.5, hjust=1.5,size=7)+
+  xlab("Richness, log2 scale") + annotate("text",  x=Inf, y = Inf, label = "c", vjust=1.5, hjust=1.5,size=7)+
   scale_color_manual(values=c("blue", "red"))+
   scale_fill_manual(values=c("blue", "red"))+
   theme_bw()+ggtitle("Fish")
@@ -301,7 +301,7 @@ gf_interact1<-sbf%>%filter(TAXA=="fish")%>%ggplot(aes(x=nsp,y=iCV, col = MedianT
 
 gf_interact2<-sbf%>%filter(TAXA=="fish")%>%ggplot(aes(x=t_med_celsius,y=iCV, col = Richness_level)) +
   geom_point(alpha=0.2) +
-  geom_smooth(method="lm", se=T) + annotate("text",  x=Inf, y = Inf, label = "D", vjust=1.5, hjust=1.5,size=7)+
+  geom_smooth(method="lm", se=T) + annotate("text",  x=Inf, y = Inf, label = "d", vjust=1.5, hjust=1.5,size=7)+
   ylab("Stability") +
   xlab("Temperature, MedianT (\u00B0C)") +
   scale_color_manual(values=c("orange","magenta"))+
@@ -332,7 +332,7 @@ gp1<-ggplot(tab_rad_summary,aes(x=iCV_allsp,y=iCV))+geom_point(alpha=0.2)+
   theme_bw()+theme(panel.grid.major = element_blank(),
                    panel.grid.minor = element_blank())+
   geom_abline(intercept=0, slope=1, linetype="dashed", col="pink")+ 
-  coord_fixed()+annotate("text", x=19, y=3.2, label= "B", size=7)
+  coord_fixed()+annotate("text", x=19, y=3.2, label= "b", size=7)
 
 gp1e<-ggplot(data=tab_rad_summary, aes(x=max_accumfreq_commonsp, group=TAXA, fill=TAXA)) +
   geom_density(adjust=1.5) +
@@ -360,7 +360,7 @@ gp2<-ggplot(data = tab_rad_summary,
     panel.background=element_rect(fill="white", colour="white"), 
     legend.position="none",text=element_text(size=11))+
   scale_color_manual(values=alpha(c("green3","dodgerblue"), 1))+
-  annotate("text", x=2.4, y=62, label= "A", size=7)
+  annotate("text", x=2.4, y=62, label= "a", size=7)
 
 resloc<-here("Results/res_Prelim_Report/traditional_stability_res/")
 pdf((paste(resloc,"/plot_allsp_vs_dominantsp.pdf",sep="")),height=4,width=8)

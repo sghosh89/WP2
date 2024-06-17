@@ -182,12 +182,12 @@ gf_H13<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
 #gf_H13
 
 pdf(here("Results/res_Prelim_Report/traditional_stability_res/birds-fish-medianT-overallsyn.pdf"), width = 7, height = 9) 
-gb_H11<-gb_H11+ annotate("text",  x=Inf, y = Inf, label = "A", vjust=1.5, hjust=1.5, size=8)
-gb_H12<-gb_H12+ annotate("text",  x=Inf, y = Inf, label = "B", vjust=1.5, hjust=1.5, size=8)
-gb_H13<-gb_H13+ annotate("text",  x=Inf, y = Inf, label = "C", vjust=1.5, hjust=1.5, size=8)
-gf_H11<-gf_H11+ annotate("text",  x=Inf, y = Inf, label = "D", vjust=1.5, hjust=1.5, size=8)
-gf_H12<-gf_H12+ annotate("text",  x=Inf, y = Inf, label = "E", vjust=1.5, hjust=1.5, size=8)
-gf_H13<-gf_H13+ annotate("text",  x=Inf, y = Inf, label = "F", vjust=1.5, hjust=1.5, size=8)
+gb_H11<-gb_H11+ annotate("text",  x=Inf, y = Inf, label = "a", vjust=1.5, hjust=1.5, size=8)
+gb_H12<-gb_H12+ annotate("text",  x=Inf, y = Inf, label = "b", vjust=1.5, hjust=1.5, size=8)
+gb_H13<-gb_H13+ annotate("text",  x=Inf, y = Inf, label = "c", vjust=1.5, hjust=1.5, size=8)
+gf_H11<-gf_H11+ annotate("text",  x=Inf, y = Inf, label = "d", vjust=1.5, hjust=1.5, size=8)
+gf_H12<-gf_H12+ annotate("text",  x=Inf, y = Inf, label = "e", vjust=1.5, hjust=1.5, size=8)
+gf_H13<-gf_H13+ annotate("text",  x=Inf, y = Inf, label = "f", vjust=1.5, hjust=1.5, size=8)
 
 grid.arrange(gb_H11,gb_H12,gb_H13, 
              gf_H11,gf_H12,gf_H13,ncol=2, as.table = FALSE)
