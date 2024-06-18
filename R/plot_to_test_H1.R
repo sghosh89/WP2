@@ -5,6 +5,7 @@ library(dplyr)
 library(gridExtra)
 library(here)
 library(ggpubr)
+library(ggpmisc)
 sm_all<-read.csv(here("Results/stability_metric_and_env_all.csv"))
 #range(sm_all$t_med)
 
@@ -34,7 +35,9 @@ mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
 gb_H11<-ggplot(data=mydat, aes(x=t_med_celsius, y=phi_LdM)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm",se=T,color="green",fill="greenyellow")+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.9)+
+  #stat_poly_line() +
+  #stat_poly_eq(use_label(c("eq", "p", "n"))) +
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.9)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 1)+
   xlab("Temperature, MedianT (\u00B0C)")+
   ylab("Overall synchrony")+ylim(0,1)+
@@ -43,7 +46,7 @@ gb_H11<-ggplot(data=mydat, aes(x=t_med_celsius, y=phi_LdM)) +
   theme(text = element_text(size = 12),axis.text = element_text(size = 12),
         plot.margin = margin(t = 8, r = 9, b = 4, l = 4, unit = "pt"),
         panel.grid = element_line(color = rgb(235, 235, 235, 100, maxColorValue = 255)))
-#gb_H11
+gb_H11
 #ms<-summary(lm(formula = phi_LdM ~ t_med_celsius, data = mydat))
 #sl<-ms$coefficients[2,1] #slope
 #pval<-ms$coefficients[2,4] # pvalue
@@ -57,7 +60,7 @@ gb_H11<-ggplot(data=mydat, aes(x=t_med_celsius, y=phi_LdM)) +
 # response traits (variability) vs. t_med plot
 gb_H12<-ggplot(mydat,aes(x=t_med_celsius,y=cortrait_var))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",se=T,color="green",fill="greenyellow")+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.8)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.8)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.9)+
   scale_y_log10()+
   xlab("Temperature, MedianT (\u00B0C)")+
@@ -80,7 +83,7 @@ gb_H12<-ggplot(mydat,aes(x=t_med_celsius,y=cortrait_var))+geom_point(alpha=0.2)+
 # variance ratio vs. community-wide correlation traits variability
 gb_H13<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",se=T,color="green",fill="greenyellow")+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.6)+
+  stat_cor(method="pearson", label.x.npc = 0.5, label.y.npc = 0.6)+
   stat_regline_equation(label.x.npc = 0.5, label.y.npc = 0.7)+
   scale_x_log10() +
   xlab("Variability among species' response \n in community, log10 scale")+
@@ -129,7 +132,7 @@ mydat<-left_join(sfi,df3,by=c("STUDY_ID","newsite"))
 gf_H11<-ggplot(data=mydat, aes(x=t_med_celsius, y=phi_LdM)) +
   geom_point(alpha = 0.2) +
   geom_smooth(method="lm",se=T,color="dodgerblue",fill="steelblue1")+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.06)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.06)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.15)+
   xlab("Temperature, MedianT (\u00B0C)")+
   ylab("")+ylim(0,1)+
@@ -144,7 +147,7 @@ gf_H11<-ggplot(data=mydat, aes(x=t_med_celsius, y=phi_LdM)) +
 # response traits (variability) vs. t_med plot
 gf_H12<-ggplot(mydat,aes(x=t_med_celsius,y=cortrait_var))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",se=T,color="dodgerblue",fill="steelblue1")+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.8)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.8)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.9)+
   scale_y_log10() +
   xlab("Temperature, MedianT (\u00B0C)")+
@@ -171,7 +174,7 @@ g1wbrk<-ggplot(mydat,aes(x=t_med_celsius,y=cortrait_var))+geom_point(alpha=0.2)+
 # variance ratio vs. community-wide correlation traits variability
 gf_H13<-ggplot(mydat,aes(x=cortrait_var,y=phi_LdM))+geom_point(alpha=0.2)+
   geom_smooth(method="lm",se=T,color="dodgerblue",fill="steelblue1")+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0, label.y.npc = 0.05)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.05)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.13)+
   scale_x_log10() +
   xlab("Variability among species' response \n in community, log10 scale")+ylab("")+ylim(0,1)+

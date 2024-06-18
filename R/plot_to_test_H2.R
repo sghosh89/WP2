@@ -45,7 +45,8 @@ mydat$gr<-as.factor(mydat$gr)
 g3b<-ggplot(mydat,aes(x=t_skw,y=minTtol_var,col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
   geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.8)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.6)+
+  #stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.8)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.8)+
   scale_color_manual(values=c("green2","green4"))+
   scale_fill_manual(values=c("green2","green4"))+
@@ -61,8 +62,8 @@ g3b
 g4b<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var,col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
   geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.8)+
-  stat_regline_equation(label.x.npc = 0, label.y.npc = 0.8)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.8)+
+  stat_regline_equation(label.x.npc = 0, label.y.npc = 1)+
   scale_color_manual(values=c("green2","green4"))+
   scale_fill_manual(values=c("green2","green4"))+
   xlab("Temperature skewness, SkewT")+
@@ -77,7 +78,7 @@ g4b
 g5b<-ggplot(mydat,aes(y=A,x=t_skw, col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
   geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.95)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.75)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.95)+
   scale_color_manual(values=c("green2","green4"))+
   scale_fill_manual(values=c("green2","green4"))+
@@ -182,7 +183,7 @@ mydat$gr<-as.factor(mydat$gr)
 g3f<-ggplot(mydat,aes(x=t_skw,y=minTtol_var,col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
   geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.9)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.7)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.9)+
   scale_color_manual(values=c("skyblue2","navy"))+
   scale_fill_manual(values=c("skyblue2","navy"))+
@@ -199,8 +200,8 @@ g3f
 g4f<-ggplot(mydat,aes(x=t_skw,y=maxTtol_var,col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
   geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.9)+
-  stat_regline_equation(label.x.npc = 0, label.y.npc = 0.9)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.8)+
+  stat_regline_equation(label.x.npc = 0, label.y.npc = 1)+
   scale_color_manual(values=c("skyblue2","navy"))+
   scale_fill_manual(values=c("skyblue2","navy"))+
   xlab("Temperature skewness, SkewT")+
@@ -215,7 +216,7 @@ g4f
 g5f<-ggplot(mydat,aes(y=A,x=t_skw, col=gr),add="reg.line")+
   geom_point(alpha=0.2)+
   geom_smooth(method="lm", se=T, aes(fill=gr), alpha=0.3)+
-  stat_cor(aes(label=after_stat(p.label)), label.x.npc = 0.7, label.y.npc = 0.85)+
+  stat_cor(method="pearson", label.x.npc = 0, label.y.npc = 0.6)+
   stat_regline_equation(label.x.npc = 0, label.y.npc = 0.85)+
   scale_color_manual(values=c("skyblue2","navy"))+
   scale_fill_manual(values=c("skyblue2","navy"))+
