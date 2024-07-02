@@ -58,17 +58,25 @@ LATITUDE: Latitude
 t_med: median of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community
 t_skw: skewness of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community
 t_var: temperature variability for the community during the study period = IQR(annual temperature distribution for the study period)/abs(t_med)
-t_med_celcius: median of CHELSA-extracted annual temperature timeseries (t_med) in celcius scale
-t_skw_celcius: skewness of CHELSA-extracted annual temperature timeseries (t_skw) in celcius scale
-t_var_celcius: temperature variability for the community during the study period = IQR(annual temperature distribution for the study period)/abs(t_med_celcius)
+t_kurt: kurtosis of CHELSA-extracted annual temperature timeseries for the study years included in the analysis for each community
+t_varIQR: temperature variability for the community during the study period = IQR(annual temperature distribution for the study period)
 t.lm.slope: trend of CHELSA extracted annual temperature timeseries (computed by linear regression)
 t.lm.slope.sig: significance for trend of CHELSA extracted annual temperature timeseries (computed by linear regression): significant(=1) if p value <0.05
 t.sens.slope: trend of CHELSA extracted annual temperature timeseries (computed by non-parametric Sen's method)
 t.sens.slope.sig: significance for trend of CHELSA extracted annual temperature timeseries (computed by non-parametric Sen's method): significant(=1) if p value <0.05
+t_med_celcius: median of CHELSA-extracted annual temperature timeseries in celcius scale
+t_skw_celcius: skewness of CHELSA-extracted annual temperature timeseries in celcius scale; t_skw and t_skw_celsius should be same
+is.sig_t_skw_celsius: checking if skewness is significant (=1) or not (=0)
+t_var_celcius: temperature variability for the community during the study period = IQR(annual temperature distribution for the study period)/abs(t_med_celcius)
+t_kurt_celsius: kurtosis of CHELSA-extracted annual temperature timeseries in celcius scale
+is.sig_t_kurt_celsius: checking if kurtosis is significant (=1) or not (=0)
+t_varIQR_celsius: temperature variability for the community during the study period in celsius scale = IQR(annual temperature distribution in celsius for the study period)
 t.lm.slope.celcius: trend of CHELSA extracted annual temperature timeseries in celcius scale (computed by linear regression)
 t.lm.slope.sig.celcius: significance for trend of CHELSA extracted annual temperature timeseries in celcius scale (computed by linear regression): significant(=1) if p value <0.05
 t.sens.slope.celcius: trend of CHELSA extracted annual temperature timeseries in celcius scale (computed by non-parametric Sen's method)
 t.sens.slope.sig.celcius: significance for trend of CHELSA extracted annual temperature timeseries in celcius scale (computed by non-parametric Sen's method): significant(=1) if p value <0.05
+is.stationary.adf: checking if temperature time series appears stationary (=1) or not (=0) in Augmented Dickey-Fuller test 
+is.trend.stationary.kpss: checking if temperature time series appears trend-stationary (=1) or not (=0) in KPSS test 
 GiniSimpson: Diversity index (evenness), Gini 1912 & Simpson 1949 
 Simpson: Diversity index (evenness), Simpson 1949 & Magurran 2004
 Shannon: Diversity index (evenness), Shannon 1948
@@ -76,3 +84,44 @@ Heip: Diversity index (evenness), Heip 1974 & Magurran 2004
 McIntosh: Diversity index (evenness), McIntosh 1967 & Pielou 1975
 SmithWilson: Diversity index (evenness), Smith & Wilson 1996 & Magurran 2004
 Pielou: Diversity index (evenness), Pielou 1975
+
+#=============================
+We used only a few set of variables (or columns) from the above for our further analysis to genarate figures for the maintext and for the supplemental information.
+Those considered columns are:
+TAXA,
+source,
+STUDY_ID,
+newsite,
+LONGITUDE,
+LATITUDE,
+iCV as "stability",
+nsp as "richness",
+SmithWilson as "evenness",
+phi_LdM as "overall_synchrony",
+sum of two columns: (L and absolute value of U) = A as "taildep_synchrony"    
+t_med_celcius as "MedianT",
+t.sens.slope.celsius as "TrendT",
+t_skw_celsius as "SkewT",
+t_varIQR_celsius as "VarT",
+"is.significant.TrendT",
+"is.stationary.adf" 
+
+#======================
+For source data of main text figures and supplemental figures of the paper titled
+"Temperature and biodiversity influence community stability differently in birds and fishes" (accepted in Nature Ecology & Evolution), 
+please see the "DATA" folder.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
