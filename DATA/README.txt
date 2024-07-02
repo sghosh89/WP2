@@ -41,3 +41,11 @@ For data related to species' tolerance limits see folder "STI_related".
 Though we have not used the traits data (body-measurements) for birds and fish in our analysis, 
 "traitsdata" folder contains info to resolve the confusion for species names (scientific names, 
 common names, names appeared in the present community data).
+
+
+NOTE: we have provided two folders with source data files that are plotted as main text figures and supplemental figures of the paper titled
+"Temperature and biodiversity influence community stability differently in birds and fishes" (accepted in Nature Ecology & Evolution).
+
+
+
+
