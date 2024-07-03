@@ -45,7 +45,11 @@
   - (iii) you can get preliminary reports with further analysis from running
       R/Preliminary_report_traditional_stability.Rmd with the "minimum dataset" as mentioned in step (i).
 
-NOTE: In the "DATA" folder, we have provided source data files for main text figures and supplemental figures of the paper titled "Temperature and biodiversity influence community stability differently in birds and fishes" (accepted in Nature Ecology & Evolution).
+
+NOTE: 
+In this repository, we have provided two folders with source data files and codes that can be used to get main text figures and supplemental figures of the paper titled
+"Temperature and biodiversity influence community stability differently in birds and fishes" (accepted in Nature Ecology & Evolution).
+These two folders are: "source_data_maintext_figures" and "source_data_suppmat_figures".
       
 ## Funding and acknowledgment:
 
