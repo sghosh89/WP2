@@ -82,7 +82,7 @@ gs<-ggplot(data = sbf, aes(y = iCV, x = TAXA, fill = TAXA)) +
   scale_fill_manual(values=alpha(c("green3","dodgerblue"), 1))+
   geom_flat_violin(position = position_nudge(x = .2, y = 0), alpha = .4) + 
   #coord_flip()+
-  geom_point(aes(y = iCValt, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
+  geom_point(aes(y = iCV, color = TAXA), position = position_jitter(width = .15), size = 0.9, alpha = 0.2) +
   geom_boxplot(width = .1, outlier.shape = NA, alpha = 0.4)+ 
   ylab("Stability")+xlab("")+ annotate("text",  x=Inf, y = Inf, label = "b", vjust=1.5, hjust=1.5,size=7)+
   theme_bw()+

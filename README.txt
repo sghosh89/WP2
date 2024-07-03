@@ -49,7 +49,7 @@
 NOTE: 
 In this repository, we have provided two folders with source data files and codes that can be used to get main text figures and supplemental figures of the paper titled
 "Temperature and biodiversity influence community stability differently in birds and fishes" (accepted in Nature Ecology & Evolution).
-These two folders are: "source_data_maintext_figures" and "source_data_suppmat_figures".
+These two folders are: "source_data_maintext_figures" and "source_data_suppmat_figures". These folders are particularly useful if you don't want to run the whole analysis of the paper.
       
 ## Funding and acknowledgment:
 
