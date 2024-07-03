@@ -3,5 +3,7 @@ This folder contains Source data for supplemental figures of the paper
 
 For supplemental figures S1 to S5, we used the same source data that we used for Fig. 3 in the main text.
 
-Ghosh_SourceData_Figures_S1toS9.xls: This is an excel book with 5 sheets that contains source data, description/ comments for supplemental figures S1 to S9.
+Ghosh_SourceData_Figures_S1toS9.xls: This is an excel book with 7 sheets that contains source data, description/ comments for supplemental figures S1 to S9.
 
+We have provided codes written in R as this file named "generate_suppmat_figs_S1toS9.R", 
+this file shows how you can pull source data and generate supplemental figures S1 to S9.
