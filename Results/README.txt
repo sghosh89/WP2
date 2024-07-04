@@ -108,9 +108,7 @@ t_varIQR_celsius as "VarT",
 "is.stationary.adf" 
 
 #======================
-For source data of main text figures and supplemental figures of the paper titled
-"Temperature and biodiversity influence community stability differently in birds and fishes" (accepted in Nature Ecology & Evolution), 
-please see the "DATA" folder.
+
 
 
 
