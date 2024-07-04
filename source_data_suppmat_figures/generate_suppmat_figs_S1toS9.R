@@ -17,7 +17,7 @@ source(here("R/plot_psem.R"))
 # For supplemental figures S1 to S5, we used the same source data that we used for Figure 3 in the main text
 
 sbf<-read_excel(here("source_data_maintext_figures/Ghosh_SourceData_Fig3.xls"), sheet= 1)
-sbf<-sbf[-c(1:6),]
+sbf<-sbf[-c(1:8),]
 colnames(sbf)<-sbf[1,]
 sbf<-sbf[-1,]
 
